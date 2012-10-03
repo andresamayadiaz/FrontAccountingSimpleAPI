@@ -9,9 +9,14 @@ $path_to_root="../..";
 
 include_once($path_to_root . "/modules/api/api.php");
 
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
+include_once($path_to_root . "/inventory/includes/db/movement_types_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
+include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 $data = null;
 $data = api_initAPI();
@@ -32,6 +37,15 @@ switch($data['action']){
 		break;
 	case 'delete':
 		delete($data['info']);
+		break;
+	case 'getMovementsTypes':
+		getMovementsTypes();
+		break;
+	case 'getLocations':
+		getLocations();
+		break;
+	case 'addStockAdjustment':
+		addStockAdjustment($data['info']);
 		break;
 	default:
 		api_sendError('404', 'Invalid Action', 'Action Not Found');
@@ -238,6 +252,107 @@ function delete()
 		api_sendSuccess("Item has been deleted");
 	}
 
+}
+
+function getMovementsTypes()
+{
+	
+	$movtypes = get_all_movement_type(false);
+	$ret = array();
+	while($mov = db_fetch($movtypes)){
+		
+		$ret[] = array(
+			'id' => $mov['id'],
+			'name' => $mov['name']
+		);
+		
+	}
+	echo json_encode($ret);
+}
+
+function getLocations()
+{
+
+	$locations = get_item_locations(false);
+	$ret = array();
+	while($loc = db_fetch($locations)){
+		
+		$ret[] = array(
+			'loc_code' => $loc['loc_code'],
+			'location_name' => $loc['location_name'],
+			'delivery_address' => $$loc['inactive'],
+			'phone' => $loc['phone'],
+			'phone2' => $loc['phone2'],
+			'fax' => $loc['fax'],
+			'email' => $loc['email'],
+			'contact' => $loc['contact']
+		);
+		
+	}
+	echo json_encode($ret);
+	
+}
+
+function addStockAdjustment($info)
+{
+	// Example
+	//$ex = array('stock_id' => 'PLUMA', 'location' => 'DEF', 'date' => today(), 'type' => 1, 'reference' => '123qwe', 'quantity' => 555, 'standard_cost' => 10, 'increase' => 0, 'memo' => 'PRUEBA DESDE API 2');
+	//echo base64_encode(json_encode($ex));	
+	//print_r($info);
+
+	// Validate Required Fields
+	if(!isset($info['stock_id'])){
+		api_sendError(412, 'Stock Id is required', 'Stock Id is required');
+	}
+	if(!isset($info['location'])){
+		api_sendError(412, 'Location is required', 'Location is required');
+	}
+	if(!isset($info['date'])){
+		api_sendError(412, 'Date is required', 'Date is required');
+	}
+	if(!isset($info['type'])){
+		api_sendError(412, 'Movement Type is required', 'Movement Type is required');
+	}
+	if(!isset($info['reference'])){
+		api_sendError(412, 'Reference is required', 'Reference is required');
+	}
+	if(!isset($info['quantity'])){
+		api_sendError(412, 'Quantity is required', 'Quantity is required');
+	}
+	if(!isset($info['standard_cost'])){
+		$info['standard_cost'] = 0;
+	}
+	if(!isset($info['increase'])){
+		api_sendError(412, 'Increase is required', 'Increase is required');
+	}
+	if(!isset($info['memo'])){
+		api_sendError(412, 'Memo is required', 'Memo is required');
+	}
+	
+	// Create Adjustment Order
+	unset ($_SESSION['adj_items']);
+	$_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
+	$info['date'] = today();
+	if (!is_date_in_fiscalyear($info['date']))
+		$info['date'] = end_fiscalyear();
+	$_SESSION['adj_items']->tran_date = $info['date'];  
+	// This should never happen
+	if ($_SESSION['adj_items']->find_cart_item($info['stock_id']))
+         api_sendError(400, 'Item Already Exists', 'Item Already Exists');
+	else
+         $_SESSION['adj_items']->add_to_cart(count($_SESSION['adj_items']->line_items), $info['stock_id'], $info['quantity'], $info['standard_cost']);
+	
+	// Process Order
+	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
+		$info['location'], $info['date'], $info['type'], $info['increase'],
+		$info['reference'], $info['memo']);
+		
+	new_doc_date($info['date']);
+	$_SESSION['adj_items']->clear_items();
+	unset($_SESSION['adj_items']);
+	
+	api_sendSuccess("Stock Adjustment has been added");
+	
 }
 
 ?>
