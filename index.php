@@ -1,7 +1,7 @@
 <?php
 /**********************************************
 Author: Andres Amaya
-Name: Inventory REST API
+Name: SASYS REST API
 Free software under GNU GPL
 ***********************************************/
 
@@ -31,6 +31,7 @@ $rest->setName('SASYS');
 api_login();
 
 // API Routes
+// Get Items
 $rest->get('/inventory/', function() use ($rest){
 	
 	global $path_to_root;
@@ -38,6 +39,7 @@ $rest->get('/inventory/', function() use ($rest){
 	inventory_all();
 	
 });
+// Get Specific Item by Stock Id
 $rest->get('/inventory/:id', function($id) use ($rest) {
 	
 	global $path_to_root;
@@ -45,6 +47,7 @@ $rest->get('/inventory/:id', function($id) use ($rest) {
 	inventory_get($id);
 
 });
+// Add Item
 $rest->post('/inventory/', function() use ($rest){
 	
 	global $path_to_root;
@@ -52,6 +55,7 @@ $rest->post('/inventory/', function() use ($rest){
 	inventory_add();
 	
 });
+// Edit Specific Item
 $rest->post('/inventory/:id', function($id) use ($rest){
 	
 	global $path_to_root;
@@ -59,6 +63,7 @@ $rest->post('/inventory/:id', function($id) use ($rest){
 	inventory_edit($id);
 	
 });
+// Delete Specific Item
 $rest->delete('/inventory/:id', function($id) use ($rest){
 	
 	global $path_to_root;
@@ -66,15 +71,15 @@ $rest->delete('/inventory/:id', function($id) use ($rest){
 	inventory_delete($id);
 	
 });
-
-$rest->get('/movementstype/', function() use ($rest){
+// Get Inventory Movement Types
+$rest->get('/movementtypes/', function() use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/inventory.inc");
 	inventory_movementstype_all();
 	
 });
-
+// Get Locations
 $rest->get('/locations/', function() use ($rest){
 	
 	global $path_to_root;
@@ -82,6 +87,116 @@ $rest->get('/locations/', function() use ($rest){
 	inventory_locations_all();
 	
 });
+// Add Stock Adjustment
+$rest->post('/stock/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/inventory.inc");
+	stock_adjustment_add();
+	
+});
+
+// Get Items Categories
+$rest->get('/category/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/category.inc");
+	category_all();
+	
+});
+// Get Specific Item Category
+$rest->get('/category/:id', function($id) use ($rest) {
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/category.inc");
+	category_get($id);
+
+});
+// Add Item Category
+$rest->post('/category/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/category.inc");
+	category_add();
+	
+});
+// Edit Item Category
+$rest->post('/category/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/category.inc");
+	category_edit($id);
+	
+});
+// Delete Item Category
+$rest->delete('/category/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/category.inc");
+	category_delete($id);
+	
+});
+
+// Tax Types
+// Get All Item Tax Types
+$rest->get('/taxtypes/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/taxtypes.inc");
+	taxtypes_all();
+	
+});
+
+// TODO
+// Customers
+
+// TODO
+// Suppliers
+
+// Bank Accounts
+// Get All Bank Accounts
+$rest->get('/bankaccounts/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/bankaccounts.inc");
+	bankaccounts_all();
+	
+});
+// Get Specific Bank Account
+$rest->get('/bankaccounts/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/bankaccounts.inc");
+	bankaccounts_get($id);
+	
+});
+
+// GL Accounts
+// Get GL Accounts
+$rest->get('/glaccounts/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/glaccounts.inc");
+	glaccounts_all();
+	
+});
+// Get Specific GL Account
+$rest->get('/glaccounts/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/glaccounts.inc");
+	glaccounts_get($id);
+	
+});
+// Get GL Account Types
+$rest->get('/glaccounttypes/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/glaccounts.inc");
+	glaccounttypes_all();
+	
+});
+
 
 // Init API
 $rest->run();

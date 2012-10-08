@@ -110,7 +110,7 @@ function add($info){
 	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
 	$units, $mb_flag, $dim1, $dim2, $no_sale
 	*/
-	add_item($info['description'], $info['tax_type_id'], 
+	add_item_category($info['description'], $info['tax_type_id'], 
 		$info['sales_account'],
 		$info['cogs_account'], 
 		$info['inventory_account'],
