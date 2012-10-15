@@ -21,7 +21,7 @@ function api_login(){
 		$succeed = $_SESSION["wa_current_user"]->login($company,
 					$user, $password);
 		if(!$succeed){
-			$app->halt(403, 'Bad Login For Company: ' . $company . ' User: ' . $user . ' Password: ' . $password);
+			$app->halt(403, 'Bad Login For Company: ' . $company . ' With User: ' . $user);
 		}
 	}, 1);
 }

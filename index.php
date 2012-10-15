@@ -147,11 +147,85 @@ $rest->get('/taxtypes/', function() use ($rest){
 	
 });
 
+// Tax Groups
+// Get All Tax Groups
+$rest->get('/taxgroups/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/taxgroups.inc");
+	taxgroups_all();
+	
+});
+
 // TODO
 // Customers
+// Get Customer General Info
+$rest->get('/customer/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/customers.inc");
+	customer_get($id);
+	
+});
+// Add Customer
+$rest->post('/customer/', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/customers.inc");
+	customer_add();
+	
+});
+// Edit Customer
+$rest->post('/customer/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/customers.inc");
+	customer_edit($id);
+	
+});
+// Delete Customer
+$rest->delete('/customer/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	customer_delete($id);
+	
+});
 
 // TODO
 // Suppliers
+// Get Supplier General Info
+$rest->get('/supplier/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	supplier_get($id);
+	
+});
+// Add Supplier
+$rest->post('/supplier/', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	supplier_add();
+	
+});
+// Edit Supplier
+$rest->post('/supplier/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	supplier_edit($id);
+	
+});
+// Delete Supplier
+$rest->delete('/supplier/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	supplier_delete($id);
+	
+});
 
 // Bank Accounts
 // Get All Bank Accounts

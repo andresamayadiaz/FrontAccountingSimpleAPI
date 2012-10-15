@@ -1,7 +1,7 @@
 <?php
 /**********************************************
 Author: Andres Amaya
-Name: Items Category API
+Name: Tax Types API
 Free software under GNU GPL
 ***********************************************/
 

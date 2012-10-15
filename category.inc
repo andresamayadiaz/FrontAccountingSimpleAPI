@@ -43,7 +43,7 @@ function category_get($id)
 	
 }
 
-function category_add($info)
+function category_add()
 {
 
 	$app = \Slim\Slim::getInstance('SASYS');
