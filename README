@@ -1,0 +1,17 @@
+# This is a very Simple Front Accounting API
+
+I needed some basic integration functions to another software and decided to cerate this REST API and contribute with Front Accounting team.
+Hope you find it useful !!
+
+== API Quick Start ==
+
+# Just copy the files into the modules directory under a folder called "api" or anything you want.
+# Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X_company, X_user and X_password headers in the request and the API will use those credentials, if they're wrong you will get a nice message telling "Bad Login"
+
+== Methods ==
+
+So far i have implemented Items, Inventory Movements, Locations, Items Categories, Tax Groups, Tax Types, Bank Accounts, GL Accounts, Customers, Suppliers and GL Account Types. Some of them have not been tested yet so be carefull.
+
+== Contact ==
+
+Any question about this you can always contact me: andres.amaya.diaz@gmail.com
