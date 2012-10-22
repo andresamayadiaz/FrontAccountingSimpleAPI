@@ -160,7 +160,7 @@ $rest->get('/taxgroups/', function() use ($rest){
 // TODO
 // Customers
 // Get Customer General Info
-$rest->get('/customer/:id', function($id) use ($rest){
+$rest->get('/customers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/customers.inc");
@@ -168,7 +168,7 @@ $rest->get('/customer/:id', function($id) use ($rest){
 	
 });
 // Add Customer
-$rest->post('/customer/', function($id) use ($rest){
+$rest->post('/customers/', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/customers.inc");
@@ -176,7 +176,7 @@ $rest->post('/customer/', function($id) use ($rest){
 	
 });
 // Edit Customer
-$rest->post('/customer/:id', function($id) use ($rest){
+$rest->post('/customers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/customers.inc");
@@ -184,7 +184,7 @@ $rest->post('/customer/:id', function($id) use ($rest){
 	
 });
 // Delete Customer
-$rest->delete('/customer/:id', function($id) use ($rest){
+$rest->delete('/customers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -195,7 +195,7 @@ $rest->delete('/customer/:id', function($id) use ($rest){
 // TODO
 // Suppliers
 // Get Supplier General Info
-$rest->get('/supplier/:id', function($id) use ($rest){
+$rest->get('/suppliers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -203,7 +203,7 @@ $rest->get('/supplier/:id', function($id) use ($rest){
 	
 });
 // Add Supplier
-$rest->post('/supplier/', function($id) use ($rest){
+$rest->post('/suppliers/', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -211,7 +211,7 @@ $rest->post('/supplier/', function($id) use ($rest){
 	
 });
 // Edit Supplier
-$rest->post('/supplier/:id', function($id) use ($rest){
+$rest->post('/suppliers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -219,7 +219,7 @@ $rest->post('/supplier/:id', function($id) use ($rest){
 	
 });
 // Delete Supplier
-$rest->delete('/supplier/:id', function($id) use ($rest){
+$rest->delete('/suppliers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -271,6 +271,49 @@ $rest->get('/glaccounttypes/', function() use ($rest){
 	
 });
 
+// Currencies
+// Get All Currencies
+$rest->get('/currencies/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/currencies.inc");
+	currencies_all();
+	
+});
+// Get Specific Currency
+$rest->get('/currencies/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/currencies.inc");
+	currencies_get($id);
+	
+});
+// Get Last Exchange Rate
+$rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/currencies.inc");
+	currencies_last_exrate($curr_abrev);
+	
+});
+
+// Inventory Costs
+// Get Item Cots
+$rest->get('/itemcosts/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/items.inc");
+	itemcosts_get($id);
+	
+});
+// Update Item Cost
+$rest->post('/itemcosts/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/items.inc");
+	itemcosts_update($id);
+	
+});
 
 // Init API
 $rest->run();
