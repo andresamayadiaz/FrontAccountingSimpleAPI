@@ -31,6 +31,7 @@ $rest->setName('SASYS');
 api_login();
 
 // API Routes
+// ------------------------------- Items -------------------------------
 // Get Items
 $rest->get('/inventory/', function() use ($rest){
 	
@@ -71,6 +72,9 @@ $rest->delete('/inventory/:id', function($id) use ($rest){
 	inventory_delete($id);
 	
 });
+// ------------------------------- Items -------------------------------
+
+// ------------------------------- Inventory Movements -------------------------------
 // Get Inventory Movement Types
 $rest->get('/movementtypes/', function() use ($rest){
 	
@@ -79,6 +83,9 @@ $rest->get('/movementtypes/', function() use ($rest){
 	inventory_movementstype_all();
 	
 });
+// ------------------------------- Inventory Movements -------------------------------
+
+// ------------------------------- Inventory Locations -------------------------------
 // Get Locations
 $rest->get('/locations/', function() use ($rest){
 	
@@ -87,6 +94,9 @@ $rest->get('/locations/', function() use ($rest){
 	inventory_locations_all();
 	
 });
+// ------------------------------- Inventory Locations -------------------------------
+
+// ------------------------------- Stock Adjustments -------------------------------
 // Add Stock Adjustment
 $rest->post('/stock/', function() use ($rest){
 	
@@ -95,7 +105,9 @@ $rest->post('/stock/', function() use ($rest){
 	stock_adjustment_add();
 	
 });
+// ------------------------------- Stock Adjustments -------------------------------
 
+// ------------------------------- Item Categories -------------------------------
 // Get Items Categories
 $rest->get('/category/', function() use ($rest){
 	
@@ -136,7 +148,9 @@ $rest->delete('/category/:id', function($id) use ($rest){
 	category_delete($id);
 	
 });
+// ------------------------------- Item Categories -------------------------------
 
+// ------------------------------- Tax Types -------------------------------
 // Tax Types
 // Get All Item Tax Types
 $rest->get('/taxtypes/', function() use ($rest){
@@ -146,7 +160,9 @@ $rest->get('/taxtypes/', function() use ($rest){
 	taxtypes_all();
 	
 });
+// ------------------------------- Tax Types -------------------------------
 
+// ------------------------------- Tax Groups -------------------------------
 // Tax Groups
 // Get All Tax Groups
 $rest->get('/taxgroups/', function() use ($rest){
@@ -156,8 +172,9 @@ $rest->get('/taxgroups/', function() use ($rest){
 	taxgroups_all();
 	
 });
+// ------------------------------- Tax Groups -------------------------------
 
-// TODO
+// ------------------------------- Customers -------------------------------
 // Customers
 // Get Customer General Info
 $rest->get('/customers/:id', function($id) use ($rest){
@@ -191,8 +208,17 @@ $rest->delete('/customers/:id', function($id) use ($rest){
 	customer_delete($id);
 	
 });
+// Get Customer Branches
+$rest->get('/customers/:id/branches/', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/customers.inc");
+	customer_branches_get($id);
+	
+});
+// ------------------------------- Customers -------------------------------
 
-// TODO
+// ------------------------------- Suppliers -------------------------------
 // Suppliers
 // Get Supplier General Info
 $rest->get('/suppliers/:id', function($id) use ($rest){
@@ -226,7 +252,17 @@ $rest->delete('/suppliers/:id', function($id) use ($rest){
 	supplier_delete($id);
 	
 });
+// Get Supplier Contacts
+$rest->get('/suppliers/:id/contacts/', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/suppliers.inc");
+	supplier_contacts_get($id);
+	
+});
+// ------------------------------- Suppliers -------------------------------
 
+// ------------------------------- Bank Accounts -------------------------------
 // Bank Accounts
 // Get All Bank Accounts
 $rest->get('/bankaccounts/', function() use ($rest){
@@ -244,7 +280,9 @@ $rest->get('/bankaccounts/:id', function($id) use ($rest){
 	bankaccounts_get($id);
 	
 });
+// ------------------------------- Bank Accounts -------------------------------
 
+// ------------------------------- GL Accounts -------------------------------
 // GL Accounts
 // Get GL Accounts
 $rest->get('/glaccounts/', function() use ($rest){
@@ -270,7 +308,9 @@ $rest->get('/glaccounttypes/', function() use ($rest){
 	glaccounttypes_all();
 	
 });
+// ------------------------------- GL Accounts -------------------------------
 
+// ------------------------------- Currencies -------------------------------
 // Currencies
 // Get All Currencies
 $rest->get('/currencies/', function() use ($rest){
@@ -296,7 +336,9 @@ $rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
 	currencies_last_exrate($curr_abrev);
 	
 });
+// ------------------------------- Currencies -------------------------------
 
+// ------------------------------- Inventory Costs -------------------------------
 // Inventory Costs
 // Get Item Cots
 $rest->get('/itemcosts/:id', function($id) use ($rest){
@@ -314,6 +356,35 @@ $rest->post('/itemcosts/:id', function($id) use ($rest){
 	itemcosts_update($id);
 	
 });
+// ------------------------------- Inventory Costs -------------------------------
+
+// ------------------------------- Assets -------------------------------
+// Fixed Assets
+// Get Fixed Asset
+$rest->get('/assets/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/assets.inc");
+	assets_get($id);
+	
+});
+// Insert Fixed Asset
+$rest->post('/itemcosts/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/assets.inc");
+	asset_add();
+	
+});
+// Get Asset Types
+$rest->get('/assettypes/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/assets.inc");
+	assettypes_get();
+	
+});
+// ------------------------------- Assets -------------------------------
 
 // Init API
 $rest->run();

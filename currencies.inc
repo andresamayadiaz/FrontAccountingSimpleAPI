@@ -8,7 +8,7 @@ Free software under GNU GPL
 $path_to_root = "../..";
 
 include_once($path_to_root . "/gl/includes/db/gl_db_currencies.inc");
-include_once($path_to_root . "/gl/includes/db/gl_db_rates.inc");
+//include_once($path_to_root . "/gl/includes/db/gl_db_rates.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
 function currencies_all()

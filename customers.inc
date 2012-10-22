@@ -201,3 +201,55 @@ function customer_delete($id){
 	}
 	
 }
+
+function customer_branches_get($id){
+	
+	$sql = "SELECT "
+		."b.branch_code, "
+		."b.branch_ref, "
+		."b.br_name, "
+		."p.name as contact_name, "
+		."s.salesman_name, "
+		."a.description, "
+		."p.phone, "
+		."p.fax, "
+		."p.email, "
+		."t.name AS tax_group_name, "
+		."b.inactive
+		FROM ".TB_PREF."cust_branch b "
+		. "LEFT JOIN ".TB_PREF."crm_contacts c
+			ON c.entity_id=b.branch_code AND c.type='cust_branch' AND c.action='general'
+			LEFT JOIN ".TB_PREF."crm_persons p on c.person_id=p.id,"
+			.TB_PREF."areas a, "
+			.TB_PREF."salesman s, "
+			.TB_PREF."tax_groups t
+		WHERE b.tax_group_id=t.id
+		AND b.area=a.area_code
+		AND b.salesman=s.salesman_code
+		AND b.debtor_no = ".db_escape($id)
+		." AND !b.inactive GROUP BY b.branch_code ORDER BY branch_ref";
+	
+	$result = db_query($sql,"Cannot Get Customer Branches");
+	
+	$ret = array();
+	while($branch = db_fetch($result)){
+		
+		$ret[] = array(
+			'branch_code' => $branch['branch_code'],
+			'branch_ref' => $branch['branch_ref'],
+			'br_name' => $branch['br_name'],
+			'contact_name' => $branch['contact_name'],
+			'salesman_name' => $branch['salesman_name'],
+			'description' => $branch['description'],
+			'phone' => $branch['phone'],
+			'fax' => $branch['fax'],
+			'email' => $branch['email'],
+			'tax_group_name' => $branch['tax_group_name']
+		);
+		
+	}
+	api_success_response(json_encode($ret));
+	
+}
+
+?>

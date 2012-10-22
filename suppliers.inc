@@ -8,6 +8,7 @@ Free software under GNU GPL
 $path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/db/suppliers_db.inc");
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
 function supplier_get($id)
 {
@@ -231,6 +232,13 @@ function supplier_delete($id){
 	}else {
 		api_success_response("Supplier has been deleted");
 	}
+	
+}
+
+function supplier_contacts_get($id){
+	
+	$contacts = get_supplier_contacts($id, null);
+	api_success_response(json_encode($contacts));
 	
 }
 
