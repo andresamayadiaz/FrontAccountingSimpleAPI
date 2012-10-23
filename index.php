@@ -369,7 +369,7 @@ $rest->get('/assets/:id', function($id) use ($rest){
 	
 });
 // Insert Fixed Asset
-$rest->post('/itemcosts/', function() use ($rest){
+$rest->post('/assets/', function() use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/assets.inc");
