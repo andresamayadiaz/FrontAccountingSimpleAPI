@@ -57,7 +57,7 @@ $rest->post('/inventory/', function() use ($rest){
 	
 });
 // Edit Specific Item
-$rest->post('/inventory/:id', function($id) use ($rest){
+$rest->put('/inventory/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/inventory.inc");
@@ -133,7 +133,7 @@ $rest->post('/category/', function() use ($rest){
 	
 });
 // Edit Item Category
-$rest->post('/category/:id', function($id) use ($rest){
+$rest->put('/category/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/category.inc");
@@ -193,7 +193,7 @@ $rest->post('/customers/', function($id) use ($rest){
 	
 });
 // Edit Customer
-$rest->post('/customers/:id', function($id) use ($rest){
+$rest->put('/customers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/customers.inc");
@@ -237,7 +237,7 @@ $rest->post('/suppliers/', function($id) use ($rest){
 	
 });
 // Edit Supplier
-$rest->post('/suppliers/:id', function($id) use ($rest){
+$rest->put('/suppliers/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/suppliers.inc");
@@ -349,7 +349,7 @@ $rest->get('/itemcosts/:id', function($id) use ($rest){
 	
 });
 // Update Item Cost
-$rest->post('/itemcosts/:id', function($id) use ($rest){
+$rest->put('/itemcosts/:id', function($id) use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/items.inc");
@@ -385,6 +385,26 @@ $rest->get('/assettypes/', function() use ($rest){
 	
 });
 // ------------------------------- Assets -------------------------------
+
+// ------------------------------- Sales Quotes -------------------------------
+// Sales Quotes
+// Get Sales Quote Header and Details
+$rest->get('/salesquotes/:id', function($id) use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/salesquotes.inc");
+	salesquotes_get($id);
+	
+});
+// Insert Sales Quote
+$rest->post('/salesquotes/', function() use ($rest){
+	
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/salesquotes.inc");
+	salesquotes_add();
+	
+});
+// ------------------------------- Sales Quotes -------------------------------
 
 // Init API
 $rest->run();
