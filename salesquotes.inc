@@ -71,6 +71,13 @@ function salesquotes_get($id){
 
 function salesquotes_add($id){
 	
+	/*
+		
+		Items[], reference, Comments, document_date, delivery_date, cust_ref, delivery_address, phone, ship_via, Location, freight_cost, email,
+		customer_id, Branch, sales_type, trans_type=QUOTE, dimension_id, dimension2_id, payment, payment_terms
+		
+	*/
+	
 	
 	
 }

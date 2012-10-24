@@ -373,7 +373,7 @@ $rest->post('/assets/', function() use ($rest){
 	
 	global $path_to_root;
 	include_once ($path_to_root . "/modules/api/assets.inc");
-	asset_add();
+	assets_add();
 	
 });
 // Get Asset Types

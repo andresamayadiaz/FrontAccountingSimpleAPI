@@ -18,7 +18,7 @@ function assets_get($id)
 
 }
 
-function asset_add()
+function assets_add()
 {
 
 	$app = \Slim\Slim::getInstance('SASYS');
