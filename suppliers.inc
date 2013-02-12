@@ -217,7 +217,7 @@ function supplier_delete($id){
 	$req = $app->request();
 	$info = $req->post();
 	
-	$sup = get_customer($id);
+	$sup = get_supplier($id);
 	if($sup == null){
 		api_error(400, 'Invalid Supplier ID');
 	}
@@ -225,7 +225,7 @@ function supplier_delete($id){
 	delete_supplier($id);
 	
 	$sup = null;
-	$sup = get_customer($id);
+	$sup = get_supplier($id);
 	
 	if($sup != null){
 		api_error(500, 'Could Not Delete from Database');
