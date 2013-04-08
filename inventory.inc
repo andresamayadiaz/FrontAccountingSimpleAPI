@@ -11,7 +11,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
 include_once($path_to_root . "/inventory/includes/db/movement_types_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
-include_once($path_to_root . "/gl/includes/dl_db.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 function inventory_all()
