@@ -3,6 +3,9 @@
 Author: Andres Amaya
 Name: SASYS REST API
 Free software under GNU GPL
+
+--> 14-June-2013:
+- Added POST /locations/ To Add A Location Thanks to Richard Vinke
 ***********************************************/
 
 global $security_areas, $security_groups, $security_headings, $path_to_root, $db, $db_connections;
@@ -93,6 +96,15 @@ $rest->get('/locations/', function() use ($rest){
 	include_once ($path_to_root . "/modules/api/inventory.inc");
 	inventory_locations_all();
 	
+});
+
+// Add Location, added by Richard Vinke
+$rest->post('/locations/', function() use ($rest){
+
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/inventory.inc");
+	inventory_location_add();
+
 });
 // ------------------------------- Inventory Locations -------------------------------
 
