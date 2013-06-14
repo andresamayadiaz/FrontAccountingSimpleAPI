@@ -1,3 +1,10 @@
+CHANGELOG:
+
+14-June-2013:
+- Added POST /locations/ To Add A Location Thanks to Richard Vinke
+
+README:
+
 # This is a very Simple Front Accounting API
 
 I needed some basic integration functions to another software and decided to create this REST API and contribute with Front Accounting team.
