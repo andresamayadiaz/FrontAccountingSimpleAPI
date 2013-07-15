@@ -4,6 +4,11 @@ Author: Andres Amaya
 Name: SASYS REST API
 Free software under GNU GPL
 
+--> 15-July-2013:
+- Added .htaccess
+- GET with pagination
+- Sales Methods
+
 --> 14-June-2013:
 - Added POST /locations/ To Add A Location Thanks to Richard Vinke
 ***********************************************/
@@ -33,15 +38,27 @@ $rest->setName('SASYS');
 // API Login Hook
 api_login();
 
+$req	= $rest->request();
+
+define("RESULTS_PER_PAGE", 2);
+
 // API Routes
 // ------------------------------- Items -------------------------------
 // Get Items
 $rest->get('/inventory/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/inventory.inc");
-	inventory_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		inventory_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		inventory_all($from);
+	}	
 });
 // Get Specific Item by Stock Id
 $rest->get('/inventory/:id', function($id) use ($rest) {
@@ -123,10 +140,18 @@ $rest->post('/stock/', function() use ($rest){
 // Get Items Categories
 $rest->get('/category/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/category.inc");
-	category_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		category_all(null);
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		category_all($from);
+	}
 });
 // Get Specific Item Category
 $rest->get('/category/:id', function($id) use ($rest) {
@@ -167,10 +192,18 @@ $rest->delete('/category/:id', function($id) use ($rest){
 // Get All Item Tax Types
 $rest->get('/taxtypes/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/taxtypes.inc");
-	taxtypes_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null){
+		taxtypes_all();
+	}	else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		taxtypes_all($from);
+	}
 });
 // ------------------------------- Tax Types -------------------------------
 
@@ -179,10 +212,18 @@ $rest->get('/taxtypes/', function() use ($rest){
 // Get All Tax Groups
 $rest->get('/taxgroups/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/taxgroups.inc");
-	taxgroups_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		taxgroups_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		taxgroups_all($from);
+	}	
 });
 // ------------------------------- Tax Groups -------------------------------
 
@@ -195,6 +236,22 @@ $rest->get('/customers/:id', function($id) use ($rest){
 	include_once ($path_to_root . "/modules/api/customers.inc");
 	customer_get($id);
 	
+});
+// All Customers
+$rest->get('/customers/', function() use ($rest){
+	
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/customers.inc");
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		customer_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		customer_all($from);
+	}	
 });
 // Add Customer
 $rest->post('/customers/', function($id) use ($rest){
@@ -279,10 +336,18 @@ $rest->get('/suppliers/:id/contacts/', function($id) use ($rest){
 // Get All Bank Accounts
 $rest->get('/bankaccounts/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/bankaccounts.inc");
-	bankaccounts_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		bankaccounts_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		bankaccounts_all($from);
+	}
 });
 // Get Specific Bank Account
 $rest->get('/bankaccounts/:id', function($id) use ($rest){
@@ -299,10 +364,18 @@ $rest->get('/bankaccounts/:id', function($id) use ($rest){
 // Get GL Accounts
 $rest->get('/glaccounts/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/glaccounts.inc");
-	glaccounts_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		glaccounts_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		glaccounts_all($from);
+	}	
 });
 // Get Specific GL Account
 $rest->get('/glaccounts/:id', function($id) use ($rest){
@@ -327,10 +400,18 @@ $rest->get('/glaccounttypes/', function() use ($rest){
 // Get All Currencies
 $rest->get('/currencies/', function() use ($rest){
 	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/currencies.inc");
-	currencies_all();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		currencies_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		currencies_all($from);
+	}
 });
 // Get Specific Currency
 $rest->get('/currencies/:id', function($id) use ($rest){
@@ -390,33 +471,59 @@ $rest->post('/assets/', function() use ($rest){
 });
 // Get Asset Types
 $rest->get('/assettypes/', function() use ($rest){
-	
-	global $path_to_root;
+	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/assets.inc");
-	assettypes_get();
-	
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		assettypes_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		assettypes_all($from);
+	}
 });
 // ------------------------------- Assets -------------------------------
 
-// ------------------------------- Sales Quotes -------------------------------
-// Sales Quotes
-// Get Sales Quote Header and Details
-$rest->get('/salesquotes/:id', function($id) use ($rest){
-	
+// ------------------------------- Sales Order Entry -------------------------------
+// Sales
+// Get Sales Header and Details
+$rest->get('/sales/:trans_no/:trans_type', function($trans_no, $trans_type) use ($rest){
 	global $path_to_root;
-	include_once ($path_to_root . "/modules/api/salesquotes.inc");
-	salesquotes_get($id);
+	include_once ($path_to_root . "/modules/api/sales.inc");
+	sales_get($trans_no, $trans_type);
+});
+// Insert Sales
+$rest->post('/sales/', function() use ($rest){
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/sales.inc");
+	sales_add();
 	
 });
-// Insert Sales Quote
-$rest->post('/salesquotes/', function() use ($rest){
-	
+// Edit Sales
+$rest->put('/sales/:trans_no/:trans_type', function($trans_no, $trans_type) use ($rest){
 	global $path_to_root;
-	include_once ($path_to_root . "/modules/api/salesquotes.inc");
-	salesquotes_add();
+	include_once ($path_to_root . "/modules/api/sales.inc");
+	sales_edit($trans_no, $trans_type);
 	
 });
-// ------------------------------- Sales Quotes -------------------------------
+// All Sales
+$rest->get('/sales/:trans_type/', function($trans_type) use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/sales.inc");
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		sales_all($trans_type);
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		sales_all($trans_type, $from);
+	}
+});
+// ------------------------------- Sales Order Entry -------------------------------
 
 // Init API
 $rest->run();
