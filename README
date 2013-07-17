@@ -1,7 +1,7 @@
 CHANGELOG:
 
 14-July-2013:
-- Added .htaccess so you can no use API URL's without index.php, examples: (Thanks to Christian Estrella)
+- Added .htaccess so you can now use API URL's without index.php, examples: (Thanks to Christian Estrella)
 	OLD: GET http://mysystem.com/api/index.php/locations/
 	NEW: GET http://mysystem.com/api/locations/
 
