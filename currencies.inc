@@ -11,24 +11,20 @@ include_once($path_to_root . "/gl/includes/db/gl_db_currencies.inc");
 //include_once($path_to_root . "/gl/includes/db/gl_db_rates.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
-function currencies_all()
-{
+function currencies_all($from = null) {
+	if ($from == null) $from = 0;
+	
+	$sql = "SELECT * FROM ".TB_PREF."currencies WHERE !inactive LIMIT ".$from.", ".RESULTS_PER_PAGE;
 
-	$currencies = get_currencies(false);
-	$ret = array();
-	while($curr = db_fetch($currencies)){
-		
-		$ret[] = array(
-			'curr_abrev' => $curr['curr_abrev'],
-			'currency' => $curr['currency'],
-			'curr_symbol' => $curr['curr_symbol'],
-			'country' => $curr['country'],
-			'hundreds_name' => $curr['hundreds_name']
-		);
-		
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch($query, "error")) {
+		$info[] = array('curr_abrev' => $data['curr_abrev'], 'currency' => $data['currency'], 'curr_symbol' => $data['curr_symbol'], 'country' => $data['country'], 'hundreds_name' => $data['hundreds_name']);
 	}
-	api_success_response(json_encode($ret));
 
+	api_success_response(json_encode($info));
 }
 
 function currencies_get($id){

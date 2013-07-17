@@ -9,6 +9,22 @@ $path_to_root = "../..";
 
 include_once($path_to_root . "/sales/includes/db/customers_db.inc");
 
+function customer_all($from = null) {
+	if ($from == null) $from = 0;
+	
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE !inactive LIMIT ".$from.", ".RESULTS_PER_PAGE;
+
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch($query, "error")) {
+		$info[] = array("debtor_no" => $data["debtor_no"], "name" => $data["name"], "debtor_ref" => $data["debtor_ref"], "address" => $data["address"], "tax_id" => $data["tax_id"], "curr_code" => $data["curr_code"], "sales_type" => $data["sales_type"], "dimension_id" => $data["dimension_id"], "dimension2_id" => $data["dimension2_id"], "credit_status" => $data["credit_status"], "payment_terms" => $data["payment_terms"], "discount" => $data["discount"], "pymt_discount" => $data["pymt_discount"], "credit_limit" => $data["credit_limit"], "notes" => $data["notes"], "cfd22_street" => $data["cfd22_street"], "cfd22_street_number" => $data["cfd22_street_number"], "cfd22_suite_number" => $data["cfd22_suite_number"], "cfd22_district" => $data["cfd22_district"], "cfd22_postal_code" => $data["cfd22_postal_code"], "cfd22_city" => $data["cfd22_city"], "cfd22_state" => $data["cfd22_state"], "cfd22_country_id" => $data["cfd22_country_id"]);
+	}
+
+	api_success_response(json_encode($info));
+}
+
 function customer_get($id)
 {
 	

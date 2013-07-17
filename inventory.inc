@@ -14,37 +14,20 @@ include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
-function inventory_all()
-{
+function inventory_all($from = null) {
+	if ($from == null) $from = 0;
+	
+	$sql = "SELECT * FROM ".TB_PREF."stock_master LIMIT ".$from.", ".RESULTS_PER_PAGE;
 
-	$items = get_items();
-	$ret = array();
-	while($itm = db_fetch($items)){
-		
-		$ret[] = array(
-			'stock_id' => $itm['stock_id'],
-			'category_id' => $itm['category_id'],
-			'tax_type_id' => $itm['tax_type_id'],
-			'description' => $itm['description'],
-			'long_description' => $itm['long_description'],
-			'units' => $itm['units'],
-			'mb_flag' => $itm['mb_flag'],
-			'sales_account' => $itm['sales_account'],
-			'cogs_account' => $itm['cogs_account'],
-			'inventory_account' => $itm['inventory_account'],
-			'sales_account' => $itm['sales_account'],
-			'adjustment_account' => $itm['adjustment_account'],
-			'actual_cost' => $itm['actual_cost'],
-			'material_cost' => $itm['material_cost'],
-			'labour_cost' => $itm['labour_cost'],
-			'overhead_cost' => $itm['overhead_cost'],
-			'inactive' => $itm['inactive'],
-			'no_sale' => $itm['no_sale']
-		);
-		
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch($query, "error")) {
+		$info[] = array('stock_id' => $data['stock_id'], 'category_id' => $data['category_id'], 'tax_type_id' => $data['tax_type_id'], 'description' => $data['description'], 'long_description' => $data['long_description'], 'units' => $data['units'], 'mb_flag' => $data['mb_flag'], 'sales_account' => $data['sales_account'], 'cogs_account' => $data['cogs_account'], 'inventory_account' => $data['inventory_account'], 'sales_account' => $data['sales_account'], 'adjustment_account' => $data['adjustment_account'], 'actual_cost' => $data['actual_cost'], 'material_cost' => $data['material_cost'], 'labour_cost' => $data['labour_cost'], 'overhead_cost' => $data['overhead_cost'], 'inactive' => $data['inactive'],'no_sale' => $data['no_sale']);
 	}
-	api_success_response(json_encode($ret));
 
+	api_success_response(json_encode($info));
 }
 
 function inventory_get($id)

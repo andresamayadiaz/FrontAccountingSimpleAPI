@@ -9,29 +9,20 @@ $path_to_root = "../..";
 
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
-function category_all(){
+function category_all($from = null) {
+	if ($from == null) $from = 0;
 
-	$categos = get_item_categories(false);
-	$ret = array();
-	while($cat = db_fetch($categos)){
-		
-		$ret[] = array(
-			'category_id' => $cat['category_id'],
-			'description' => $cat['description'],
-			'dflt_tax_type' => $cat['dflt_tax_type'],
-			'dflt_units' => $cat['dflt_units'],
-			'dflt_mb_flag' => $cat['dflt_mb_flag'],
-			'dflt_sales_act' => $cat['dflt_sales_act'],
-			'dflt_cogs_act' => $cat['dflt_cogs_act'],
-			'dflt_inventory_act' => $cat['dflt_inventory_act'],
-			'dflt_adjustment_act' => $cat['dflt_adjustment_act'],
-			'dflt_assembly_act' => $cat['dflt_assembly_act'],
-			'dflt_no_sale' => $cat['dflt_no_sale']
-		);
-		
-	}
-	api_success_response(json_encode($ret));
+	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, ".TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id LIMIT ".$from.", ".RESULTS_PER_PAGE;
 	
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch($query, "error")) {
+		$info[] = array('category_id' => $data['category_id'], 'description' => $data['description'], 'dflt_tax_type' => $data['dflt_tax_type'], 'dflt_units' => $data['dflt_units'], 'dflt_mb_flag' => $data['dflt_mb_flag'], 'dflt_sales_act' => $data['dflt_sales_act'], 'dflt_cogs_act' => $data['dflt_cogs_act'], 'dflt_inventory_act' => $data['dflt_inventory_act'], 'dflt_adjustment_act' => $data['dflt_adjustment_act'], 'dflt_assembly_act' => $data['dflt_assembly_act'], 'dflt_no_sale' => $data['dflt_no_sale']);
+	}
+
+	api_success_response(json_encode($info));
 }
 
 function category_get($id)

@@ -10,6 +10,20 @@ $path_to_root = "../..";
 include_once($path_to_root . "/modules/asset_register/includes/db/assets_db.inc");
 include_once($path_to_root . "/modules/asset_register/includes/db/asset_types_db.inc");
 
+function assettypes_all($from = null) {
+	if ($from == null) $from = 0;
+	$sql = "SELECT * FROM ".TB_PREF."asset_types LIMIT ".$from.", ".RESULTS_PER_PAGE;
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch($query, "error")) {
+		$info[] = array("asset_type_id" => $data["asset_type_id"], "asset_type_name" => $data["asset_type_name"], "depreciation_rate" => $data["depreciation_rate"], "accumulated_account" => $data["accumulated_account"], "valuation_account" => $data["valuation_account"], "disposal_account" => $data["disposal_account"], "asset_account" => $data["asset_account"]);
+	}
+
+	api_success_response(json_encode($info));
+}
+
 function assets_get($id)
 {
 
