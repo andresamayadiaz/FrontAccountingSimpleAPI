@@ -16,7 +16,7 @@ function api_login(){
 		// TESTING
 		$company = 0;
 		$user = 'admin';
-		$password = '12345';
+		$password = '123';
 	 	
 		$succeed = $_SESSION["wa_current_user"]->login($company,
 					$user, $password);

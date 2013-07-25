@@ -11,8 +11,14 @@ include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
+include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
+include_once($path_to_root . "/admin/db/attachments_db.inc");
+include_once($path_to_root . "/modules/timbrado/includes/db/comprobantes_db.php.inc");
+include_once($path_to_root . "/modules/timbrado/includes/db/llavero_db.php.inc");
+include_once($path_to_root . "/modules/timbrado/includes/generate/AutoFacturaCore.php.inc");
+include_once($path_to_root . "/modules/timbrado/includes/db/configuraciones_db.php.inc");
 
 /*function salesquote_get($id){
 	
@@ -73,61 +79,117 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 
 function sales_all($trans_type, $from = null) {
 	if ($from == null) $from = 0;
-	$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders WHERE trans_type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
-	$query = db_query($sql, "error");
 
 	$info = array();
 	$sale_index = 0;
 
-	while($sale = db_fetch($query, "error")) {
-		try {
-			$cart																		= null;
-			$cart																		= new Cart($sale['trans_type'], $sale['order_no']);
-			$info[$sale_index]['ref']								= $cart->reference;
-			$info[$sale_index]['comments']					= $cart->Comments;
-			$info[$sale_index]['order_date']				= $cart->document_date;
-			$info[$sale_index]['payment']						= $cart->payment;
-			$info[$sale_index]['payment_terms']			= $cart->payment_terms;
-			$info[$sale_index]['due_date']					= $cart->due_date;
-			$info[$sale_index]['phone']							= $cart->phone;
-			$info[$sale_index]['cust_ref']					= $cart->cust_ref;
-			$info[$sale_index]['delivery_address']	= $cart->delivery_address;
-			$info[$sale_index]['ship_via']					= $cart->ship_via;
-			$info[$sale_index]['deliver_to']				= $cart->deliver_to;
-			$info[$sale_index]['delivery_date']			= $cart->due_date;
-			$info[$sale_index]['location']					= $cart->Location;
-			$info[$sale_index]['freight_cost']			= $cart->freight_cost;
-			$info[$sale_index]['email']							= $cart->email;
-			$info[$sale_index]['customer_id']				= $cart->customer_id;
-			$info[$sale_index]['branch_id']					= $cart->Branch;
-			$info[$sale_index]['sales_type']				= $cart->sales_type;
-			$info[$sale_index]['dimension_id']			= $cart->dimension_id;
-			$info[$sale_index]['dimension2_id']			= $cart->dimension2_id;
+	if ($trans_type == 10 || $trans_type == 13) {
+		$sql = "SELECT trans_no, type FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
+		$query = db_query($sql, "error");
 
-		 	$item_index = 0;
+		while($sale = db_fetch($query, "error")) {
+			try {
+				$trans					= get_customer_trans($sale['trans_no'], $sale['type']);
+				$trans_details	= get_customer_trans_details($sale['type'], $trans['trans_no']);
 
-			foreach($cart->line_items as $item) {
-				$info[$sale_index]['line_items'][$item_index]['id']						= $item->id;
-				$info[$sale_index]['line_items'][$item_index]['stock_id']			= $item->stock_id;
-				$info[$sale_index]['line_items'][$item_index]['qty']					= $item->quantity;
-				$info[$sale_index]['line_items'][$item_index]['units']				= $item->units;
-				$info[$sale_index]['line_items'][$item_index]['price']				= $item->price;
-				$info[$sale_index]['line_items'][$item_index]['discount']			= $item->discount_percent;
-				$info[$sale_index]['line_items'][$item_index]['description']	= $item->item_description;
-		 		$item_index++;
+				$info[$sale_index]['trans_no']				= $trans['trans_no'];
+				$info[$sale_index]['type']						= $trans['type'];
+				$info[$sale_index]['version']					= $trans['version'];
+				$info[$sale_index]['debtor_no']				= $trans['debtor_no'];
+				$info[$sale_index]['branch_code']			= $trans['branch_code'];
+				$info[$sale_index]['tran_date']				= $trans['tran_date'];
+				$info[$sale_index]['due_date']				= $trans['due_date'];
+				$info[$sale_index]['reference']				= $trans['reference'];
+				$info[$sale_index]['tpe']							= $trans['tpe'];
+				$info[$sale_index]['order_']					= $trans['order_'];
+				$info[$sale_index]['ov_amount']				= $trans['ov_amount'];
+				$info[$sale_index]['ov_gst']					= $trans['ov_gst'];
+				$info[$sale_index]['ov_freight']			= $trans['ov_freight'];
+				$info[$sale_index]['ov_freight_tax']	= $trans['ov_freight_tax'];
+				$info[$sale_index]['ov_discount']			= $trans['ov_discount'];
+				$info[$sale_index]['ov_discount']			= $trans['Total'];
+				$info[$sale_index]['alloc']						= $trans['alloc'];
+				$info[$sale_index]['rate']						= $trans['rate'];
+				$info[$sale_index]['ship_via']				= $trans['ship_via'];
+				$info[$sale_index]['dimension_id']		= $trans['dimension_id'];
+				$info[$sale_index]['dimension2_id']		= $trans['dimension2_id'];
+				$info[$sale_index]['payment_terms']		= $trans['payment_terms'];
+				$info[$sale_index]['digital']					= $trans['digital'];
+
+			 	$item_index = 0;
+
+			 	if (db_num_rows($trans_details) > 0) {
+					while ($trans_item = db_fetch($trans_details)) {
+						$info[$sale_index]['line_items'][$item_index]['id']						= $trans_item['id'];
+						$info[$sale_index]['line_items'][$item_index]['stock_id']			= $trans_item['stock_id'];
+						$info[$sale_index]['line_items'][$item_index]['qty']					= $trans_item['quantity'];
+						$info[$sale_index]['line_items'][$item_index]['units']				= $trans_item['units'];
+						$info[$sale_index]['line_items'][$item_index]['price']				= $trans_item['unit_price'];
+						$info[$sale_index]['line_items'][$item_index]['discount']			= $trans_item['discount_percent'];
+						$info[$sale_index]['line_items'][$item_index]['description']	= $trans_item['StockDescription'];
+				 		$item_index++;
+					}
+				}
+			} catch (Exception $e) {
+				//api_error(404, $e->getMessage());
 			}
 
-			$sub_total					= $cart->get_items_total() + $cart->freight_cost;
-			$display_sub_total	= price_format($sub_total);
-			$display_total			= $cart->get_trans_total();
-
-			$info[$sale_index]['sub_total']			= $sub_total;
-			$info[$sale_index]['display_total']	= $display_total;
-		} catch (Exception $e) {
-			//api_error(404, $e->getMessage());
+			$sale_index++;
 		}
+	}	else if ($trans_type == 32 || $trans_type == 30) {
+		$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders WHERE trans_type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
+		$query = db_query($sql, "error");
 
-		$sale_index++;
+		while($sale = db_fetch($query, "error")) {
+			try {
+				$cart																		= null;
+				$cart																		= new Cart($sale['trans_type'], $sale['order_no']);
+				$info[$sale_index]['ref']								= $cart->reference;
+				$info[$sale_index]['comments']					= $cart->Comments;
+				$info[$sale_index]['order_date']				= $cart->document_date;
+				$info[$sale_index]['payment']						= $cart->payment;
+				$info[$sale_index]['payment_terms']			= $cart->payment_terms;
+				$info[$sale_index]['due_date']					= $cart->due_date;
+				$info[$sale_index]['phone']							= $cart->phone;
+				$info[$sale_index]['cust_ref']					= $cart->cust_ref;
+				$info[$sale_index]['delivery_address']	= $cart->delivery_address;
+				$info[$sale_index]['ship_via']					= $cart->ship_via;
+				$info[$sale_index]['deliver_to']				= $cart->deliver_to;
+				$info[$sale_index]['delivery_date']			= $cart->due_date;
+				$info[$sale_index]['location']					= $cart->Location;
+				$info[$sale_index]['freight_cost']			= $cart->freight_cost;
+				$info[$sale_index]['email']							= $cart->email;
+				$info[$sale_index]['customer_id']				= $cart->customer_id;
+				$info[$sale_index]['branch_id']					= $cart->Branch;
+				$info[$sale_index]['sales_type']				= $cart->sales_type;
+				$info[$sale_index]['dimension_id']			= $cart->dimension_id;
+				$info[$sale_index]['dimension2_id']			= $cart->dimension2_id;
+
+			 	$item_index = 0;
+
+				foreach($cart->line_items as $item) {
+					$info[$sale_index]['line_items'][$item_index]['id']						= $item->id;
+					$info[$sale_index]['line_items'][$item_index]['stock_id']			= $item->stock_id;
+					$info[$sale_index]['line_items'][$item_index]['qty']					= $item->quantity;
+					$info[$sale_index]['line_items'][$item_index]['units']				= $item->units;
+					$info[$sale_index]['line_items'][$item_index]['price']				= $item->price;
+					$info[$sale_index]['line_items'][$item_index]['discount']			= $item->discount_percent;
+					$info[$sale_index]['line_items'][$item_index]['description']	= $item->item_description;
+			 		$item_index++;
+				}
+
+				$sub_total					= $cart->get_items_total() + $cart->freight_cost;
+				$display_sub_total	= price_format($sub_total);
+				$display_total			= $cart->get_trans_total();
+
+				$info[$sale_index]['sub_total']			= $sub_total;
+				$info[$sale_index]['display_total']	= $display_total;
+			} catch (Exception $e) {
+				//api_error(404, $e->getMessage());
+			}
+
+			$sale_index++;
+		}
 	}
 
 	api_success_response(json_encode($info));
@@ -251,21 +313,111 @@ function sales_add() {
     api_error(500, 'Could Not Save to Database');
   }
 
+  if ($cart->trans_type == ST_SALESINVOICE) {
+  	error_log("\r\nCFDi 1", 3, "/var/tmp/sasys.log");
+  	$cfdi_response = "";
+
+	  try {
+	  	error_log("\r\nCFDi 2", 3, "/var/tmp/sasys.log");
+			error_log("\r\nCFDi 3", 3, "/var/tmp/sasys.log");
+
+	  	// branch_cfdi_id
+	  	// serie_cfdi_id
+	  	// form_payment_cfdi
+	  	// payment_method_cfdi
+	  	// account_number_cfi
+	  	$data = array(
+					'serie'							=> $info['cfdi_serie_id'],
+					'formaDePago'				=> $info['cfdi_form_payment'],
+					'metodoDePago'			=> $info['cfdi_method_payment'],
+					'numerocta'					=> $info['cfdi_account_number'],
+					'sucursal'					=> $info['cfdi_branch_id'],
+					'transid'						=> key($cart->trans_no),
+					// NULL
+					'condicionesDePago'	=> null,
+					'tipoCambio'				=> null,
+					'moneda'						=> null,
+					'tipocomprobante'		=> null,
+			);
+
+			error_log("\r\nCFDi 4 => ".json_encode($data), 3, "/var/tmp/sasys.log");
+
+			$bill = emitir($data);
+
+			error_log("\r\nCFDi 5 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
+
+			if (isset($bill['error'])) {
+				error_log("\r\nCFDi 5.1 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
+				$cfdi_response = $bill['error'];
+			} else if (is_null($bill)) {
+				error_log("\r\nCFDi 5.2 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
+				$cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually.');
+			} else {
+					error_log("\r\nCFDi 6 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
+					$AutoFactura					= new AutoFacturaCore();
+					$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
+					$AutoFactura->suckey	= $info['cfdi_branch_id'];
+					$AutoFactura->url			= get_cofig("Servidor", "");
+
+					error_log("\r\nCFDi 7 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
+					
+					$response = $AutoFactura->emitir($bill);
+
+					error_log("\r\nCFDi 8 => ".json_encode($response), 3, "/var/tmp/sasys.log");
+
+					if($response['exito'] == 1){
+						set_sql_digital(key($cart->trans_no), $info['cfdi_branch_id'], $response);
+					}
+
+					// XML
+					$response_xml = get_xml_digital(key($cart->trans_no));
+					$xml_unique_name = uniqid('');
+					$xml_file = company_path()."/attachments/".$xml_unique_name;
+					$xml_url = str_replace("@llaveusuario@", get_cofig("Llave de Usuario", ""), $response_xml['xml_url']);
+					copy($AutoFactura->url.$xml_url, $xml_file);
+					add_attachment(ST_SALESINVOICE, key($cart->trans_no), "XML", $xml_unique_name, $xml_file, filesize($xml_file), mime_content_type($xml_file));
+
+					// PDF
+					$response_pdf = get_pdf_digital(key($cart->trans_no));
+					$pdf_unique_name = uniqid('');
+					$pdf_file = company_path()."/attachments/".$pdf_unique_name;
+					copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
+					add_attachment(ST_SALESINVOICE, key($cart->trans_no), "PDF", $pdf_unique_name, $pdf_file, filesize($pdf_file), mime_content_type($pdf_file));
+			}
+	  } catch (Exception $e) {
+	  	$cfdi_response = $e->getMessage();
+	  	error_log("\r\nCFDi 5.3 => ".$e->getMessage(), 3, "/var/tmp/sasys.log");
+	  }
+	}
+
+	try {
+
+	} catch (Exception $e) {
+  	$cfdi_response = $e->getMessage();
+  	error_log("\r\nCFDi 5.3 => ".$e->getMessage(), 3, "/var/tmp/sasys.log");
+  }
+
   switch($cart->trans_type) {
   	case ST_SALESQUOTE:
-  		api_success_response(sprintf(_("Quotation # %d has been entered."), $cart->trans_no));
+  		api_success_response(sprintf(_("Quotation # %d has been entered."), key($cart->trans_no)));
   		return;
   		break;
   	case ST_SALESORDER:
-  		api_success_response(sprintf(_("Order # %d has been entered."), $cart->trans_no));
+  		api_success_response(sprintf(_("Order # %d has been entered."), key($cart->trans_no)));
   		return;
   		break;
   	case ST_SALESINVOICE:
-  		api_success_response(sprintf(_("Invoice # %d has been entered."), $cart->trans_no));
+  		$feeback_response = sprintf(_("Invoice # %d has been entered."), key($cart->trans_no));
+  		
+  		if ($cfdi_response != "") {
+  			$feeback_response .= "\r\n".$cfdi_response;
+  		}
+
+  		api_success_response($feeback_response);
   		return;
   		break;
   	case ST_CUSTDELIVERY:
-  		api_success_response(sprintf(_("Delivery # %d has been entered."), $cart->trans_no));
+  		api_success_response(sprintf(_("Delivery # %d has been entered."), key($cart->trans_no)));
   		return;
   		break;
   }
