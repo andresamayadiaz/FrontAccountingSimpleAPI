@@ -28,6 +28,12 @@ include_once ($path_to_root . "/modules/api/util.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
+echo "sales quote => ".ST_SALESQUOTE;
+echo "sales order => ".ST_SALESORDER;
+echo "sales invoice => ".ST_SALESINVOICE;
+echo "cust delivery => ".ST_CUSTDELIVERY;
+echo "cust credit => ".ST_CUSTCREDIT;
+
 $rest = new \Slim\Slim(array(
 		'log.enabled' => true,
     	'mode' => 'debug',
@@ -507,6 +513,12 @@ $rest->put('/sales/:trans_no/:trans_type', function($trans_no, $trans_type) use 
 	include_once ($path_to_root . "/modules/api/sales.inc");
 	sales_edit($trans_no, $trans_type);
 	
+});
+// Cancel Sales
+$rest->delete('/sales/:branch_id/:uuid', function($branch_id, $uuid) use ($rest) {
+	global $path_to_root;
+	include_once($path_to_root . "/modules/api/sales.inc");
+	sales_cancel($branch_id, $uuid);
 });
 // All Sales
 $rest->get('/sales/:trans_type/', function($trans_type) use ($rest){

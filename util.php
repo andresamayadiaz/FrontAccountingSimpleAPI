@@ -8,15 +8,15 @@ Free software under GNU GPL
 function api_login(){
 	$app = \Slim\Slim::getInstance('SASYS');
 	$app->hook('slim.before', function () use ($app) {
-	    $req = $app->request();
-	    $company = $req->headers('X_company');
+		$req = $app->request();
+	  $company = $req->headers('X_company');
 		$user = $req->headers('X_user');
 		$password = $req->headers('X_password');
 		
 		// TESTING
-		$company = 0;
+		/*$company = 0;
 		$user = 'admin';
-		$password = '123';
+		$password = '123';*/
 	 	
 		$succeed = $_SESSION["wa_current_user"]->login($company,
 					$user, $password);

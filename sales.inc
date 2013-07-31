@@ -83,7 +83,7 @@ function sales_all($trans_type, $from = null) {
 	$info = array();
 	$sale_index = 0;
 
-	if ($trans_type == 10 || $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT) {
 		$sql = "SELECT trans_no, type FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
 		$query = db_query($sql, "error");
 
@@ -136,7 +136,7 @@ function sales_all($trans_type, $from = null) {
 
 			$sale_index++;
 		}
-	}	else if ($trans_type == 32 || $trans_type == 30) {
+	}	else if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE || $trans_type == ST_CUSTDELIVERY) {
 		$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders WHERE trans_type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
 		$query = db_query($sql, "error");
 
@@ -313,14 +313,10 @@ function sales_add() {
     api_error(500, 'Could Not Save to Database');
   }
 
-  if ($cart->trans_type == ST_SALESINVOICE) {
-  	error_log("\r\nCFDi 1", 3, "/var/tmp/sasys.log");
+  if ($cart->trans_type == ST_SALESINVOICE || $cart->trans_type == ST_CUSTCREDIT) {
   	$cfdi_response = "";
 
 	  try {
-	  	error_log("\r\nCFDi 2", 3, "/var/tmp/sasys.log");
-			error_log("\r\nCFDi 3", 3, "/var/tmp/sasys.log");
-
 	  	// branch_cfdi_id
 	  	// serie_cfdi_id
 	  	// form_payment_cfdi
@@ -340,30 +336,19 @@ function sales_add() {
 					'tipocomprobante'		=> null,
 			);
 
-			error_log("\r\nCFDi 4 => ".json_encode($data), 3, "/var/tmp/sasys.log");
-
 			$bill = emitir($data);
 
-			error_log("\r\nCFDi 5 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
-
 			if (isset($bill['error'])) {
-				error_log("\r\nCFDi 5.1 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
 				$cfdi_response = $bill['error'];
 			} else if (is_null($bill)) {
-				error_log("\r\nCFDi 5.2 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
 				$cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually.');
 			} else {
-					error_log("\r\nCFDi 6 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
 					$AutoFactura					= new AutoFacturaCore();
 					$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
 					$AutoFactura->suckey	= $info['cfdi_branch_id'];
 					$AutoFactura->url			= get_cofig("Servidor", "");
-
-					error_log("\r\nCFDi 7 => ".json_encode($bill), 3, "/var/tmp/sasys.log");
 					
 					$response = $AutoFactura->emitir($bill);
-
-					error_log("\r\nCFDi 8 => ".json_encode($response), 3, "/var/tmp/sasys.log");
 
 					if($response['exito'] == 1){
 						set_sql_digital(key($cart->trans_no), $info['cfdi_branch_id'], $response);
@@ -375,27 +360,19 @@ function sales_add() {
 					$xml_file = company_path()."/attachments/".$xml_unique_name;
 					$xml_url = str_replace("@llaveusuario@", get_cofig("Llave de Usuario", ""), $response_xml['xml_url']);
 					copy($AutoFactura->url.$xml_url, $xml_file);
-					add_attachment(ST_SALESINVOICE, key($cart->trans_no), "XML", $xml_unique_name, $xml_file, filesize($xml_file), mime_content_type($xml_file));
+					add_attachment($cart->trans_type, key($cart->trans_no), "XML", $xml_unique_name, $xml_file, filesize($xml_file), mime_content_type($xml_file));
 
 					// PDF
 					$response_pdf = get_pdf_digital(key($cart->trans_no));
 					$pdf_unique_name = uniqid('');
 					$pdf_file = company_path()."/attachments/".$pdf_unique_name;
 					copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
-					add_attachment(ST_SALESINVOICE, key($cart->trans_no), "PDF", $pdf_unique_name, $pdf_file, filesize($pdf_file), mime_content_type($pdf_file));
+					add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_unique_name, $pdf_file, filesize($pdf_file), mime_content_type($pdf_file));
 			}
 	  } catch (Exception $e) {
 	  	$cfdi_response = $e->getMessage();
-	  	error_log("\r\nCFDi 5.3 => ".$e->getMessage(), 3, "/var/tmp/sasys.log");
 	  }
 	}
-
-	try {
-
-	} catch (Exception $e) {
-  	$cfdi_response = $e->getMessage();
-  	error_log("\r\nCFDi 5.3 => ".$e->getMessage(), 3, "/var/tmp/sasys.log");
-  }
 
   switch($cart->trans_type) {
   	case ST_SALESQUOTE:
@@ -408,6 +385,16 @@ function sales_add() {
   		break;
   	case ST_SALESINVOICE:
   		$feeback_response = sprintf(_("Invoice # %d has been entered."), key($cart->trans_no));
+  		
+  		if ($cfdi_response != "") {
+  			$feeback_response .= "\r\n".$cfdi_response;
+  		}
+
+  		api_success_response($feeback_response);
+  		return;
+  		break;
+  	case ST_CUSTCREDIT:
+  		$feeback_response = sprintf(_("Credit Note # %d has been processed."), key($cart->trans_no));
   		
   		if ($cfdi_response != "") {
   			$feeback_response .= "\r\n".$cfdi_response;
@@ -526,6 +513,10 @@ function sales_edit($trans_no, $trans_type) {
   		api_success_response(sprintf(_("Invoice # %d has been updated."), $cart->trans_no));
   		return;
   		break;
+  	case ST_CUSTCREDIT:
+  		api_success_response(sprintf(_("Credit # %d has been updated."), $cart->trans_no));
+  		return;
+  		break;
   	case ST_CUSTDELIVERY:
   		api_success_response(sprintf(_("Delivery # %d has been updated."), $cart->trans_no));
   		return;
@@ -533,6 +524,35 @@ function sales_edit($trans_no, $trans_type) {
   }
 
   api_success_response(_("Ok"));
+}
+
+function sales_cancel($branch_id, $uuid) {
+	error_log("\r\n1", 3, "/var/tmp/sasys.log");
+	$AutoFactura					= new AutoFacturaCore();
+	$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
+	$AutoFactura->suckey	= $branch_id;
+	$AutoFactura->url			= get_cofig("Servidor", "");
+	$datos								= array('autofactura_id' => $uuid);
+	$response							= $AutoFactura->cancelar($datos);
+	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/sasys.log");
+	
+	try {
+		if($response['exito'] == 1){
+			error_log("\r\n3", 3, "/var/tmp/sasys.log");
+			set_sql_cancelar_digital($uuid, $response['url']);
+			api_success_response(_("The invoice was cancelled."));
+			return;
+			error_log("\r\n4", 3, "/var/tmp/sasys.log");
+		} else {
+			error_log("\r\n5", 3, "/var/tmp/sasys.log");
+			api_error(500, _('Could not cancel invoice.'));
+			return;
+		}
+	} catch (Exception $e) {
+		error_log("\r\n6", 3, "/var/tmp/sasys.log");
+		api_error(500, _('Could not cancel invoice. ').$e->getMessage());	
+		return;
+	}
 }
 
 function can_process($info, $cart) {
