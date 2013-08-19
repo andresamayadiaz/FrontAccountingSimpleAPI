@@ -28,12 +28,6 @@ include_once ($path_to_root . "/modules/api/util.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-echo "sales quote => ".ST_SALESQUOTE;
-echo "sales order => ".ST_SALESORDER;
-echo "sales invoice => ".ST_SALESINVOICE;
-echo "cust delivery => ".ST_CUSTDELIVERY;
-echo "cust credit => ".ST_CUSTCREDIT;
-
 $rest = new \Slim\Slim(array(
 		'log.enabled' => true,
     	'mode' => 'debug',
@@ -211,6 +205,14 @@ $rest->get('/taxtypes/', function() use ($rest){
 		taxtypes_all($from);
 	}
 });
+$rest->get('/taxtypes/find_by_taxtype', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/taxtypes.inc");
+
+	$tax_types = $req->get("tax_types");
+
+	taxtypes_get($tax_types);
+});
 // ------------------------------- Tax Types -------------------------------
 
 // ------------------------------- Tax Groups -------------------------------
@@ -230,6 +232,15 @@ $rest->get('/taxgroups/', function() use ($rest){
 		$from = --$page * RESULTS_PER_PAGE;
 		taxgroups_all($from);
 	}	
+});
+// Get Tax
+$rest->get('/taxgroups/find_by_taxtype', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/taxgroups.inc");
+
+	$tax_types = $req->get("tax_types");
+
+	taxgroups_get($tax_types);
 });
 // ------------------------------- Tax Groups -------------------------------
 
@@ -536,6 +547,42 @@ $rest->get('/sales/:trans_type/', function($trans_type) use ($rest){
 	}
 });
 // ------------------------------- Sales Order Entry -------------------------------
+
+// ------------------------------- CFDI -------------------------------
+// Get branches
+$rest->get('/cfdi/branches/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+
+	$page	= $req->get("page");
+
+	if ($page == null) {
+		cfdi_branches_all();
+	} else {
+		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+		$from = --$page * RESULTS_PER_PAGE;
+		cfdi_branches_all($from);
+	}
+});
+// Get series
+$rest->get('/cfdi/series/:branch_key', function($branch_key) use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_series_all($branch_key);
+});
+// Insert Sales
+$rest->post('/cfdi/sales/', function() use ($rest){
+	global $path_to_root;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_sales_add();
+});
+// Cancel Sales
+$rest->delete('/cfdi/sales/:branch_key/:uuid', function($branch_key, $uuid) use ($rest) {
+	global $path_to_root;
+	include_once($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_sales_cancel($branch_key, $uuid);
+});
+// ------------------------------- CFDI -------------------------------
 
 // Init API
 $rest->run();

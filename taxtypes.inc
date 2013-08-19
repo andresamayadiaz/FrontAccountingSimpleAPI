@@ -25,4 +25,22 @@ function taxtypes_all($from = null){
 	api_success_response(json_encode($info));
 }
 
+function taxtypes_get($tax_types) {
+  $arr = split(',', $tax_types);
+  $join = join(',', $arr);
+
+  $sql = "select id from ".TB_PREF."item_tax_types as tb0, ".TB_PREF."item_tax_type_exemptions as tb1 where tb0.id = tb1.item_tax_type_id and tb1.tax_type_id not in (".$join.") group by tb0.id;";
+
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch_assoc($query)) {
+    $result = array("item_tax_type_id" => $item['id']);
+    break;
+  }
+
+  api_success_response(json_encode($result));
+}
+
 ?>

@@ -329,6 +329,7 @@ function sales_add() {
 					'numerocta'					=> $info['cfdi_account_number'],
 					'sucursal'					=> $info['cfdi_branch_id'],
 					'transid'						=> key($cart->trans_no),
+					'transtype'					=> $cart->trans_type,
 					// NULL
 					'condicionesDePago'	=> null,
 					'tipoCambio'				=> null,
@@ -352,22 +353,24 @@ function sales_add() {
 
 					if($response['exito'] == 1){
 						set_sql_digital(key($cart->trans_no), $info['cfdi_branch_id'], $response);
+
+						// XML
+						$response_xml = get_xml_digital(key($cart->trans_no));
+						$xml_unique_name = uniqid('');
+						$xml_file = company_path()."/attachments/".$xml_unique_name;
+						$xml_url = str_replace("@llaveusuario@", get_cofig("Llave de Usuario", ""), $response_xml['xml_url']);
+						copy($AutoFactura->url.$xml_url, $xml_file);
+						add_attachment($cart->trans_type, key($cart->trans_no), "XML", $xml_file, $xml_unique_name, filesize($xml_file), mime_content_type($xml_file));
+
+						// PDF
+						$response_pdf = get_pdf_digital(key($cart->trans_no));
+						$pdf_unique_name = uniqid('');
+						$pdf_file = company_path()."/attachments/".$pdf_unique_name;
+						copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
+						add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_file, $pdf_unique_name, filesize($pdf_file), mime_content_type($pdf_file));
+					} else {
+						$cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually. ').$response['mensaje'];
 					}
-
-					// XML
-					$response_xml = get_xml_digital(key($cart->trans_no));
-					$xml_unique_name = uniqid('');
-					$xml_file = company_path()."/attachments/".$xml_unique_name;
-					$xml_url = str_replace("@llaveusuario@", get_cofig("Llave de Usuario", ""), $response_xml['xml_url']);
-					copy($AutoFactura->url.$xml_url, $xml_file);
-					add_attachment($cart->trans_type, key($cart->trans_no), "XML", $xml_unique_name, $xml_file, filesize($xml_file), mime_content_type($xml_file));
-
-					// PDF
-					$response_pdf = get_pdf_digital(key($cart->trans_no));
-					$pdf_unique_name = uniqid('');
-					$pdf_file = company_path()."/attachments/".$pdf_unique_name;
-					copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
-					add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_unique_name, $pdf_file, filesize($pdf_file), mime_content_type($pdf_file));
 			}
 	  } catch (Exception $e) {
 	  	$cfdi_response = $e->getMessage();
@@ -526,30 +529,29 @@ function sales_edit($trans_no, $trans_type) {
   api_success_response(_("Ok"));
 }
 
-function sales_cancel($branch_id, $uuid) {
-	error_log("\r\n1", 3, "/var/tmp/sasys.log");
+function sales_cancel($uuid) {
+	$sql 	 = " select tb1.branch_code as branch_code from ".TB_PREF."timbrado_digital as tb0 inner join ".TB_PREF."debtor_trans as tb1 on tb1.trans_no = tb0.debtortrans_id where tb0.uuid_sat=".db_escape($uuid)." and tb1.digital = true limit 1";
+	$sql   = "select branch_code from ".TB_PREF."debtor_trans where uuid=".db_escape($uuid)."limit 1";
+	$query = db_query($sql, "error");
+	$fetch = db_fetch($query, "error");
+
 	$AutoFactura					= new AutoFacturaCore();
 	$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
-	$AutoFactura->suckey	= $branch_id;
+	$AutoFactura->suckey	= $fetch['branch_code'];
 	$AutoFactura->url			= get_cofig("Servidor", "");
 	$datos								= array('autofactura_id' => $uuid);
 	$response							= $AutoFactura->cancelar($datos);
-	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/sasys.log");
 	
 	try {
 		if($response['exito'] == 1){
-			error_log("\r\n3", 3, "/var/tmp/sasys.log");
 			set_sql_cancelar_digital($uuid, $response['url']);
 			api_success_response(_("The invoice was cancelled."));
 			return;
-			error_log("\r\n4", 3, "/var/tmp/sasys.log");
 		} else {
-			error_log("\r\n5", 3, "/var/tmp/sasys.log");
 			api_error(500, _('Could not cancel invoice.'));
 			return;
 		}
 	} catch (Exception $e) {
-		error_log("\r\n6", 3, "/var/tmp/sasys.log");
 		api_error(500, _('Could not cancel invoice. ').$e->getMessage());	
 		return;
 	}

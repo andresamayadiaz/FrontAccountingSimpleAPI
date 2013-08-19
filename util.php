@@ -14,9 +14,9 @@ function api_login(){
 		$password = $req->headers('X_password');
 		
 		// TESTING
-		/*$company = 0;
+		$company = 0;
 		$user = 'admin';
-		$password = '123';*/
+		$password = '123';
 	 	
 		$succeed = $_SESSION["wa_current_user"]->login($company,
 					$user, $password);
