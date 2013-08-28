@@ -352,7 +352,7 @@ function sales_add() {
 					$response = $AutoFactura->emitir($bill);
 
 					if($response['exito'] == 1){
-						set_sql_digital(key($cart->trans_no), $info['cfdi_branch_id'], $response);
+						set_sql_digital($cart->trans_type, key($cart->trans_no), $info['cfdi_branch_id'], $response);
 
 						// XML
 						$response_xml = get_xml_digital(key($cart->trans_no));

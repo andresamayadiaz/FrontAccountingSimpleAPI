@@ -19,7 +19,7 @@ function customer_all($from = null) {
 	$info = array();
 
 	while($data = db_fetch($query, "error")) {
-		$info[] = array("debtor_no" => $data["debtor_no"], "name" => $data["name"], "debtor_ref" => $data["debtor_ref"], "address" => $data["address"], "tax_id" => $data["tax_id"], "curr_code" => $data["curr_code"], "sales_type" => $data["sales_type"], "dimension_id" => $data["dimension_id"], "dimension2_id" => $data["dimension2_id"], "credit_status" => $data["credit_status"], "payment_terms" => $data["payment_terms"], "discount" => $data["discount"], "pymt_discount" => $data["pymt_discount"], "credit_limit" => $data["credit_limit"], "notes" => $data["notes"], "cfd22_street" => $data["cfd22_street"], "cfd22_street_number" => $data["cfd22_street_number"], "cfd22_suite_number" => $data["cfd22_suite_number"], "cfd22_district" => $data["cfd22_district"], "cfd22_postal_code" => $data["cfd22_postal_code"], "cfd22_city" => $data["cfd22_city"], "cfd22_state" => $data["cfd22_state"], "cfd22_country_id" => $data["cfd22_country_id"]);
+		$info[] = array("debtor_no" => $data["debtor_no"], "name" => $data["name"], "debtor_ref" => $data["debtor_ref"], "address" => $data["address"], "tax_id" => $data["tax_id"], "curr_code" => $data["curr_code"], "sales_type" => $data["sales_type"], "dimension_id" => $data["dimension_id"], "dimension2_id" => $data["dimension2_id"], "credit_status" => $data["credit_status"], "payment_terms" => $data["payment_terms"], "discount" => $data["discount"], "pymt_discount" => $data["pymt_discount"], "credit_limit" => $data["credit_limit"], "notes" => $data["notes"], "cfdi_street" => $data["cfdi_street"], "cfdi_street_number" => $data["cfdi_street_number"], "cfdi_suite_number" => $data["cfdi_suite_number"], "cfdi_district" => $data["cfdi_district"], "cfdi_postal_code" => $data["cfdi_postal_code"], "cfdi_city" => $data["cfdi_city"], "cfdi_state" => $data["cfdi_state"], "cfdi_country_id" => $data["cfdi_country_id"]);
 	}
 
 	api_success_response(json_encode($info));
@@ -88,7 +88,9 @@ function customer_add()
 	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
 	$credit_limit, $sales_type, $notes
 	*/
-	add_customer($info['custname'], $info['cust_ref'], 
+	add_customer(
+		$info['custname'],
+		$info['cust_ref'], 
 		$info['address'],
 		$info['tax_id'], 
 		$info['curr_code'],

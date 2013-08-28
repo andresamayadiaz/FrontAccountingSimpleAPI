@@ -205,6 +205,7 @@ $rest->get('/taxtypes/', function() use ($rest){
 		taxtypes_all($from);
 	}
 });
+// Get tax
 $rest->get('/taxtypes/find_by_taxtype', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/taxtypes.inc");
@@ -549,7 +550,31 @@ $rest->get('/sales/:trans_type/', function($trans_type) use ($rest){
 // ------------------------------- Sales Order Entry -------------------------------
 
 // ------------------------------- CFDI -------------------------------
-// Get branches
+// Get customers
+$rest->get('/cfdi/customer/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+
+	$id   = $req->get("id");
+	$rfc  = $req->get("rfc");
+
+	if (isset($id)) {
+		cfdi_customer_get_by_id($id);
+		return;
+	}
+
+	if (isset($rfc)) {
+		cfdi_customer_get_by_rfc($rfc);
+		return;
+	}
+});
+// Add cust branch
+$rest->post('/cfdi/customer/branch/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_cust_branch_add();
+});
+// Get branches keys
 $rest->get('/cfdi/branches/', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
@@ -564,11 +589,41 @@ $rest->get('/cfdi/branches/', function() use ($rest){
 		cfdi_branches_all($from);
 	}
 });
+// Get PDF
+$rest->get('/cfdi/pdf/:uuid', function($uuid) use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_pdf_get($uuid);
+});
+// Get XML
+$rest->get('/cfdi/xml/:uuid', function($uuid) use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_xml_get($uuid);
+});
 // Get series
 $rest->get('/cfdi/series/:branch_key', function($branch_key) use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 	cfdi_series_all($branch_key);
+});
+// Get Tax
+$rest->get('/cfdi/taxgroups/find_by_taxtype', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/taxgroups.inc");
+
+	$tax_types = $req->get("tax_types");
+
+	taxgroups_get($tax_types);
+});
+// Get tax
+$rest->get('/cfdi/taxtypes/find_by_taxtype', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/taxtypes.inc");
+
+	$tax_types = $req->get("tax_types");
+
+	taxtypes_get($tax_types);
 });
 // Insert Sales
 $rest->post('/cfdi/sales/', function() use ($rest){
