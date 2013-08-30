@@ -9,7 +9,6 @@
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
-//include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
@@ -55,10 +54,22 @@ function cfdi_branches_all($from = null) {
   api_success_response(json_encode($result));
 }
 
+function cfdi_taxtypes_get() {
+  $sql    = "select id, name, rate from ".TB_PREF."tax_types";
+  $query  = db_query($sql, "error");
+  $result = array();
+
+  while($tax_type = db_fetch($query, "error")) {
+    array_push($result, array("id" => $tax_type['id'], "name" => $tax_type['name'], "rate" => $tax_type['rate']));
+  }
+
+  api_success_response(json_encode($result)); 
+}
+
 function cfdi_taxgroup_get() {
-  $sql             = "select id from ".TB_PREF."tax_types";
-  $query           = db_query($sql, "error");
-  $arr  = array();
+  $sql   = "select id from ".TB_PREF."tax_types";
+  $query = db_query($sql, "error");
+  $arr   = array();
 
   while($tax_type = db_fetch($query, "error")) {
     array_push($arr, $tax_type['id']);
@@ -97,6 +108,94 @@ function cfdi_taxgroup_get() {
 
     if ($tax_fetch['count'] == sizeof($arr)) {
       $result = array("tax_group_id" => $item['id']);
+      break;
+    }
+  }
+
+  api_success_response(json_encode($result));
+}
+
+function cfdi_item_taxtype_includes_all_get() {
+  $sql = "select id from ".TB_PREF."item_tax_types where id not in (select item_tax_type_id from ".TB_PREF."item_tax_type_exemptions) and exempt != 1 limit 1";
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch_assoc($query)) {
+    $result = array("item_tax_type_id" => $item['id']);
+    break;
+  }
+
+  api_success_response(json_encode($result));
+}
+
+function cfdi_item_taxtype_exempt_get() {
+  $sql = "select id from ".TB_PREF."item_tax_types where exempt = 1 limit 1";
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch_assoc($query)) {
+    $result = array("item_tax_type_id" => $item['id']);
+    break;
+  }
+
+  api_success_response(json_encode($result));
+}
+
+function cfdi_item_taxtypes_get($tax_types) {
+  $arr  = split(',', $tax_types);
+  $join = join(',', $arr);
+
+  /*$sql = "select id from ".TB_PREF."item_tax_types as tb0, ".TB_PREF."item_tax_type_exemptions as tb1 where tb0.id = tb1.item_tax_type_id and tb1.tax_type_id not in (".$join.") group by tb0.id;";
+
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch_assoc($query)) {
+    $result = array("item_tax_type_id" => $item['id']);
+    break;
+  }
+
+  api_success_response(json_encode($result));*/
+
+  // ----------------------------------------------------------------
+
+  $sql = "select t0.id from ".TB_PREF."item_tax_types t0 ";
+
+  for ($i = 1; $i < sizeof($arr)+1; $i++) {
+    $sql .= "inner join ".TB_PREF."item_tax_type_exemptions t".$i." on t".$i.".item_tax_type_id=t0.id ";
+  }
+
+  for ($i = 0; $i < sizeof($arr); $i++) {
+    if ($i == 0) {
+      $sql .= "where t".($i+1).".tax_type_id!=".$arr[$i]." ";
+    }
+
+    if ($i > 0) {
+      $sql .= "and t".($i+1).".tax_type_id!=".$arr[$i]." ";
+    }
+  }
+
+  $sql .= "group by t0.id";
+
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch($query, "error")) {
+    $tax_sql   = "select count(*) as count from ".TB_PREF."item_tax_type_exemptions where item_tax_type_id=".$item['id'];
+    $tax_query = db_query($tax_sql, "error");
+    $tax_fetch = db_fetch($tax_query, "error");
+
+    if (sizeof($arr) == 1) {
+      $result = array("item_tax_type_id" => $item['id']);
+      break;
+    }
+
+    if (sizeof($arr) == 2) {
+      $result = array("item_tax_type_id" => $item['id']);
       break;
     }
   }
@@ -214,7 +313,7 @@ function cfdi_sales_add() {
   $cart                 = new Cart($info['trans_type'], 0);
   $cart->reference      = $info['ref'];
   $cart->Comments       = $info['comments'];
-  $cart->document_date  = $info['order_date'];
+  $cart->document_date  = date("Y-m-d");
 
   if (isset($info['payment']) && ($cart->payment != $info['payment'])) {
     $cart->payment        = $info['payment'];

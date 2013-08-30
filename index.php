@@ -607,20 +607,35 @@ $rest->get('/cfdi/series/:branch_key', function($branch_key) use ($rest){
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 	cfdi_series_all($branch_key);
 });
-// Get Tax
+// Get tax
 $rest->get('/cfdi/taxgroup/', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 	cfdi_taxgroup_get();
 });
-// Get tax
-$rest->get('/cfdi/taxtypes/find_by_taxtype', function() use ($rest){
+// Get tax type
+$rest->get('/cfdi/taxtypes/', function() use ($rest){
 	global $path_to_root, $req;
-	include_once ($path_to_root . "/modules/api/taxtypes.inc");
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_taxtypes_get();
+});
+$rest->get('/cfdi/item_taxtypes/includes_all/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_item_taxtype_includes_all_get();
+});
+$rest->get('/cfdi/item_taxtypes/exempt/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_item_taxtype_exempt_get();
+});
+$rest->get('/cfdi/item_taxtypes/find_by_taxtype/', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
 
 	$tax_types = $req->get("tax_types");
 
-	taxtypes_get($tax_types);
+	cfdi_item_taxtypes_get($tax_types);
 });
 // Insert Sales
 $rest->post('/cfdi/sales/', function() use ($rest){
