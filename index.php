@@ -608,13 +608,10 @@ $rest->get('/cfdi/series/:branch_key', function($branch_key) use ($rest){
 	cfdi_series_all($branch_key);
 });
 // Get Tax
-$rest->get('/cfdi/taxgroups/find_by_taxtype', function() use ($rest){
+$rest->get('/cfdi/taxgroup/', function() use ($rest){
 	global $path_to_root, $req;
-	include_once ($path_to_root . "/modules/api/taxgroups.inc");
-
-	$tax_types = $req->get("tax_types");
-
-	taxgroups_get($tax_types);
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_taxgroup_get();
 });
 // Get tax
 $rest->get('/cfdi/taxtypes/find_by_taxtype', function() use ($rest){

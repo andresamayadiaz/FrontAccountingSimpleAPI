@@ -9,7 +9,7 @@
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
-include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
+//include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
@@ -50,6 +50,55 @@ function cfdi_branches_all($from = null) {
 
   while($item = db_fetch($query, "error")) {
     $result[] = array('id' => $item['id'], 'name' => $item['nombre'], 'key' => $item['llave']);
+  }
+
+  api_success_response(json_encode($result));
+}
+
+function cfdi_taxgroup_get() {
+  $sql             = "select id from ".TB_PREF."tax_types";
+  $query           = db_query($sql, "error");
+  $arr  = array();
+
+  while($tax_type = db_fetch($query, "error")) {
+    array_push($arr, $tax_type['id']);
+  }
+
+  $sql             = null;
+  $query           = null;
+  $tax_type        = null;
+
+  $sql = "select t0.id from ".TB_PREF."tax_groups t0 ";
+
+  for ($i = 1; $i < sizeof($arr)+1; $i++) {
+    $sql .= "inner join ".TB_PREF."tax_group_items t".$i." on t".$i.".tax_group_id=t0.id ";
+  }
+
+  for ($i = 0; $i < sizeof($arr); $i++) {
+    if ($i == 0) {
+      $sql .= "where t".($i+1).".tax_type_id=".$arr[$i]." ";
+    }
+
+    if ($i > 0) {
+      $sql .= "and t".($i+1).".tax_type_id=".$arr[$i]." ";
+    }
+  }
+
+  $sql .= "group by t0.id";
+
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($item = db_fetch_assoc($query)) {
+    $tax_sql   = "select count(*) as count from ".TB_PREF."tax_group_items t0 where t0.tax_group_id=".$item['id'];
+    $tax_query = db_query($tax_sql, "error");
+    $tax_fetch = db_fetch($tax_query, "error");
+
+    if ($tax_fetch['count'] == sizeof($arr)) {
+      $result = array("tax_group_id" => $item['id']);
+      break;
+    }
   }
 
   api_success_response(json_encode($result));
@@ -160,8 +209,6 @@ function cfdi_sales_add() {
   $app  = \Slim\Slim::getInstance('SASYS');
   $req  = $app->request();
   $info = $req->post();
-
-  // error_log(1, 3, "/var/tmp/sasys.log");
   
   $cart                 = null;
   $cart                 = new Cart($info['trans_type'], 0);
@@ -169,17 +216,11 @@ function cfdi_sales_add() {
   $cart->Comments       = $info['comments'];
   $cart->document_date  = $info['order_date'];
 
-  // error_log(2, 3, "/var/tmp/sasys.log");
-
   if (isset($info['payment']) && ($cart->payment != $info['payment'])) {
     $cart->payment        = $info['payment'];
     $cart->payment_terms  = get_payment_terms($info['payment']);
     $newpayment           = true;
-
-  // error_log(3.5, 3, "/var/tmp/sasys.log");
   }
-
-  // error_log(4, 3, "/var/tmp/sasys.log");
 
   if ($cart->payment_terms['cash_sale']) {
     if ($newpayment) {
@@ -195,16 +236,10 @@ function cfdi_sales_add() {
     $cart->delivery_address = $info['delivery_address'];
     $cart->phone            = $info['phone'];
     $cart->ship_via         = $info['ship_via'];
-
-    // error_log(4.5, 3, "/var/tmp/sasys.log");
   }
-
-   // error_log(5, 3, "/var/tmp/sasys.log");
 
   $cart->Location     = $info['location'];
   $cart->freight_cost = input_num('freight_cost');
-
-   // error_log(6, 3, "/var/tmp/sasys.log");
 
   if (isset($info['email'])) {
     $cart->email = $info['email'];
@@ -212,48 +247,54 @@ function cfdi_sales_add() {
     $cart->email = '';
   }
 
-   // error_log(7, 3, "/var/tmp/sasys.log");
-
   $cart->customer_id  = $info['customer_id'];
   $cart->Branch       = $info['branch_id'];
   $cart->sales_type   = $info['sales_type'];
-
-   // error_log(8, 3, "/var/tmp/sasys.log");
 
   if ($cart->trans_type != ST_SALESORDER && $cart->trans_type != ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
     $cart->dimension_id   = $info['dimension_id'];
     $cart->dimension2_id  = $info['dimension2_id'];
   }
 
-   // error_log(9, 3, "/var/tmp/sasys.log");
-
   foreach($info['items'] as $item) {
-    add_to_order($cart, $item['stock_id'], $item['qty'], $item['price'], $item['discount'], $item['description']);
-  }
+    if (!isset($item['tax_type_id'])) {
+      api_error(412, sprintf(_("Item '%s' not contains tax type id."), $item['description']));
+      return;
+    }
 
-   // error_log(10, 3, "/var/tmp/sasys.log");
+    $stock_id = cfdi_get_item_stock_id($item['tax_type_id']);
+
+    error_log("\r\nStock_ID => ".$stock_id, 3, "/var/tmp/sasys.log");
+    error_log("\r\nDescription => ".$item['description'], 3, "/var/tmp/sasys.log");
+
+    if (!isset($stock_id)) {
+      api_error(412, sprintf(_("Could not locate the stock id for item '%s'."), $item['description']));
+      return;
+    }
+
+    $add_to_cart = $cart->add_to_cart_for_api(count($cart->line_items), $stock_id, $item['qty'], $item['price'], $item['discount'], 0, 0, $item['description']);
+
+    if ($add_to_cart == 0) {
+      api_error(412, _("You have to enter valid stock code or nonempty description"));
+      return;
+    }
+  }
 
   $can_process = cfdi_sales_can_process($info, $cart);
 
-   // error_log(11, 3, "/var/tmp/sasys.log");
-
   if ($can_process == false) {
     api_error(412, $can_process['message']);
+    return;
   }
-
-  // error_log(12, 3, "/var/tmp/sasys.log");
 
   $result = $cart->write(1);
 
-  // error_log(13, 3, "/var/tmp/sasys.log");
-
-  if ($result == -1) {
-    //return array("passed" => false, "message" => _("The entered reference is already in use."));
-    api_error(500, 'Could Not Save to Database');
+  if ($result == -1 || $result == null) {
+    api_error(500, _('Could Not Save to Database'));
+    return;
   }
 
-  error_log("\r\n".json_encode($cart), 3, "/var/tmp/sasys.log");
-  // error_log(14, 3, "/var/tmp/sasys.log");
+  error_log("\r\nTN=>".json_encode($result), 3, "/var/tmp/sasys.log");
 
   if ($cart->trans_type == ST_SALESINVOICE || $cart->trans_type == ST_CUSTCREDIT) {
     $cfdi_response = "";
@@ -281,11 +322,16 @@ function cfdi_sales_add() {
       );
 
       $bill = emitir($data);
+      $cfdi_error = false;
 
       if (isset($bill['error'])) {
+        cfdi_delete_sale(key($cart->trans_no));
         $cfdi_response = $bill['error'];
+        $cfdi_error = true;
       } else if (is_null($bill)) {
-        $cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually.');
+        cfdi_delete_sale(key($cart->trans_no));
+        $cfdi_response = _("Can't issue CFDi invoice.");
+        $cfdi_error = true;
       } else {
           $AutoFactura          = new AutoFacturaCore();
           $AutoFactura->userkey = get_cofig("Llave de Usuario", "");
@@ -314,45 +360,77 @@ function cfdi_sales_add() {
             copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
             add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_file, $pdf_unique_name, filesize($pdf_file), mime_content_type($pdf_file));
           } else {
-            $cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually. ').$response['mensaje'];
+            cfdi_delete_sale(key($cart->trans_no));
+            $cfdi_response = _("Can't issue CFDi invoice. ").$response['mensaje'];
+            $cfdi_error = true;
           }
       }
     } catch (Exception $e) {
+      cfdi_delete_sale(key($cart->trans_no));
       $cfdi_response = $e->getMessage();
+      $cfdi_error = true;
     }
   }
 
   switch($cart->trans_type) {
     case ST_SALESQUOTE:
-      api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Quotation # %d has been entered."), key($cart->trans_no)))));
+      if (!$cfdi_error) {
+        api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Quotation # %d has been entered."), key($cart->trans_no)))));
+      } else {
+        api_success_response(json_encode(array("success" => false, "msg" => sprintf(_("Quotation # %d has not been entered and rollback performed."), key($cart->trans_no)))));
+      }
       return;
       break;
     case ST_SALESORDER:
-      api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Order # %d has been entered."), key($cart->trans_no)))));
+      if (!$cfdi_error) {
+        api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Order # %d has been entered."), key($cart->trans_no)))));
+      } else {
+        api_success_response(json_encode(array("success" => false, "msg" => sprintf(_("Order # %d has been entered and rollback performed."), key($cart->trans_no)))));
+      }
       return;
       break;
     case ST_SALESINVOICE:
-      $feeback_response = sprintf(_("Invoice # %d has been entered."), key($cart->trans_no));
+      if (!$cfdi_error) {
+        $feeback_response = sprintf(_("Invoice # %d has been entered."), key($cart->trans_no));
+      } else {
+        $feeback_response = sprintf(_("Invoice # %d has been entered and rollback performed."), key($cart->trans_no));
+      }
       
       if ($cfdi_response != "") {
         $feeback_response .= "\r\n".$cfdi_response;
       }
 
-      api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      if (!$cfdi_error) {
+        api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      } else {
+        api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      }
       return;
       break;
     case ST_CUSTCREDIT:
-      $feeback_response = sprintf(_("Credit Note # %d has been processed."), key($cart->trans_no));
+      if (!$cfdi_error) {
+        $feeback_response = sprintf(_("Credit Note # %d has been processed."), key($cart->trans_no));
+      } else {
+        $feeback_response = sprintf(_("Credit Note # %d has been processed and rollback performed."), key($cart->trans_no));
+      }
       
       if ($cfdi_response != "") {
         $feeback_response .= "\r\n".$cfdi_response;
       }
 
-      api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      if (!$cfdi_error) {
+        api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      } else {
+        api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
+      }
       return;
       break;
     case ST_CUSTDELIVERY:
-      api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Delivery # %d has been entered."), key($cart->trans_no)))));
+      if (!$cfdi_error) {
+        api_success_response(json_encode(array("success" => true, "msg" => sprintf(_("Delivery # %d has been entered."), key($cart->trans_no)))));
+      } else {
+        api_success_response(json_encode(array("success" => false, "msg" => sprintf(_("Delivery # %d has been entered and rollback performed."), key($cart->trans_no)))));
+      }
       return;
       break;
   }
@@ -460,12 +538,28 @@ function cfdi_sales_can_process($info, $cart) {
 }
 
 function cfdi_delete_sale($trans_no) {
-  $sql = "delete from ".TB_PREF."debtor_trans where (type=".ST_SALESINVOICE." OR type="ST_CUSTCREDIT.") trans_no=".$trans_no;
+  $sql = "delete from ".TB_PREF."debtor_trans where type in (".ST_SALESINVOICE.", ".ST_CUSTCREDIT.", ".ST_CUSTDELIVERY.") and trans_no = ".$trans_no;
   db_query($sql, "error");
-  $sql = "delete from ".TB_PREF."debtor_trans where (type=".ST_SALESINVOICE." OR type="ST_CUSTCREDIT.") trans_no=".$trans_no;
+  $sql = "delete from ".TB_PREF."debtor_trans_details where debtor_trans_type in (".ST_SALESINVOICE.", ".ST_CUSTCREDIT.", ".ST_CUSTDELIVERY.") and debtor_trans_no = ".$trans_no;
   db_query($sql, "error");
-  $sql = "delete from ".TB_PREF."debtor_trans where (type=".ST_SALESINVOICE." OR type="ST_CUSTCREDIT.") trans_no=".$trans_no;
+  $sql = "delete from ".TB_PREF."trans_tax_details where trans_type in (".ST_SALESINVOICE.", ".ST_CUSTCREDIT.", ".ST_CUSTDELIVERY.") and trans_no = ".$trans_no;
   db_query($sql, "error");
+  $sql = "delete from ".TB_PREF."sales_orders where trans_type in (".ST_SALESORDER.") and order_no = ".$trans_no;
+  db_query($sql, "error");
+  $sql = "delete from ".TB_PREF."sales_order_details where trans_type in (".ST_SALESORDER.") and order_no = ".$trans_no;
+  db_query($sql, "error");
+}
+
+function cfdi_get_item_stock_id($tax_type_id) {
+  $sql = "select stock_id from ".TB_PREF."stock_master where tax_type_id = ".$tax_type_id." limit 1";
+  $query = db_query($sql, "error");
+  $fetch = db_fetch($query, "error");
+
+  if (isset($fetch)) {
+    return $fetch['stock_id'];
+  } else {
+    return null;
+  }
 }
 
 ?>
