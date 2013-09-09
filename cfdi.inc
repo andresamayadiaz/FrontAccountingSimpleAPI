@@ -170,11 +170,11 @@ function cfdi_item_taxtypes_get($tax_types) {
 
   for ($i = 0; $i < sizeof($arr); $i++) {
     if ($i == 0) {
-      $sql .= "where t".($i+1).".tax_type_id!=".$arr[$i]." ";
+      $sql .= "where t".($i+1).".tax_type_id=".$arr[$i]." ";
     }
 
     if ($i > 0) {
-      $sql .= "and t".($i+1).".tax_type_id!=".$arr[$i]." ";
+      $sql .= "and t".($i+1).".tax_type_id=".$arr[$i]." ";
     }
   }
 
