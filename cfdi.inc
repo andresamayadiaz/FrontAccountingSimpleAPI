@@ -115,7 +115,7 @@ function cfdi_taxgroup_get() {
   api_success_response(json_encode($result));
 }
 
-function cfdi_item_taxtype_includes_all_get() {
+/*function cfdi_item_taxtype_includes_all_get() {
   $sql = "select id from ".TB_PREF."item_tax_types where id not in (select item_tax_type_id from ".TB_PREF."item_tax_type_exemptions) and exempt != 1 limit 1";
   $query = db_query($sql, "error");
 
@@ -127,7 +127,7 @@ function cfdi_item_taxtype_includes_all_get() {
   }
 
   api_success_response(json_encode($result));
-}
+}*/
 
 function cfdi_item_taxtype_exempt_get() {
   $sql = "select id from ".TB_PREF."item_tax_types where exempt = 1 limit 1";
@@ -212,9 +212,9 @@ function cfdi_customer_get_by_id($id) {
   while($customer = db_fetch($query, "error")) {
     if (sizeof($result) < 1) {
       $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref']);
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location']);
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
     } else {
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location']);
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
     }
   }
   
@@ -230,9 +230,9 @@ function cfdi_customer_get_by_rfc($rfc) {
   while($customer = db_fetch($query, "error")) {
     if (sizeof($result) < 1) {
       $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref']);
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
     } else {
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
     }
   }
   

@@ -619,11 +619,11 @@ $rest->get('/cfdi/taxtypes/', function() use ($rest){
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 	cfdi_taxtypes_get();
 });
-$rest->get('/cfdi/item_taxtypes/includes_all/', function() use ($rest){
+/*$rest->get('/cfdi/item_taxtypes/includes_all/', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 	cfdi_item_taxtype_includes_all_get();
-});
+});*/
 $rest->get('/cfdi/item_taxtypes/exempt/', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
