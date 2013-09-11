@@ -229,10 +229,10 @@ function cfdi_customer_get_by_rfc($rfc) {
 
   while($customer = db_fetch($query, "error")) {
     if (sizeof($result) < 1) {
-      $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref']);
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
+      $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref'], "user_key" => get_cofig("Llave de Usuario", ""));
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
     } else {
-      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
     }
   }
   
@@ -313,7 +313,8 @@ function cfdi_sales_add() {
   $cart                 = new Cart($info['trans_type'], 0);
   $cart->reference      = $info['ref'];
   $cart->Comments       = $info['comments'];
-  $cart->document_date  = date("Y-m-d");
+  $cart->order_date     = date("Y-m-d");
+  $cart->document_date  = $cart->order_date;
 
   if (isset($info['payment']) && ($cart->payment != $info['payment'])) {
     $cart->payment        = $info['payment'];
@@ -363,9 +364,6 @@ function cfdi_sales_add() {
 
     $stock_id = cfdi_get_item_stock_id($item['tax_type_id']);
 
-    error_log("\r\nStock_ID => ".$stock_id, 3, "/var/tmp/sasys.log");
-    error_log("\r\nDescription => ".$item['description'], 3, "/var/tmp/sasys.log");
-
     if (!isset($stock_id)) {
       api_error(412, sprintf(_("Could not locate the stock id for item '%s'."), $item['description']));
       return;
@@ -379,21 +377,24 @@ function cfdi_sales_add() {
     }
   }
 
+  error_log("\r\n/modules/api/cfdi.inc -- CART\r\n".json_encode($cart), 3, "/var/tmp/sasys.log");
+
   $can_process = cfdi_sales_can_process($info, $cart);
 
-  if ($can_process == false) {
-    api_error(412, $can_process['message']);
-    return;
+  error_log("\r\n/modules/api/cfdi.inc -- CAN PROCESS\r\n".json_encode($can_process), 3, "/var/tmp/sasys.log");
+
+  if ($can_process['passed'] == false) {
+    return api_error(412, $can_process['message']);
   }
 
   $result = $cart->write(1);
+
+  error_log("\r\n/modules/api/cfdi.inc -- WRITE RESULT\r\n".json_encode($result), 3, "/var/tmp/sasys.log");
 
   if ($result == -1 || $result == null) {
     api_error(500, _('Could Not Save to Database'));
     return;
   }
-
-  error_log("\r\nTN=>".json_encode($result), 3, "/var/tmp/sasys.log");
 
   if ($cart->trans_type == ST_SALESINVOICE || $cart->trans_type == ST_CUSTCREDIT) {
     $cfdi_response = "";
@@ -412,7 +413,7 @@ function cfdi_sales_add() {
           'sucursal'          => $info['cfdi_branch_id'],
           'transid'           => key($cart->trans_no),
           'transtype'         => $cart->trans_type,
-          'addenda'           => $info['cfdi_addenda'],
+          'addenda'           => base64_encode($info['cfdi_addenda']),
           // NULL
           'condicionesDePago' => null,
           'tipoCambio'        => null,
@@ -422,6 +423,8 @@ function cfdi_sales_add() {
 
       $bill = emitir($data);
       $cfdi_error = false;
+
+      error_log("\r\n/modules/api/cfdi.inc -- EMITIR\r\n".json_encode($bill), 3, "/var/tmp/sasys.log");
 
       if (isset($bill['error'])) {
         cfdi_delete_sale(key($cart->trans_no));
@@ -439,7 +442,7 @@ function cfdi_sales_add() {
           
           $response = $AutoFactura->emitir($bill);
 
-          error_log("\r\n".json_encode($response), 3, "/var/tmp/sasys.log");
+          error_log("\r\n/modules/api/cfdi.inc -- AUTOFACTURA\r\n".json_encode($response), 3, "/var/tmp/sasys.log");
 
           if($response['exito'] == 1){
             set_sql_digital($cart->trans_type, key($cart->trans_no), $info['cfdi_branch_id'], $response);
@@ -571,11 +574,11 @@ function cfdi_sales_can_process($info, $cart) {
     return array("passed" => false, "message" => _("This customer has no branch defined."));
   }
   
-  if (!is_date($info['order_date'])) {
+  if (!is_date($cart->order_date)) {
     return array("passed" => false, "message" => _("The entered date is invalid."));
   }
 
-  if ($cart->trans_type != ST_SALESORDER && $cart->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($info['order_date'])) {
+  if ($cart->trans_type != ST_SALESORDER && $cart->trans_type != ST_SALESQUOTE && !is_date_in_fiscalyear($cart->order_date)) {
     return array("passed" => false, "message" => _("The entered date is not in fiscal year"));
   }
 
@@ -596,9 +599,9 @@ function cfdi_sales_can_process($info, $cart) {
       $info['freight_cost'] = price_format(0);
     }
 
-    if (!check_num('freight_cost', 0)) {
+    /*if (!check_num('freight_cost', 0)) {
       return array("passed" => false, "message" => _("The shipping cost entered is expected to be numeric."));
-    }
+    }*/
 
     if (!is_date($info['delivery_date'])) {
       if ($cart->trans_type == ST_SALESQUOTE) {
@@ -608,7 +611,7 @@ function cfdi_sales_can_process($info, $cart) {
       }
     }
 
-    if (date1_greater_date2($info['order_date'], $info['delivery_date'])) {
+    if (date1_greater_date2($cart->order_date, $info['delivery_date'])) {
       if ($cart->trans_type == ST_SALESQUOTE){
         return array("passed" => false, "message" => _("The requested valid date is before the date of the quotation."));
       } else {
@@ -625,7 +628,7 @@ function cfdi_sales_can_process($info, $cart) {
     return array("passed" => false, "message" => _("You must enter a reference."));
   }
 
-  if (!db_has_currency_rates($cart->customer_currency, $info['order_date'])){
+  if (!db_has_currency_rates($cart->customer_currency, $cart->order_date)){
     return false;
   }
   
@@ -633,7 +636,7 @@ function cfdi_sales_can_process($info, $cart) {
     return array("passed" => false, "message" => _("Invoice total amount cannot be less than zero."));
   }
 
-  return true;
+  return array("passed" => true);
 }
 
 function cfdi_delete_sale($trans_no) {
