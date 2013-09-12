@@ -308,6 +308,8 @@ function cfdi_sales_add() {
   $app  = \Slim\Slim::getInstance('SASYS');
   $req  = $app->request();
   $info = $req->post();
+
+  error_log("\r\n/modules/api/cfdi.inc -- POST\r\n".json_encode($info), 3, "/var/tmp/sasys.log");
   
   $cart                 = null;
   $cart                 = new Cart($info['trans_type'], 0);
