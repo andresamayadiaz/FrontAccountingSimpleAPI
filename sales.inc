@@ -302,8 +302,9 @@ function sales_add() {
 
 	$can_process = can_process($info, $cart);
 
-	if ($can_process == false) {
+	if ($can_process['passed'] == false) {
 		api_error(412, $can_process['message']);
+		return;
 	}
 
 	$result = $cart->write(1);
@@ -311,71 +312,8 @@ function sales_add() {
 	if ($result == -1) {
     //return array("passed" => false, "message" => _("The entered reference is already in use."));
     api_error(500, 'Could Not Save to Database');
+    return;
   }
-
-  if ($cart->trans_type == ST_SALESINVOICE || $cart->trans_type == ST_CUSTCREDIT) {
-  	$cfdi_response = "";
-
-	  try {
-	  	// branch_cfdi_id
-	  	// serie_cfdi_id
-	  	// form_payment_cfdi
-	  	// payment_method_cfdi
-	  	// account_number_cfi
-	  	$data = array(
-					'serie'							=> $info['cfdi_serie_id'],
-					'formaDePago'				=> $info['cfdi_form_payment'],
-					'metodoDePago'			=> $info['cfdi_method_payment'],
-					'numerocta'					=> $info['cfdi_account_number'],
-					'sucursal'					=> $info['cfdi_branch_id'],
-					'transid'						=> key($cart->trans_no),
-					'transtype'					=> $cart->trans_type,
-					// NULL
-					'condicionesDePago'	=> null,
-					'tipoCambio'				=> null,
-					'moneda'						=> null,
-					'tipocomprobante'		=> null,
-			);
-
-			$bill = emitir($data);
-
-			if (isset($bill['error'])) {
-				$cfdi_response = $bill['error'];
-			} else if (is_null($bill)) {
-				$cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually.');
-			} else {
-					$AutoFactura					= new AutoFacturaCore();
-					$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
-					$AutoFactura->suckey	= $info['cfdi_branch_id'];
-					$AutoFactura->url			= get_cofig("Servidor", "");
-					
-					$response = $AutoFactura->emitir($bill);
-
-					if($response['exito'] == 1){
-						set_sql_digital($cart->trans_type, key($cart->trans_no), $info['cfdi_branch_id'], $response);
-
-						// XML
-						$response_xml = get_xml_digital(key($cart->trans_no));
-						$xml_unique_name = uniqid('');
-						$xml_file = company_path()."/attachments/".$xml_unique_name;
-						$xml_url = str_replace("@llaveusuario@", get_cofig("Llave de Usuario", ""), $response_xml['xml_url']);
-						copy($AutoFactura->url.$xml_url, $xml_file);
-						add_attachment($cart->trans_type, key($cart->trans_no), "XML", $xml_file, $xml_unique_name, filesize($xml_file), mime_content_type($xml_file));
-
-						// PDF
-						$response_pdf = get_pdf_digital(key($cart->trans_no));
-						$pdf_unique_name = uniqid('');
-						$pdf_file = company_path()."/attachments/".$pdf_unique_name;
-						copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
-						add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_file, $pdf_unique_name, filesize($pdf_file), mime_content_type($pdf_file));
-					} else {
-						$cfdi_response = _('But for your invoice unidentified error has not yet been digitized CFDi. Please, do it manually. ').$response['mensaje'];
-					}
-			}
-	  } catch (Exception $e) {
-	  	$cfdi_response = $e->getMessage();
-	  }
-	}
 
   switch($cart->trans_type) {
   	case ST_SALESQUOTE:
@@ -529,29 +467,30 @@ function sales_edit($trans_no, $trans_type) {
   api_success_response(_("Ok"));
 }
 
-function sales_cancel($uuid) {
-	$sql 	 = " select tb1.branch_code as branch_code from ".TB_PREF."timbrado_digital as tb0 inner join ".TB_PREF."debtor_trans as tb1 on tb1.trans_no = tb0.debtortrans_id where tb0.uuid_sat=".db_escape($uuid)." and tb1.digital = true limit 1";
-	$sql   = "select branch_code from ".TB_PREF."debtor_trans where uuid=".db_escape($uuid)."limit 1";
-	$query = db_query($sql, "error");
-	$fetch = db_fetch($query, "error");
-
+function sales_cancel($branch_id, $uuid) {
+	error_log("\r\n1", 3, "/var/tmp/sasys.log");
 	$AutoFactura					= new AutoFacturaCore();
 	$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
-	$AutoFactura->suckey	= $fetch['branch_code'];
+	$AutoFactura->suckey	= $branch_id;
 	$AutoFactura->url			= get_cofig("Servidor", "");
 	$datos								= array('autofactura_id' => $uuid);
 	$response							= $AutoFactura->cancelar($datos);
+	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/sasys.log");
 	
 	try {
 		if($response['exito'] == 1){
+			error_log("\r\n3", 3, "/var/tmp/sasys.log");
 			set_sql_cancelar_digital($uuid, $response['url']);
 			api_success_response(_("The invoice was cancelled."));
 			return;
+			error_log("\r\n4", 3, "/var/tmp/sasys.log");
 		} else {
+			error_log("\r\n5", 3, "/var/tmp/sasys.log");
 			api_error(500, _('Could not cancel invoice.'));
 			return;
 		}
 	} catch (Exception $e) {
+		error_log("\r\n6", 3, "/var/tmp/sasys.log");
 		api_error(500, _('Could not cancel invoice. ').$e->getMessage());	
 		return;
 	}
@@ -593,9 +532,9 @@ function can_process($info, $cart) {
 			$info['freight_cost'] = price_format(0);
 		}
 
-		if (!check_num('freight_cost', 0)) {
+		/*if (!check_num('freight_cost', 0)) {
 			return array("passed" => false, "message" => _("The shipping cost entered is expected to be numeric."));
-		}
+		}*/
 
 		if (!is_date($info['delivery_date'])) {
 			if ($cart->trans_type == ST_SALESQUOTE) {
@@ -630,7 +569,7 @@ function can_process($info, $cart) {
 		return array("passed" => false, "message" => _("Invoice total amount cannot be less than zero."));
 	}
 
-	return true;
+	return array('passed' => true);
 }
 
 ?>
