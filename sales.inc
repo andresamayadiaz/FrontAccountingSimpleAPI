@@ -468,29 +468,29 @@ function sales_edit($trans_no, $trans_type) {
 }
 
 function sales_cancel($branch_id, $uuid) {
-	error_log("\r\n1", 3, "/var/tmp/sasys.log");
+	error_log("\r\n1", 3, "/var/tmp/saaserp.log");
 	$AutoFactura					= new AutoFacturaCore();
 	$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
 	$AutoFactura->suckey	= $branch_id;
 	$AutoFactura->url			= get_cofig("Servidor", "");
 	$datos								= array('autofactura_id' => $uuid);
 	$response							= $AutoFactura->cancelar($datos);
-	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/sasys.log");
+	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/saaserp.log");
 	
 	try {
 		if($response['exito'] == 1){
-			error_log("\r\n3", 3, "/var/tmp/sasys.log");
+			error_log("\r\n3", 3, "/var/tmp/saaserp.log");
 			set_sql_cancelar_digital($uuid, $response['url']);
 			api_success_response(_("The invoice was cancelled."));
 			return;
-			error_log("\r\n4", 3, "/var/tmp/sasys.log");
+			error_log("\r\n4", 3, "/var/tmp/saaserp.log");
 		} else {
-			error_log("\r\n5", 3, "/var/tmp/sasys.log");
+			error_log("\r\n5", 3, "/var/tmp/saaserp.log");
 			api_error(500, _('Could not cancel invoice.'));
 			return;
 		}
 	} catch (Exception $e) {
-		error_log("\r\n6", 3, "/var/tmp/sasys.log");
+		error_log("\r\n6", 3, "/var/tmp/saaserp.log");
 		api_error(500, _('Could not cancel invoice. ').$e->getMessage());	
 		return;
 	}
