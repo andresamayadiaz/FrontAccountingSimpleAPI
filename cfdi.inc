@@ -505,7 +505,21 @@ function cfdi_sales_add() {
       }
 
       if (!$cfdi_error) {
-        api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        #api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        api_success_response(json_encode(array(
+           "success" => true,
+           "msg" => $feeback_response,
+           "uuid" => $response['uuid'],
+           "serie_folio" => $response['Folio'],
+           "no_certificate" => $response['NoSerieCertificado'],
+           "no_certificate_sat" => $response['NoSerieCertificadoSAT'],
+           "digital_stamp" => $response['selloDigital'],
+           "digital_stamp_sat" => $response['selloDigitalSAT'],
+           "original_string" => $response['CadenaOriginal'],
+           "original_string_sat" => $response['CadenaOriginalSAT'],
+           "date_stamped" => $response['fechatimbrado'],
+          )
+        ));
       } else {
         api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
       }
@@ -523,7 +537,21 @@ function cfdi_sales_add() {
       }
 
       if (!$cfdi_error) {
-        api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        #api_success_response(json_encode(array("success" => true, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        api_success_response(json_encode(array(
+           "success" => true,
+           "msg" => $feeback_response,
+           "uuid" => $response['uuid'],
+           "serie_folio" => $response['Folio'],
+           "no_certificate" => $response['NoSerieCertificado'],
+           "no_certificate_sat" => $response['NoSerieCertificadoSAT'],
+           "digital_stamp" => $response['selloDigital'],
+           "digital_stamp_sat" => $response['selloDigitalSAT'],
+           "original_string" => $response['CadenaOriginal'],
+           "original_string_sat" => $response['CadenaOriginalSAT'],
+           "date_stamped" => $response['fechatimbrado'],
+          )
+        ));
       } else {
         api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
       }
