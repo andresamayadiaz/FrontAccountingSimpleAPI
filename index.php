@@ -555,8 +555,9 @@ $rest->get('/cfdi/customer/', function() use ($rest){
 	global $path_to_root, $req;
 	include_once ($path_to_root . "/modules/api/cfdi.inc");
 
-	$id   = $req->get("id");
-	$rfc  = $req->get("rfc");
+	$id        = $req->get("id");
+	$rfc       = $req->get("rfc");
+	$client_no = $req->get("client_no");
 
 	if (isset($id)) {
 		cfdi_customer_get_by_id($id);
@@ -565,6 +566,11 @@ $rest->get('/cfdi/customer/', function() use ($rest){
 
 	if (isset($rfc)) {
 		cfdi_customer_get_by_rfc($rfc);
+		return;
+	}
+
+	if (isset($client_no)) {
+		cfdi_customer_get_by_client_no($client_no);
 		return;
 	}
 });

@@ -144,7 +144,7 @@ function cfdi_item_taxtype_exempt_get() {
 }
 
 function cfdi_item_taxtypes_get($tax_types) {
-  $arr  = split(',', $tax_types);
+  $arr  = explode(',', $tax_types);
   $join = join(',', $arr);
 
   /*$sql = "select id from ".TB_PREF."item_tax_types as tb0, ".TB_PREF."item_tax_type_exemptions as tb1 where tb0.id = tb1.item_tax_type_id and tb1.tax_type_id not in (".$join.") group by tb0.id;";
@@ -223,6 +223,24 @@ function cfdi_customer_get_by_id($id) {
 
 function cfdi_customer_get_by_rfc($rfc) {
   $sql = "select dm.debtor_no, dm.name, dm.debtor_ref, cb.branch_code, cb.br_name, cb.branch_ref, cb.br_address, cb.tax_group_id, cb.default_location, cb.default_ship_via from ".TB_PREF."debtors_master as dm inner join ".TB_PREF."cust_branch as cb on cb.debtor_no = dm.debtor_no where dm.tax_id = ".db_escape($rfc);
+  $query = db_query($sql, "error");
+
+  $result = array();
+
+  while($customer = db_fetch($query, "error")) {
+    if (sizeof($result) < 1) {
+      $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref'], "user_key" => get_cofig("Llave de Usuario", ""));
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+    } else {
+      $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+    }
+  }
+  
+  api_success_response(json_encode($result)); 
+}
+
+function cfdi_customer_get_by_client_no($client_no) {
+  $sql = "select dm.debtor_no, dm.name, dm.debtor_ref, cb.branch_code, cb.br_name, cb.branch_ref, cb.br_address, cb.tax_group_id, cb.default_location, cb.default_ship_via from ".TB_PREF."debtors_master as dm inner join ".TB_PREF."cust_branch as cb on cb.debtor_no = dm.debtor_no where dm.client_no = ".db_escape($client_no);
   $query = db_query($sql, "error");
 
   $result = array();
