@@ -217,6 +217,12 @@ function cfdi_customer_get_by_id($id) {
       $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via'], "user_key" => get_cofig("Llave de Usuario", ""));
     }
   }
+
+  if (sizeof($result) == 0)
+  {
+    api_error(422, _('Could not get data.'));
+    return false;
+  }
   
   api_success_response(json_encode($result)); 
 }
@@ -234,6 +240,12 @@ function cfdi_customer_get_by_rfc($rfc) {
     } else {
       $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
     }
+  }
+
+  if (sizeof($result) == 0)
+  {
+    api_error(422, _('Could not get data.'));
+    return false;
   }
   
   api_success_response(json_encode($result)); 
@@ -253,6 +265,12 @@ function cfdi_customer_get_by_client_no($client_no) {
       $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
     }
   }
+
+  if (sizeof($result) == 0)
+  {
+    api_error(422, _('Could not get data.'));
+    return false;
+  }
   
   api_success_response(json_encode($result)); 
 }
@@ -271,6 +289,117 @@ function cfdi_xml_get($uuid) {
   $fetch = db_fetch($query, "error");
 
   api_success_response(json_encode(array("url" => get_cofig("Servidor", "").$fetch['xml_url'])));
+}
+
+function cfdi_customer_add() {
+  try {
+    $app  = \Slim\Slim::getInstance('SASYS');
+    $req  = $app->request();
+    $info = $req->post();
+
+    error_log("\r\n1=>".json_encode($info), 3, "/var/tmp/sasys.log");
+
+    if (strlen($info['name']) == 0) 
+    {
+      api_error(422, _('The customer name cannot be empty.'));
+      return false;
+    } 
+
+    if (strlen($info['debtor_ref']) == 0) 
+    {
+      api_error(422, _('The customer short name cannot be empty.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_street']) == 0) {
+      api_error(422, _('The street cannot be empty.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_street_number']) == 0) {
+      api_error(422, _('The street number cannot be empty.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_district']) == 0) {
+      api_error(422, _('The district cannot be empty.'));
+      return false;
+    }
+
+    if (!is_numeric($info['cfdi_postal_code'])) {
+      api_error(422, _('The postal code is only numbers.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_postal_code']) != 5) {
+      api_error(422, _('The postal code cannot be less or bigger than 5.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_city']) == 0) {
+      api_error(422, _('The city cannot be empty.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_state']) == 0) {
+      api_error(422, _('The state cannot be empty.'));
+      return false;
+    }
+
+    if (strlen($info['cfdi_country']) == 0) {
+      api_error(422, _('The country cannot be empty.'));
+      return false;
+    }
+
+    if (empty($info['suite_number']) == false) {
+     $info['address'] = $info['cfdi_street'].' #'.$info['cfdi_street_number'].' int '.$info['cfdi_suite_number'].', '.$info['cfdi_district'].', '.$info['cfdi_postal_code'].', '.$info['cfdi_city'].', '.$info['cfdi_state'].', '.$info['cfdi_country'];
+    } else {
+      $info['address'] = $info['cfdi_street'].' #'.$info['cfdi_street_number'].', '.$info['cfdi_district'].', '.$info['cfdi_postal_code'].', '.$info['cfdi_city'].', '.$info['cfdi_state'].', '.$info['cfdi_country'];
+    }
+
+    begin_transaction();
+
+    // Cliente
+    add_customer($info['name'], $info['debtor_ref'], $info['address'], $info['tax_id'], $info['curr_code'], null, null, $info['credit_status'], $info['payment_terms'], $info['discount'] / 100, $info['pymt_discount'] / 100, $info['credit_limit'], $info['sales_type'], $info['notes'], $info['cfdi_street'], $info['cfdi_street_number'], $info['cfdi_suite_number'], $info['cfdi_district'], $info['cfdi_postal_code'], $info['cfdi_city'], $info['cfdi_state'], $info['cfdi_country']);
+
+    $customer_id = db_insert_id();
+
+    // Sucursal
+    add_branch($customer_id, $info['name'], $info['debtor_ref'], $info['address'], $info['salesman_id'], $info['area_id'], $info['tax_group_id'], '', get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'), $info['location_id'], $info['address'], 0, 0, $info['ship_via_id'], $info['notes']);
+
+    $selected_branch = db_insert_id();
+
+    // CRM
+    add_crm_person($info['name'], $info['debtor_ref'], '', $info['address'], '', '', '', '', '', '');
+
+    add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
+
+    commit_transaction();
+
+    $sql = "select dm.debtor_no, dm.name, dm.debtor_ref, cb.branch_code, cb.br_name, cb.branch_ref, cb.br_address, cb.tax_group_id, cb.default_location, cb.default_ship_via from ".TB_PREF."debtors_master as dm inner join ".TB_PREF."cust_branch as cb on cb.debtor_no = dm.debtor_no where dm.debtor_no = ".db_escape($customer_id);
+    $query = db_query($sql, "error");
+
+    $result = array();
+
+    while($customer = db_fetch($query, "error")) {
+      if (sizeof($result) < 1) {
+        $result = array("no" => $customer['debtor_no'], "name" => $customer['name'], "ref" => $customer['debtor_ref'], "user_key" => get_cofig("Llave de Usuario", ""));
+        $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+      } else {
+        $result['cust_branches'][] = array("code" => $customer['branch_code'], "name" => $customer['br_name'], "ref" => $customer['branch_ref'], "address" => $customer['br_address'], "tax_group_id" => $customer['tax_group_id'], "default_location" => $customer['default_location'], "default_ship_via" => $customer['default_ship_via']);
+      }
+    }
+
+    if (sizeof($result) == 0)
+    {
+      api_error(422, _('Could not get data.'));
+      return false;
+    }
+    
+    api_success_response(json_encode($result));
+  } catch (Exception $e) {
+    api_error(422, _('Could not get data'));
+  }
 }
 
 function cfdi_cust_branch_add() {

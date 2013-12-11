@@ -574,6 +574,12 @@ $rest->get('/cfdi/customer/', function() use ($rest){
 		return;
 	}
 });
+// Add customers
+$rest->post('/cfdi/customer/add', function() use ($rest){
+	global $path_to_root, $req;
+	include_once ($path_to_root . "/modules/api/cfdi.inc");
+	cfdi_customer_add();
+});
 // Add cust branch
 $rest->post('/cfdi/customer/branch/', function() use ($rest){
 	global $path_to_root, $req;
