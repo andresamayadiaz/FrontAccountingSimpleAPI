@@ -360,7 +360,7 @@ function cfdi_customer_add() {
     begin_transaction();
 
     // Cliente
-    add_customer($info['name'], $info['debtor_ref'], $info['address'], $info['tax_id'], $info['curr_code'], null, null, $info['credit_status'], $info['payment_terms'], $info['discount'] / 100, $info['pymt_discount'] / 100, $info['credit_limit'], $info['sales_type'], $info['notes'], $info['cfdi_street'], $info['cfdi_street_number'], $info['cfdi_suite_number'], $info['cfdi_district'], $info['cfdi_postal_code'], $info['cfdi_city'], $info['cfdi_state'], $info['cfdi_country']);
+    add_customer($info['name'], $info['debtor_ref'], $info['address'], $info['tax_id'], $info['curr_code'], null, null, $info['credit_status'], $info['payment_terms'], $info['discount'] / 100, $info['pymt_discount'] / 100, $info['credit_limit'], $info['sales_type'], $info['notes'], $info['cfdi_street'], $info['cfdi_street_number'], $info['cfdi_suite_number'], $info['cfdi_district'], $info['cfdi_postal_code'], $info['cfdi_city'], $info['cfdi_state'], $info['cfdi_country'], $info['client_no']);
 
     $customer_id = db_insert_id();
 
