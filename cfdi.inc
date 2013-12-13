@@ -301,52 +301,62 @@ function cfdi_customer_add() {
 
     if (strlen($info['name']) == 0) 
     {
+      log_body("Return error", "422 code: "._('The customer name cannot be empty.'));
       api_error(422, _('The customer name cannot be empty.'));
       return false;
     } 
 
     if (strlen($info['debtor_ref']) == 0) 
     {
+      log_body("Return error", "422 code: "._('The customer short name cannot be empty.'));
       api_error(422, _('The customer short name cannot be empty.'));
       return false;
     }
 
     if (strlen($info['cfdi_street']) == 0) {
+      log_body("Return error", "422 code: "._('The street cannot be empty.'));
       api_error(422, _('The street cannot be empty.'));
       return false;
     }
 
     if (strlen($info['cfdi_street_number']) == 0) {
+      log_body("Return error", "422 code: "._('The street number cannot be empty.'));
       api_error(422, _('The street number cannot be empty.'));
       return false;
     }
 
     if (strlen($info['cfdi_district']) == 0) {
+      log_body("Return error", "422 code: "._('The district cannot be empty.'));
       api_error(422, _('The district cannot be empty.'));
       return false;
     }
 
     if (!is_numeric($info['cfdi_postal_code'])) {
+      log_body("Return error", "422 code: "._('The postal code is only numbers.'));
       api_error(422, _('The postal code is only numbers.'));
       return false;
     }
 
     if (strlen($info['cfdi_postal_code']) != 5) {
+      log_body("Return error", "422 code: "._('The postal code cannot be less or bigger than 5.'));
       api_error(422, _('The postal code cannot be less or bigger than 5.'));
       return false;
     }
 
     if (strlen($info['cfdi_city']) == 0) {
+      log_body("Return error", "422 code: "._('The city cannot be empty.'));
       api_error(422, _('The city cannot be empty.'));
       return false;
     }
 
     if (strlen($info['cfdi_state']) == 0) {
+      log_body("Return error", "422 code: "._('The state cannot be empty.'));
       api_error(422, _('The state cannot be empty.'));
       return false;
     }
 
     if (strlen($info['cfdi_country']) == 0) {
+      log_body("Return error", "422 code: "._('The country cannot be empty.'));
       api_error(422, _('The country cannot be empty.'));
       return false;
     }
