@@ -337,11 +337,11 @@ function cfdi_customer_add() {
       return false;
     }
 
-    if (strlen($info['cfdi_postal_code']) != 5) {
+    /*if (strlen($info['cfdi_postal_code']) != 5) {
       log_body("Return error", "422 code: "._('The postal code cannot be less or bigger than 5.'));
       api_error(422, _('The postal code cannot be less or bigger than 5.'));
       return false;
-    }
+    }*/
 
     if (strlen($info['cfdi_city']) == 0) {
       log_body("Return error", "422 code: "._('The city cannot be empty.'));
