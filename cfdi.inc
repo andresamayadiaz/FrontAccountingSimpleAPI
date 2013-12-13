@@ -297,7 +297,7 @@ function cfdi_customer_add() {
     $req  = $app->request();
     $info = $req->post();
 
-    error_log("\r\n1=>".json_encode($info), 3, "/var/tmp/sasys.log");
+    log_header("ADD CUSTOMER");
 
     if (strlen($info['name']) == 0) 
     {
@@ -351,6 +351,8 @@ function cfdi_customer_add() {
       return false;
     }
 
+    log_body("Passed.", json_encode($info));
+
     if (empty($info['suite_number']) == false) {
      $info['address'] = $info['cfdi_street'].' #'.$info['cfdi_street_number'].' int '.$info['cfdi_suite_number'].', '.$info['cfdi_district'].', '.$info['cfdi_postal_code'].', '.$info['cfdi_city'].', '.$info['cfdi_state'].', '.$info['cfdi_country'];
     } else {
@@ -364,17 +366,27 @@ function cfdi_customer_add() {
 
     $customer_id = db_insert_id();
 
+    log_body("Customer added", json_encode($customer_id));
+
     // Sucursal
     add_branch($customer_id, $info['name'], $info['debtor_ref'], $info['address'], $info['salesman_id'], $info['area_id'], $info['tax_group_id'], '', get_company_pref('default_sales_discount_act'), get_company_pref('debtors_act'), get_company_pref('default_prompt_payment_act'), $info['location_id'], $info['address'], 0, 0, $info['ship_via_id'], $info['notes']);
 
     $selected_branch = db_insert_id();
 
+    log_body("Branch added", json_encode($customer_id));
+
     // CRM
     add_crm_person($info['name'], $info['debtor_ref'], '', $info['address'], '', '', '', '', '', '');
 
+    log_body("CRM Person added", "OK");
+
     add_crm_contact('cust_branch', 'general', $selected_branch, db_insert_id());
 
+    log_body("CRM Contact added", "OK");
+
     commit_transaction();
+
+    log_body("Committed", "OK");
 
     $sql = "select dm.debtor_no, dm.name, dm.debtor_ref, cb.branch_code, cb.br_name, cb.branch_ref, cb.br_address, cb.tax_group_id, cb.default_location, cb.default_ship_via from ".TB_PREF."debtors_master as dm inner join ".TB_PREF."cust_branch as cb on cb.debtor_no = dm.debtor_no where dm.debtor_no = ".db_escape($customer_id);
     $query = db_query($sql, "error");
@@ -392,9 +404,13 @@ function cfdi_customer_add() {
 
     if (sizeof($result) == 0)
     {
+      log_body("Return error", "422 code: ".json_encode($result));
+
       api_error(422, _('Could not get data.'));
       return false;
     }
+
+    log_body("Return data", json_encode($result));
     
     api_success_response(json_encode($result));
   } catch (Exception $e) {
@@ -839,6 +855,17 @@ function cfdi_get_item_stock_id($tax_type_id) {
   } else {
     return null;
   }
+}
+
+/* LOG */
+function log_header($text) {
+  error_log("\r\n\r\n#################\r\n".$text."\r\n#################", 3, "/var/tmp/sasys.log");
+}
+
+function log_body($text, $data) {
+  error_log("\r\n------------", 3, "/var/tmp/sasys.log");
+  error_log("\r\nPROCEDURE => ".$text, 3, "/var/tmp/sasys.log");
+  error_log("\r\nDATA => ".$data, 3, "/var/tmp/sasys.log");
 }
 
 ?>
