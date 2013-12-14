@@ -482,7 +482,9 @@ function cfdi_sales_add() {
   $req  = $app->request();
   $info = $req->post();
 
-  error_log("\r\n/modules/api/cfdi.inc -- POST\r\n".json_encode($info), 3, "/var/tmp/sasys.log");
+  log_header("ADD SALE");
+
+  log_body("Post received", json_encode($info));
   
   $cart                 = null;
   $cart                 = new Cart($info['trans_type'], 0);
@@ -552,21 +554,23 @@ function cfdi_sales_add() {
     }
   }
 
-  error_log("\r\n/modules/api/cfdi.inc -- CART\r\n".json_encode($cart), 3, "/var/tmp/sasys.log");
+  log_body("Cart build", json_encode($cart));
 
   $can_process = cfdi_sales_can_process($info, $cart);
 
-  error_log("\r\n/modules/api/cfdi.inc -- CAN PROCESS\r\n".json_encode($can_process), 3, "/var/tmp/sasys.log");
+  log_body("Cart process", "Can process: ".json_encode($can_process));
 
   if ($can_process['passed'] == false) {
+    log_body("Return error", "412 error: ".$can_process['message']);
     return api_error(412, $can_process['message']);
   }
 
   $result = $cart->write(1);
 
-  error_log("\r\n/modules/api/cfdi.inc -- WRITE RESULT\r\n".json_encode($result), 3, "/var/tmp/sasys.log");
+  log_body("Cart write", "Result: ".json_encode($result));
 
   if ($result == -1 || $result == null) {
+    log_body("Return error", "500 error: "._('Could Not Save to Database'));
     api_error(500, _('Could Not Save to Database'));
     return;
   }
@@ -582,6 +586,7 @@ function cfdi_sales_add() {
       // account_number_cfi
       $data = array(
           'serie'             => $info['cfdi_serie_id'],
+          'condicionesDePago' => $info['cfdi_terms_payment'],
           'formaDePago'       => $info['cfdi_form_payment'],
           'metodoDePago'      => $info['cfdi_method_payment'],
           'numerocta'         => $info['cfdi_account_number'],
@@ -590,7 +595,6 @@ function cfdi_sales_add() {
           'transtype'         => $cart->trans_type,
           'addenda'           => base64_encode($info['cfdi_addenda']),
           // NULL
-          'condicionesDePago' => null,
           'tipoCambio'        => null,
           'moneda'            => null,
           'tipocomprobante'   => null,
@@ -599,7 +603,7 @@ function cfdi_sales_add() {
       $bill = emitir($data);
       $cfdi_error = false;
 
-      error_log("\r\n/modules/api/cfdi.inc -- EMITIR\r\n".json_encode($bill), 3, "/var/tmp/sasys.log");
+      log_body("Issue build", json_encode($bill));
 
       if (isset($bill['error'])) {
         cfdi_delete_sale(key($cart->trans_no));
@@ -617,10 +621,12 @@ function cfdi_sales_add() {
           
           $response = $AutoFactura->emitir($bill);
 
-          error_log("\r\n/modules/api/cfdi.inc -- AUTOFACTURA\r\n".json_encode($response), 3, "/var/tmp/sasys.log");
+          log_body("Issue received", json_encode($response));
 
           if($response['exito'] == 1){
             set_sql_digital($cart->trans_type, key($cart->trans_no), $info['cfdi_branch_id'], $response);
+
+            log_body("Issue saved", "Ok");
 
             // XML
             $response_xml = get_xml_digital(key($cart->trans_no));
@@ -630,12 +636,16 @@ function cfdi_sales_add() {
             copy($AutoFactura->url.$xml_url, $xml_file);
             add_attachment($cart->trans_type, key($cart->trans_no), "XML", $xml_file, $xml_unique_name, filesize($xml_file), mime_content_type($xml_file));
 
+            log_body("XML saved", "Ok");
+
             // PDF
             $response_pdf = get_pdf_digital(key($cart->trans_no));
             $pdf_unique_name = uniqid('');
             $pdf_file = company_path()."/attachments/".$pdf_unique_name;
             copy($AutoFactura->url.$response_pdf['pdf_url'], $pdf_file);
             add_attachment($cart->trans_type, key($cart->trans_no), "PDF", $pdf_file, $pdf_unique_name, filesize($pdf_file), mime_content_type($pdf_file));
+
+            log_body("PDF saved", "Ok");
           } else {
             cfdi_delete_sale(key($cart->trans_no));
             $cfdi_response = _("Can't issue CFDi invoice. ").$response['mensaje'];
@@ -693,8 +703,11 @@ function cfdi_sales_add() {
            "date_stamped" => $response['fechatimbrado'],
           )
         ));
+
+        log_body("Issue correct", "Ok");
       } else {
         api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        log_body("Issue correct", "Fail");
       }
       return;
       break;
@@ -725,8 +738,11 @@ function cfdi_sales_add() {
            "date_stamped" => $response['fechatimbrado'],
           )
         ));
+
+        log_body("Issue correct", "Ok");
       } else {
         api_success_response(json_encode(array("success" => false, "msg" => $feeback_response, "extra" => $response['uuid'])));
+        log_body("Issue correct", "Fail");
       }
       return;
       break;
