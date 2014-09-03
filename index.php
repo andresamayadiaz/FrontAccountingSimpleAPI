@@ -23,7 +23,7 @@ $path_to_root = "../..";
 $page_security = 'SA_API';
 ini_set('xdebug.auto_trace', 2);
 include_once ($path_to_root . "/modules/api/session-custom.inc");
-include_once ($path_to_root . "/modules/api/Slim/Slim.php");
+include_once ($path_to_root . "/modules/api/vendor/autoload.php");
 \Slim\Slim::registerAutoloader();
 
 include_once ($path_to_root . "/modules/api/util.php");
