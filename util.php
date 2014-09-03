@@ -9,9 +9,9 @@ function api_login(){
 	$app = \Slim\Slim::getInstance('SASYS');
 	$app->hook('slim.before', function () use ($app) {
 		$req = $app->request();
-	  $company = $req->headers('X_company');
-		$user = $req->headers('X_user');
-		$password = $req->headers('X_password');
+	  $company = $req->headers('X-COMPANY');
+		$user = $req->headers('X-USER');
+		$password = $req->headers('X-PASSWORD');
 		
 		// TESTING
 		/*$company = 0;
