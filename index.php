@@ -13,6 +13,9 @@ Free software under GNU GPL
 - Added POST /locations/ To Add A Location Thanks to Richard Vinke
 ***********************************************/
 
+ini_set('html_errors', false);
+ini_set('xdebug.show_exception_trace', 0);
+
 global $security_areas, $security_groups, $security_headings, $path_to_root, $db, $db_connections;
 
 $path_to_root = "../..";
@@ -20,7 +23,7 @@ $path_to_root = "../..";
 $page_security = 'SA_API';
 ini_set('xdebug.auto_trace', 2);
 include_once ($path_to_root . "/modules/api/session-custom.inc");
-include_once ($path_to_root . "/modules/api/Slim/Slim.php");
+include_once ($path_to_root . "/modules/api/vendor/autoload.php");
 \Slim\Slim::registerAutoloader();
 
 include_once ($path_to_root . "/modules/api/util.php");
@@ -28,11 +31,11 @@ include_once ($path_to_root . "/modules/api/util.php");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
-echo "sales quote => ".ST_SALESQUOTE;
-echo "sales order => ".ST_SALESORDER;
-echo "sales invoice => ".ST_SALESINVOICE;
-echo "cust delivery => ".ST_CUSTDELIVERY;
-echo "cust credit => ".ST_CUSTCREDIT;
+// echo "sales quote => ".ST_SALESQUOTE;
+// echo "sales order => ".ST_SALESORDER;
+// echo "sales invoice => ".ST_SALESINVOICE;
+// echo "cust delivery => ".ST_CUSTDELIVERY;
+// echo "cust credit => ".ST_CUSTCREDIT;
 
 $rest = new \Slim\Slim(array(
 		'log.enabled' => true,
