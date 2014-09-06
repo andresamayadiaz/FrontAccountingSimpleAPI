@@ -21,6 +21,15 @@ CHANGELOG:
 14-June-2013:
 - Added POST /locations/ To Add A Location Thanks to Richard Vinke
 
+6-Sept-2014
+Thanks to Cambell Prince
+- Added composer.json and dependency on Slim
+- Improved error presentation for xdebug users.
+- Changed expected headers to uppercase.
+- Switch to use composer installed Slim
+- Switch to use Slim installed via composer.
+- Remove hard coded path 'api' and simplify includes.
+
 README:
 
 # This is a very Simple Front Accounting API
@@ -31,7 +40,7 @@ Hope you find it usefull !!
 == API Quick Start ==
 
 1. Just copy the files into the modules directory under a folder called "api" or anything you want.
-2. Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X_company, X_user and X_password headers in the request and the API will use those credentials, if they're wrong you will get a nice message telling "Bad Login"
+2. Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X-COMPANY, X-USER and X-PASSWORD headers in the request and the API will use those credentials, if they're wrong you will get a nice message telling "Bad Login"
 3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON with all you're items categories, if not check the util.php file.
 
 == Methods ==
