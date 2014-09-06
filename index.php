@@ -11,6 +11,9 @@ Free software under GNU GPL
 
 --> 14-June-2013:
 - Added POST /locations/ To Add A Location Thanks to Richard Vinke
+
+--> 6-Sept-2014
+- Several bug fixes and additions Thanks to Cambell Prince
 ***********************************************/
 
 ini_set('html_errors', false);
