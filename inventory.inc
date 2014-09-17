@@ -230,7 +230,7 @@ function inventory_locations_all()
 		$ret[] = array(
 			'loc_code' => $loc['loc_code'],
 			'location_name' => $loc['location_name'],
-			'delivery_address' => $$loc['inactive'],
+			'delivery_address' => $loc['delivery_address'],
 			'phone' => $loc['phone'],
 			'phone2' => $loc['phone2'],
 			'fax' => $loc['fax'],
