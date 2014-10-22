@@ -43,10 +43,10 @@ include_once(FA_ROOT . "/includes/data_checks.inc");
 // echo "cust credit => ".ST_CUSTCREDIT;
 
 $rest = new \Slim\Slim(array(
-		'log.enabled' => true,
-    	'mode' => 'debug',
-    	'debug' => true
-    ));
+	'log.enabled' => true,
+	'mode' => 'debug',
+	'debug' => true
+));
 $rest->setName('SASYS');
 
 // API Login Hook
@@ -60,7 +60,7 @@ define("RESULTS_PER_PAGE", 2);
 // ------------------------------- Items -------------------------------
 // Get Items
 $rest->get('/inventory/', function() use ($rest){
-	
+
 	global $req;
 	include_once (API_ROOT . "/inventory.inc");
 
@@ -72,11 +72,11 @@ $rest->get('/inventory/', function() use ($rest){
 		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
 		$from = --$page * RESULTS_PER_PAGE;
 		inventory_all($from);
-	}	
+	}
 });
 // Get Specific Item by Stock Id
 $rest->get('/inventory/:id', function($id) use ($rest) {
-	
+
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_get($id);
 
@@ -85,19 +85,19 @@ $rest->get('/inventory/:id', function($id) use ($rest) {
 $rest->post('/inventory/', function() use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_add();
-	
+
 });
 // Edit Specific Item
 $rest->put('/inventory/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_edit($id);
-	
+
 });
 // Delete Specific Item
 $rest->delete('/inventory/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_delete($id);
-	
+
 });
 // ------------------------------- Items -------------------------------
 
@@ -106,7 +106,7 @@ $rest->delete('/inventory/:id', function($id) use ($rest){
 $rest->get('/movementtypes/', function() use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_movementstype_all();
-	
+
 });
 // ------------------------------- Inventory Movements -------------------------------
 
@@ -115,7 +115,7 @@ $rest->get('/movementtypes/', function() use ($rest){
 $rest->get('/locations/', function() use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	inventory_locations_all();
-	
+
 });
 
 // Add Location, added by Richard Vinke
@@ -131,7 +131,7 @@ $rest->post('/locations/', function() use ($rest){
 $rest->post('/stock/', function() use ($rest){
 	include_once (API_ROOT . "/inventory.inc");
 	stock_adjustment_add();
-	
+
 });
 // ------------------------------- Stock Adjustments -------------------------------
 
@@ -161,19 +161,19 @@ $rest->get('/category/:id', function($id) use ($rest) {
 $rest->post('/category/', function() use ($rest){
 	include_once (API_ROOT . "/category.inc");
 	category_add();
-	
+
 });
 // Edit Item Category
 $rest->put('/category/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/category.inc");
 	category_edit($id);
-	
+
 });
 // Delete Item Category
 $rest->delete('/category/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/category.inc");
 	category_delete($id);
-	
+
 });
 // ------------------------------- Item Categories -------------------------------
 
@@ -211,7 +211,7 @@ $rest->get('/taxgroups/', function() use ($rest){
 		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
 		$from = --$page * RESULTS_PER_PAGE;
 		taxgroups_all($from);
-	}	
+	}
 });
 // ------------------------------- Tax Groups -------------------------------
 
@@ -221,7 +221,7 @@ $rest->get('/taxgroups/', function() use ($rest){
 $rest->get('/customers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/customers.inc");
 	customer_get($id);
-	
+
 });
 // All Customers
 $rest->get('/customers/', function() use ($rest){
@@ -236,31 +236,31 @@ $rest->get('/customers/', function() use ($rest){
 		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
 		$from = --$page * RESULTS_PER_PAGE;
 		customer_all($from);
-	}	
+	}
 });
 // Add Customer
 $rest->post('/customers/', function($id) use ($rest){
 	include_once (API_ROOT . "/customers.inc");
 	customer_add();
-	
+
 });
 // Edit Customer
 $rest->put('/customers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/customers.inc");
 	customer_edit($id);
-	
+
 });
 // Delete Customer
 $rest->delete('/customers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	customer_delete($id);
-	
+
 });
 // Get Customer Branches
 $rest->get('/customers/:id/branches/', function($id) use ($rest){
 	include_once (API_ROOT . "/customers.inc");
 	customer_branches_get($id);
-	
+
 });
 // ------------------------------- Customers -------------------------------
 
@@ -270,31 +270,31 @@ $rest->get('/customers/:id/branches/', function($id) use ($rest){
 $rest->get('/suppliers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_get($id);
-	
+
 });
 // Add Supplier
 $rest->post('/suppliers/', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_add();
-	
+
 });
 // Edit Supplier
 $rest->put('/suppliers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_edit($id);
-	
+
 });
 // Delete Supplier
 $rest->delete('/suppliers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_delete($id);
-	
+
 });
 // Get Supplier Contacts
 $rest->get('/suppliers/:id/contacts/', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_contacts_get($id);
-	
+
 });
 // ------------------------------- Suppliers -------------------------------
 
@@ -319,7 +319,7 @@ $rest->get('/bankaccounts/', function() use ($rest){
 $rest->get('/bankaccounts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/bankaccounts.inc");
 	bankaccounts_get($id);
-	
+
 });
 // ------------------------------- Bank Accounts -------------------------------
 
@@ -338,19 +338,19 @@ $rest->get('/glaccounts/', function() use ($rest){
 		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
 		$from = --$page * RESULTS_PER_PAGE;
 		glaccounts_all($from);
-	}	
+	}
 });
 // Get Specific GL Account
 $rest->get('/glaccounts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/glaccounts.inc");
 	glaccounts_get($id);
-	
+
 });
 // Get GL Account Types
 $rest->get('/glaccounttypes/', function() use ($rest){
 	include_once (API_ROOT . "/glaccounts.inc");
 	glaccounttypes_all();
-	
+
 });
 // ------------------------------- GL Accounts -------------------------------
 
@@ -375,13 +375,13 @@ $rest->get('/currencies/', function() use ($rest){
 $rest->get('/currencies/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/currencies.inc");
 	currencies_get($id);
-	
+
 });
 // Get Last Exchange Rate
 $rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
 	include_once (API_ROOT . "/currencies.inc");
 	currencies_last_exrate($curr_abrev);
-	
+
 });
 // ------------------------------- Currencies -------------------------------
 
@@ -391,13 +391,13 @@ $rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
 $rest->get('/itemcosts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/items.inc");
 	itemcosts_get($id);
-	
+
 });
 // Update Item Cost
 $rest->put('/itemcosts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/items.inc");
 	itemcosts_update($id);
-	
+
 });
 // ------------------------------- Inventory Costs -------------------------------
 
@@ -407,13 +407,13 @@ $rest->put('/itemcosts/:id', function($id) use ($rest){
 $rest->get('/assets/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/assets.inc");
 	assets_get($id);
-	
+
 });
 // Insert Fixed Asset
 $rest->post('/assets/', function() use ($rest){
 	include_once (API_ROOT . "/assets.inc");
 	assets_add();
-	
+
 });
 // Get Asset Types
 $rest->get('/assettypes/', function() use ($rest){
@@ -443,13 +443,13 @@ $rest->get('/sales/:trans_no/:trans_type', function($trans_no, $trans_type) use 
 $rest->post('/sales/', function() use ($rest){
 	include_once (API_ROOT . "/sales.inc");
 	sales_add();
-	
+
 });
 // Edit Sales
 $rest->put('/sales/:trans_no/:trans_type', function($trans_no, $trans_type) use ($rest){
 	include_once (API_ROOT . "/sales.inc");
 	sales_edit($trans_no, $trans_type);
-	
+
 });
 // Cancel Sales
 $rest->delete('/sales/:branch_id/:uuid', function($branch_id, $uuid) use ($rest) {
