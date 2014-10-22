@@ -303,7 +303,8 @@ html_cleanup($_SERVER);
 
 // logout.php is the only page we should have always
 // accessable regardless of access level and current login status.
-if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
+if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false) {
+	set_global_connection();
 
 	login_timeout();
 
@@ -341,8 +342,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			$lang = &$_SESSION['language'];
 			$lang->set_language($_SESSION['language']->code);
 		}
-	} else
-		set_global_connection();
+	}
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
