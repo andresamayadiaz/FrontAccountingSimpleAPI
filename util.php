@@ -9,15 +9,15 @@ function api_login(){
 	$app = \Slim\Slim::getInstance('SASYS');
 	$app->hook('slim.before', function () use ($app) {
 		$req = $app->request();
-	  $company = $req->headers('X-COMPANY');
+		$company = $req->headers('X-COMPANY');
 		$user = $req->headers('X-USER');
 		$password = $req->headers('X-PASSWORD');
-		
+
 		// TESTING
 		/*$company = 0;
 		$user = 'admin';
 		$password = '123';*/
-	 	
+
 		$succeed = $_SESSION["wa_current_user"]->login($company,
 					$user, $password);
 		if(!$succeed){
@@ -49,7 +49,7 @@ function api_create_response($body){
 function api_error($code, $msg){
 	$app = \Slim\Slim::getInstance('SASYS');
 	$app->halt($code, json_encode(array('success' => 0, 'msg' => $msg)));
-	
+
 }
 
 ?>
