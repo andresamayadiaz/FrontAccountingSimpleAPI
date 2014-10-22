@@ -66,7 +66,6 @@ class GLTest extends PHPUnit_Framework_TestCase
 
 	public function testAccountTypes_Ok()
 	{
-		$this->assertTrue(false, 'Server 500');
 		$client = TestEnvironment::client();
 		$response = $client->get('/modules/api/glaccounttypes', array(
 			'headers' => TestEnvironment::headers()
