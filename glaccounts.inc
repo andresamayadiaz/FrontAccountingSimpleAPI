@@ -14,7 +14,7 @@ function glaccounts_all($from = null) {
 	if ($from == null) $from = 0;
 
 	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName FROM ".TB_PREF."chart_master,".TB_PREF."chart_types WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ORDER BY account_code LIMIT ".$from.", ".RESULTS_PER_PAGE;
-	
+
 	$query = db_query($sql, "error");
 
 	$info = array();
@@ -27,11 +27,11 @@ function glaccounts_all($from = null) {
 }
 
 function glaccounts_get($id){
-	
+
 	$acct = get_gl_account($id);
 	if(!$acct) $acct = array();
 	api_success_response(json_encode($acct));
-	
+
 }
 
 function glaccounttypes_all()
@@ -40,17 +40,17 @@ function glaccounttypes_all()
 	$accttypes = get_account_types();
 	$ret = array();
 	while($type = db_fetch($accttypes)){
-		
+
 		$ret[] = array(
 			'id' => $type['id'],
 			'name' => $type['name'],
 			'class_id' => $type['class_id'],
-			'parent' => $$type['parent']
+			'parent' => $type['parent']
 		);
-		
+
 	}
 	api_success_response(json_encode($ret));
-	
+
 }
 
 ?>
