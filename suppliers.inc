@@ -101,7 +101,9 @@ function supplier_add()
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account,
 	$notes, $tax_group_id, $tax_included
 	*/
-	add_supplier($info['supp_name'], $info['supp_ref'],
+	add_supplier(
+		$info['supp_name'],
+		$info['supp_ref'],
 		$info['address'],
 		$info['supp_address'],
 		$info['gst_no'],
