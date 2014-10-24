@@ -239,7 +239,7 @@ $rest->get('/customers/', function() use ($rest){
 	}
 });
 // Add Customer
-$rest->post('/customers/', function($id) use ($rest){
+$rest->post('/customers/', function() use ($rest){
 	include_once (API_ROOT . "/customers.inc");
 	customer_add();
 
@@ -252,7 +252,7 @@ $rest->put('/customers/:id', function($id) use ($rest){
 });
 // Delete Customer
 $rest->delete('/customers/:id', function($id) use ($rest){
-	include_once (API_ROOT . "/suppliers.inc");
+	include_once (API_ROOT . "/customers.inc");
 	customer_delete($id);
 
 });

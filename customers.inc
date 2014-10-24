@@ -8,18 +8,19 @@ Free software under GNU GPL
 $path_to_root = "../..";
 
 include_once($path_to_root . "/sales/includes/db/customers_db.inc");
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
 function customer_all($from = null) {
 	if ($from == null) $from = 0;
-	
+
 	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE !inactive LIMIT ".$from.", ".RESULTS_PER_PAGE;
 
 	$query = db_query($sql, "error");
 
 	$info = array();
 
-	while($data = db_fetch($query, "error")) {
-		$info[] = array("debtor_no" => $data["debtor_no"], "name" => $data["name"], "debtor_ref" => $data["debtor_ref"], "address" => $data["address"], "tax_id" => $data["tax_id"], "curr_code" => $data["curr_code"], "sales_type" => $data["sales_type"], "dimension_id" => $data["dimension_id"], "dimension2_id" => $data["dimension2_id"], "credit_status" => $data["credit_status"], "payment_terms" => $data["payment_terms"], "discount" => $data["discount"], "pymt_discount" => $data["pymt_discount"], "credit_limit" => $data["credit_limit"], "notes" => $data["notes"], "cfd22_street" => $data["cfd22_street"], "cfd22_street_number" => $data["cfd22_street_number"], "cfd22_suite_number" => $data["cfd22_suite_number"], "cfd22_district" => $data["cfd22_district"], "cfd22_postal_code" => $data["cfd22_postal_code"], "cfd22_city" => $data["cfd22_city"], "cfd22_state" => $data["cfd22_state"], "cfd22_country_id" => $data["cfd22_country_id"]);
+	while($data = db_fetch_assoc($query, "error")) {
+		$info[] = $data;
 	}
 
 	api_success_response(json_encode($info));
@@ -27,11 +28,11 @@ function customer_all($from = null) {
 
 function customer_get($id)
 {
-	
+
 	$cust = get_customer($id);
 	if(!$cust) $cust = array();
 	api_success_response(json_encode($cust));
-	
+
 }
 
 function customer_add()
@@ -40,7 +41,7 @@ function customer_add()
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	// Validate Required Fields
 	if(!isset($info['custname'])){
 		api_error(412, 'Customer Name is required [custname]');
@@ -58,7 +59,7 @@ function customer_add()
 		api_error(412, 'Currency Code is required [curr_code]');
 	}
 	if(!isset($info['credit_status'])){
-		// TODO Set a default initial credit status 
+		// TODO Set a default initial credit status
 		api_error(412, 'Credit Status is required [credit_status]');
 	}
 	if(!isset($info['payment_terms'])){
@@ -82,15 +83,15 @@ function customer_add()
 	if(!isset($info['notes'])){
 		$info['notes'] = '';
 	}
-	
+
 	/*
 	$CustName, $cust_ref, $address, $tax_id, $curr_code,
-	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
 	$credit_limit, $sales_type, $notes
 	*/
-	add_customer($info['custname'], $info['cust_ref'], 
+	add_customer($info['custname'], $info['cust_ref'],
 		$info['address'],
-		$info['tax_id'], 
+		$info['tax_id'],
 		$info['curr_code'],
 		0,
 		0,
@@ -102,29 +103,29 @@ function customer_add()
 		$info['sales_type'],
 		$info['notes']
 		);
-	
+
 	$id = db_insert_id();
 	$cust = get_customer($id);
-	
+
 	if($cust != null){
 		api_create_response(json_encode($cust));
 	}else {
 		api_error(500, 'Could Not Save to Database');
 	}
-	
+
 }
 
 function customer_edit($id){
-	
+
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$cust = get_customer($id);
 	if($cust == null){
 		api_error(400, 'Invalid Customer ID');
 	}
-	
+
 	// Validate Required Fields
 	if(!isset($info['custname'])){
 		api_error(412, 'Customer Name is required [custname]');
@@ -142,7 +143,7 @@ function customer_edit($id){
 		api_error(412, 'Currency Code is required [curr_code]');
 	}
 	if(!isset($info['credit_status'])){
-		// TODO Set a default initial credit status 
+		// TODO Set a default initial credit status
 		api_error(412, 'Credit Status is required [credit_status]');
 	}
 	if(!isset($info['payment_terms'])){
@@ -166,7 +167,7 @@ function customer_edit($id){
 	if(!isset($info['notes'])){
 		$info['notes'] = '';
 	}
-	
+
 	/*
 	$customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code,
 	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
@@ -189,37 +190,37 @@ function customer_edit($id){
 		$info['sales_type'],
 		$info['notes']
 	);
-	
+
 	api_success_response("Customer has been updated");
-	
+
 }
 
 function customer_delete($id){
-	
+
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$cust = get_customer($id);
 	if($cust == null){
 		api_error(400, 'Invalid Customer ID');
 	}
-	
+
 	delete_customer($id);
-	
+
 	$cust = null;
 	$cust = get_customer($id);
-	
+
 	if($cust != null){
 		api_error(500, 'Could Not Delete from Database');
 	}else {
 		api_success_response("Customer has been deleted");
 	}
-	
+
 }
 
 function customer_branches_get($id){
-	
+
 	$sql = "SELECT "
 		."b.branch_code, "
 		."b.branch_ref, "
@@ -244,12 +245,12 @@ function customer_branches_get($id){
 		AND b.salesman=s.salesman_code
 		AND b.debtor_no = ".db_escape($id)
 		." AND !b.inactive GROUP BY b.branch_code ORDER BY branch_ref";
-	
+
 	$result = db_query($sql,"Cannot Get Customer Branches");
-	
+
 	$ret = array();
 	while($branch = db_fetch($result)){
-		
+
 		$ret[] = array(
 			'branch_code' => $branch['branch_code'],
 			'branch_ref' => $branch['branch_ref'],
@@ -262,10 +263,10 @@ function customer_branches_get($id){
 			'email' => $branch['email'],
 			'tax_group_name' => $branch['tax_group_name']
 		);
-		
+
 	}
 	api_success_response(json_encode($ret));
-	
+
 }
 
 ?>
