@@ -10,13 +10,29 @@ $path_to_root = "../..";
 include_once($path_to_root . "/purchasing/includes/db/suppliers_db.inc");
 include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
+function supplier_all($from = null) {
+	if ($from == null) $from = 0;
+
+	$sql = "SELECT * FROM ".TB_PREF."suppliers LIMIT ".$from.", ".RESULTS_PER_PAGE;
+
+	$query = db_query($sql, "error");
+
+	$info = array();
+
+	while($data = db_fetch_assoc($query, "error")) {
+		$info[] = $data;
+	}
+
+	api_success_response(json_encode($info));
+}
+
 function supplier_get($id)
 {
-	
+
 	$sup = get_supplier($id);
 	if(!$sup) $sup = array();
 	api_success_response(json_encode($sup));
-	
+
 }
 
 function supplier_add()
@@ -25,7 +41,7 @@ function supplier_add()
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	// Validate Required Fields
 	if(!isset($info['supp_name'])){
 		api_error(412, 'Supplier Name is required [supp_name]');
@@ -78,16 +94,16 @@ function supplier_add()
 	if(!isset($info['notes'])){
 		$info['notes'] = '';
 	}
-	
+
 	/*
 	$supp_name, $supp_ref, $address, $supp_address, $gst_no,
-	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
-	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
+	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id,
+	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account,
 	$notes, $tax_group_id, $tax_included
 	*/
-	add_supplier($info['supp_name'], $info['supp_ref'], 
+	add_supplier($info['supp_name'], $info['supp_ref'],
 		$info['address'],
-		$info['supp_address'], 
+		$info['supp_address'],
 		$info['gst_no'],
 		$info['website'],
 		$info['supp_account_no'],
@@ -104,16 +120,16 @@ function supplier_add()
 		$info['tax_group_id'],
 		$info['tax_included']
 		);
-	
+
 	$id = db_insert_id();
 	$sup = get_supplier($id);
-	
+
 	if($sup != null){
 		api_create_response(json_encode($sup));
 	}else {
 		api_error(500, 'Could Not Save to Database');
 	}
-	
+
 }
 
 function supplier_edit($id)
@@ -122,12 +138,12 @@ function supplier_edit($id)
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$sup = get_supplier($id);
 	if($sup == null){
 		api_error(400, 'Invalid Supplier ID');
 	}
-	
+
 	// Validate Required Fields
 	if(!isset($info['supp_name'])){
 		api_error(412, 'Supplier Name is required [supp_name]');
@@ -180,16 +196,16 @@ function supplier_edit($id)
 	if(!isset($info['notes'])){
 		$info['notes'] = '';
 	}
-	
+
 	/*
-	$supplier_id, $supp_name, $supp_ref, $address, $supp_address, $gst_no, 
-	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
-	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
+	$supplier_id, $supp_name, $supp_ref, $address, $supp_address, $gst_no,
+	$website, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id,
+	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account,
 	$notes, $tax_group_id, $tax_included
 	*/
-	update_supplier($id, $info['supp_name'], $info['supp_ref'], 
+	update_supplier($id, $info['supp_name'], $info['supp_ref'],
 		$info['address'],
-		$info['supp_address'], 
+		$info['supp_address'],
 		$info['gst_no'],
 		$info['website'],
 		$info['supp_account_no'],
@@ -206,40 +222,40 @@ function supplier_edit($id)
 		$info['tax_group_id'],
 		$info['tax_included']
 		);
-	
+
 	api_success_response("Supplier has been updated");
-	
+
 }
 
 function supplier_delete($id){
-	
+
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$sup = get_supplier($id);
 	if($sup == null){
 		api_error(400, 'Invalid Supplier ID');
 	}
-	
+
 	delete_supplier($id);
-	
+
 	$sup = null;
 	$sup = get_supplier($id);
-	
+
 	if($sup != null){
 		api_error(500, 'Could Not Delete from Database');
 	}else {
 		api_success_response("Supplier has been deleted");
 	}
-	
+
 }
 
 function supplier_contacts_get($id){
-	
+
 	$contacts = get_supplier_contacts($id, null);
 	api_success_response(json_encode($contacts));
-	
+
 }
 
 ?>
