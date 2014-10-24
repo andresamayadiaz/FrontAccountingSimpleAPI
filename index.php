@@ -396,7 +396,7 @@ $rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
 
 // ------------------------------- Inventory Costs -------------------------------
 // Inventory Costs
-// Get Item Cots
+// Get Item Cost
 $rest->get('/itemcosts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/items.inc");
 	itemcosts_get($id);
