@@ -20,6 +20,11 @@ class TestEnvironment
 		);
 	}
 
+	public static function createId()
+	{
+		return date('YmdHis');
+	}
+
 	/**
 	 * Return the X-COMPANY, X-USER, and X-PASSWORD headers
 	 * @return multitype:string

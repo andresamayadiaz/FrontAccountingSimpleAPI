@@ -60,7 +60,7 @@ gulp.task('env-db', function(cb) {
 
 gulp.task('env-test', ['env-db'], function() {});
 
-gulp.task('test', function(cb) {
+gulp.task('test', ['env-test'], function(cb) {
   var command = '';
   var withCoverage = false;
   if (withCoverage) {
