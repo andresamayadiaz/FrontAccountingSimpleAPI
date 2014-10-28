@@ -84,12 +84,43 @@ function customer_add()
 		$info['notes'] = '';
 	}
 
+	// For default branch
+	if(!isset($info['salesman'])){
+	    $info['salesman'] = '';
+	}
+	if(!isset($info['area'])){
+	    $info['area'] = '';
+	}
+	if(!isset($info['tax_group_id'])){
+	    $info['tax_group_id'] = '1';
+	}
+	if(!isset($info['location'])){
+	    $info['location'] = '1';
+	}
+	if(!isset($info['ship_via'])){
+	    $info['ship_via'] = '1';
+	}
+	if(!isset($info['phone'])){
+	    $info['phone'] = '';
+	}
+	if(!isset($info['phone2'])){
+	    $info['phone2'] = '';
+	}
+	if(!isset($info['fax'])){
+	    $info['fax'] = '';
+	}
+	if(!isset($info['email'])){
+	    $info['email'] = '';
+	}
+
 	/*
 	$CustName, $cust_ref, $address, $tax_id, $curr_code,
 	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
 	$credit_limit, $sales_type, $notes
 	*/
-	add_customer($info['custname'], $info['cust_ref'],
+	add_customer(
+		$info['custname'],
+		$info['cust_ref'],
 		$info['address'],
 		$info['tax_id'],
 		$info['curr_code'],
@@ -102,11 +133,62 @@ function customer_add()
 		$info['credit_limit'],
 		$info['sales_type'],
 		$info['notes']
+	);
+
+	$selected_id = db_insert_id();
+	$auto_create_branch = 1;
+	if (isset($auto_create_branch) && $auto_create_branch == 1)
+	{
+		add_branch(
+			$selected_id,
+			$info['custname'],
+			$info['cust_ref'],
+			$info['address'],
+			$info['salesman'],
+			$info['area'],
+			$info['tax_group_id'], '1',
+			get_company_pref('default_sales_discount_act'),
+			get_company_pref('debtors_act'),
+			get_company_pref('default_prompt_payment_act'),
+			$info['location'],
+			$info['address'],
+			0,
+			0,
+			$info['ship_via'],
+			$info['notes']
 		);
 
-	$id = db_insert_id();
-	$cust = get_customer($id);
+		$selected_branch = db_insert_id();
 
+		add_crm_person(
+			$info['cust_ref'],
+			$info['custname'],
+			'',
+			$info['address'],
+			$info['phone'],
+			$info['phone2'],
+			$info['fax'],
+			$info['email'],
+			'',
+			''
+		);
+
+		$pers_id = db_insert_id();
+		add_crm_contact(
+			'cust_branch',
+			'general',
+			$selected_branch,
+			$pers_id
+		);
+
+		add_crm_contact(
+			'customer',
+			'general',
+			$selected_id,
+			$pers_id
+		);
+	}
+	$cust = get_customer($selected_id);
 	if($cust != null){
 		api_create_response(json_encode($cust));
 	}else {
