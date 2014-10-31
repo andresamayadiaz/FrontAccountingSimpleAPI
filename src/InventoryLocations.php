@@ -18,7 +18,6 @@ class InventoryLocations
 		$locations = get_item_locations(false);
 		$ret = array();
 		while ($loc = db_fetch($locations)) {
-
 			$ret[] = array(
 				'loc_code' => $loc['loc_code'],
 				'location_name' => $loc['location_name'],
@@ -37,8 +36,7 @@ class InventoryLocations
 	public function post($rest)
 	{
 		// Originally added by Richard Vinke
-		$app = \Slim\Slim::getInstance('SASYS');
-		$req = $app->request();
+		$req = $rest->request();
 		$info = $req->post();
 
 		// ToDo Check if loc_code already exists
