@@ -1,4 +1,16 @@
 <?php
+use FAAPI\Inventory;
+use FAAPI\InventoryLocations;
+use FAAPI\Category;
+use FAAPI\TaxTypes;
+use FAAPI\TaxGroups;
+use FAAPI\Customers;
+use FAAPI\Suppliers;
+use FAAPI\BankAccounts;
+use FAAPI\GLAccounts;
+use FAAPI\Currencies;
+use FAAPI\InventoryCosts;
+use FAAPI\Sales;
 /**********************************************
 Author: Andres Amaya
 Name: SASYS REST API
@@ -55,48 +67,34 @@ define("RESULTS_PER_PAGE", 2);
 
 // API Routes
 // ------------------------------- Items -------------------------------
+$rest->container->singleton('inventory', function() {
+	return new Inventory();
+});
 $rest->group('/inventory', function () use($rest)
 {
 	// Get Items
-	$rest->get('/', function () use($rest)
-	{
-
-		global $req;
-		include_once (API_ROOT . "/inventory.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			inventory_all();
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			inventory_all($from);
-		}
+	$rest->get('/', function() use($rest) {
+		$rest->inventory->get($rest);
 	});
 	// Get Specific Item by Stock Id
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_get($id);
+		$rest->inventory->getById($rest, $id);
 	});
 	// Add Item
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_add();
+		$rest->inventory->post($rest);
 	});
 	// Edit Specific Item
 	$rest->put('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_edit($id);
+		$rest->inventory->put($rest, $id);
 	});
 	// Delete Specific Item
 	$rest->delete('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_delete($id);
+		$rest->inventory->delete($rest, $id);
 	});
 });
 // ------------------------------- Items -------------------------------
@@ -111,20 +109,21 @@ $rest->get('/movementtypes/', function () use($rest)
 // ------------------------------- Inventory Movements -------------------------------
 
 // ------------------------------- Inventory Locations -------------------------------
+$rest->container->singleton('inventoryLocations', function() {
+	return new InventoryLocations();
+});
 $rest->group('/locations', function () use($rest)
 {
 	// Get Locations
 	$rest->get('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_locations_all();
+		$rest->inventoryLocations->get($rest);
 	});
 
 	// Add Location, added by Richard Vinke
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/inventory.inc");
-		inventory_location_add();
+		$rest->inventoryLocations->post($rest);
 	});
 });
 // ------------------------------- Inventory Locations -------------------------------
@@ -139,299 +138,225 @@ $rest->post('/stock/', function () use($rest)
 // ------------------------------- Stock Adjustments -------------------------------
 
 // ------------------------------- Item Categories -------------------------------
+$rest->container->singleton('category', function() {
+	return new Category();
+});
 $rest->group('/category', function () use($rest)
 {
 	// Get Items Categories
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/category.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			category_all(null);
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			category_all($from);
-		}
+		$rest->category->get($rest);
 	});
 	// Get Specific Item Category
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/category.inc");
-		category_get($id);
+		$rest->category->getById($rest, $id);
 	});
 	// Add Item Category
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/category.inc");
-		category_add();
+		$rest->category->post($rest);
 	});
 	// Edit Item Category
 	$rest->put('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/category.inc");
-		category_edit($id);
+		$rest->category->put($rest, $id);
 	});
 	// Delete Item Category
 	$rest->delete('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/category.inc");
-		category_delete($id);
+		$rest->category->delete($rest, $id);
 	});
 });
 // ------------------------------- Item Categories -------------------------------
 
 // ------------------------------- Tax Types -------------------------------
 // Tax Types
+$rest->container->singleton('taxTypes', function() {
+	return new TaxTypes();
+});
+
 // Get All Item Tax Types
 $rest->get('/taxtypes/', function () use($rest)
 {
-	global $req;
-	include_once (API_ROOT . "/taxtypes.inc");
-
-	$page = $req->get("page");
-
-	if ($page == null) {
-		taxtypes_all();
-	} else {
-		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-		$from = -- $page * RESULTS_PER_PAGE;
-		taxtypes_all($from);
-	}
+	$rest->taxTypes->get($rest);
 });
 // ------------------------------- Tax Types -------------------------------
 
 // ------------------------------- Tax Groups -------------------------------
 // Tax Groups
+$rest->container->singleton('taxGroups', function() {
+	return new TaxGroups();
+});
+
 // Get All Tax Groups
 $rest->get('/taxgroups/', function () use($rest)
 {
-	global $req;
-	include_once (API_ROOT . "/taxgroups.inc");
-
-	$page = $req->get("page");
-
-	if ($page == null) {
-		taxgroups_all();
-	} else {
-		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-		$from = -- $page * RESULTS_PER_PAGE;
-		taxgroups_all($from);
-	}
+	$rest->taxGroups->get($rest);
 });
 // ------------------------------- Tax Groups -------------------------------
 
 // ------------------------------- Customers -------------------------------
+$rest->container->singleton('customers', function() {
+	return new Customers();
+});
 $rest->group('/customers', function () use($rest)
 {
 	// Get Customer General Info
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/customers.inc");
-		customer_get($id);
+		$rest->customers->getById($rest, $id);
 	});
 	// All Customers
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/customers.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			customer_all();
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			customer_all($from);
-		}
+		$rest->customers->get($rest);
 	});
 	// Add Customer
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/customers.inc");
-		customer_add();
+		$rest->customers->post($rest);
 	});
 	// Edit Customer
 	$rest->put('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/customers.inc");
-		customer_edit($id);
+		$rest->customers->put($rest, $id);
 	});
 	// Delete Customer
 	$rest->delete('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/customers.inc");
-		customer_delete($id);
+		$rest->customers->delete($rest, $id);
 	});
 	// Get Customer Branches
 	$rest->get('/:id/branches/', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/customers.inc");
-		customer_branches_get($id);
+		$rest->customers->getBranches($rest, $id);
 	});
 });
 // ------------------------------- Customers -------------------------------
 
 // ------------------------------- Suppliers -------------------------------
+$rest->container->singleton('suppliers', function() {
+	return new Suppliers();
+});
 $rest->group('/suppliers', function () use($rest)
 {
 	// All Suppliers
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/suppliers.inc");
-
-		$page = $req->get("page");
-
-		supplier_all($page);
+		$rest->suppliers->get($rest);
 	});
 	// Get Supplier General Info
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/suppliers.inc");
-		supplier_get($id);
+		$rest->suppliers->getById($rest, $id);
 	});
 	// Add Supplier
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/suppliers.inc");
-		supplier_add();
+		$rest->suppliers->post($rest);
 	});
 	// Edit Supplier
 	$rest->put('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/suppliers.inc");
-		supplier_edit($id);
+		$rest->suppliers->put($rest, $id);
 	});
 	// Delete Supplier
 	$rest->delete('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/suppliers.inc");
-		supplier_delete($id);
+		$rest->suppliers->delete($rest, $id);
 	});
 	// Get Supplier Contacts
 	$rest->get('/:id/contacts/', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/suppliers.inc");
-		supplier_contacts_get($id);
+		$rest->suppliers->getContacts($rest, $id);
 	});
 });
 // ------------------------------- Suppliers -------------------------------
 
 // ------------------------------- Bank Accounts -------------------------------
+$rest->container->singleton('bankAccounts', function() {
+	return new BankAccounts();
+});
 $rest->group('/bankaccounts', function () use($rest)
 {
 	// Get All Bank Accounts
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/bankaccounts.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			bankaccounts_all();
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			bankaccounts_all($from);
-		}
+		$rest->bankAccounts->get($rest);
 	});
 	// Get Specific Bank Account
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/bankaccounts.inc");
-		bankaccounts_get($id);
+		$rest->bankAccounts->getById($rest, $id);
 	});
 });
 // ------------------------------- Bank Accounts -------------------------------
 
 // ------------------------------- GL Accounts -------------------------------
+$rest->container->singleton('glAccounts', function() {
+	return new GLAccounts();
+});
 $rest->group('/glaccounts', function () use($rest)
 {
 	// Get GL Accounts
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/glaccounts.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			glaccounts_all();
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			glaccounts_all($from);
-		}
+		$rest->glAccounts->get($rest);
 	});
 	// Get Specific GL Account
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/glaccounts.inc");
-		glaccounts_get($id);
+		$rest->glAccounts->getById($rest, $id);
 	});
 });
 // Get GL Account Types
 $rest->get('/glaccounttypes/', function () use($rest)
 {
-	include_once (API_ROOT . "/glaccounts.inc");
-	glaccounttypes_all();
+	$rest->glAccounts->getTypes($rest);
 });
 // ------------------------------- GL Accounts -------------------------------
 
 // ------------------------------- Currencies -------------------------------
+$rest->container->singleton('currencies', function() {
+	return new Currencies();
+});
 $rest->group('/currencies', function () use($rest)
 {
 	// Get All Currencies
 	$rest->get('/', function () use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/currencies.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			currencies_all();
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			currencies_all($from);
-		}
+		$rest->currencies->get($rest);
 	});
 	// Get Specific Currency
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/currencies.inc");
-		currencies_get($id);
+		$rest->currencies->getById($rest, $id);
 	});
 });
 // Get Last Exchange Rate
 $rest->get('/exrates/:curr_abrev', function ($curr_abrev) use($rest)
 {
-	include_once (API_ROOT . "/currencies.inc");
-	currencies_last_exrate($curr_abrev);
+	$rest->currencies->getLastExchangeRate($rest, $curr_abrev);
 });
 // ------------------------------- Currencies -------------------------------
 
 // ------------------------------- Inventory Costs -------------------------------
+$rest->container->singleton('inventoryCosts', function() {
+	return new InventoryCosts();
+});
 $rest->group('/itemcosts', function () use($rest)
 {
 	// Get Item Cost
 	$rest->get('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/items.inc");
-		itemcosts_get($id);
+		$rest->inventoryCosts->getById($rest, $id);
 	});
 	// Update Item Cost
 	$rest->put('/:id', function ($id) use($rest)
 	{
-		include_once (API_ROOT . "/items.inc");
-		itemcosts_update($id);
+		$rest->inventoryCosts->put($rest, $id);
 	});
 });
 // ------------------------------- Inventory Costs -------------------------------
@@ -476,47 +401,35 @@ if (assets_supported()) {
 // ------------------------------- Assets -------------------------------
 
 // ------------------------------- Sales --------------------------------
+$rest->container->singleton('sales', function() {
+	return new Sales();
+});
 $rest->group('/sales', function () use($rest)
 {
 	// Get Sales Header and Details
 	$rest->get('/:trans_no/:trans_type', function ($trans_no, $trans_type) use($rest)
 	{
-		include_once (API_ROOT . "/sales.inc");
-		sales_get($trans_no, $trans_type);
+		$rest->sales->getById($rest, $trans_no, $trans_type);
 	});
 	// Insert Sales
 	$rest->post('/', function () use($rest)
 	{
-		include_once (API_ROOT . "/sales.inc");
-		sales_add();
+		$rest->sales->post($rest);
 	});
 	// Edit Sales
 	$rest->put('/:trans_no/:trans_type', function ($trans_no, $trans_type) use($rest)
 	{
-		include_once (API_ROOT . "/sales.inc");
-		sales_edit($trans_no, $trans_type);
+		$rest->sales->put($rest, $trans_no, $trans_type);
 	});
 	// Cancel Sales
 	$rest->delete('/:branch_id/:uuid', function ($branch_id, $uuid) use($rest)
 	{
-		include_once (API_ROOT . "/sales.inc");
-		sales_cancel($branch_id, $uuid);
+		$rest->sales->delete($rest, $branch_id, $uuid);
 	});
 	// All Sales
 	$rest->get('/:trans_type/', function ($trans_type) use($rest)
 	{
-		global $req;
-		include_once (API_ROOT . "/sales.inc");
-
-		$page = $req->get("page");
-
-		if ($page == null) {
-			sales_all($trans_type);
-		} else {
-			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-			$from = -- $page * RESULTS_PER_PAGE;
-			sales_all($trans_type, $from);
-		}
+		$rest->sales->get($rest, $trans_type);
 	});
 });
 // ------------------------------- Sales --------------------------------
