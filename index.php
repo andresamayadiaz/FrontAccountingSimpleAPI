@@ -29,8 +29,6 @@ $page_security = 'SA_API';
 include_once (API_ROOT . "/session-custom.inc");
 include_once (API_ROOT . "/vendor/autoload.php");
 
-\Slim\Slim::registerAutoloader();
-
 include_once (API_ROOT . "/util.php");
 
 include_once(FA_ROOT . "/includes/date_functions.inc");
