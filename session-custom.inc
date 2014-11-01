@@ -223,8 +223,9 @@ include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 
-//Added by tclim
-include_once($path_to_root . "/modules/api/sync_db.inc");
+// Added by tclim
+// Removed CP 2014-11 sync_db is not required by *this* file so removed.
+// include_once($path_to_root . "/modules/api/sync_db.inc"); // REVIEW: CP 2014-11
 
 include_once($path_to_root . "/includes/hooks.inc");
 //
