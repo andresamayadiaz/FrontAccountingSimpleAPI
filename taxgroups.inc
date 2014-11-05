@@ -7,11 +7,11 @@ Free software under GNU GPL
 
 $path_to_root = "../..";
 
-include_once($path_to_root . "/taxes/includes/db/tax_groups_db.inc");
+include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
 
 function taxgroups_all($from = null){
 	if ($from == null) $from = 0;
-	
+
 	$sql = "SELECT * FROM ".TB_PREF."tax_groups WHERE !inactive LIMIT ".$from.", ".RESULTS_PER_PAGE;
 
 	$query = db_query($sql, "error");
