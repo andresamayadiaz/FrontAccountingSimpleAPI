@@ -10,10 +10,11 @@ $path_to_root = "../..";
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 function category_all($from = null) {
-	if ($from == null) $from = 0;
+	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, ".TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
+	if ($from !== null) {
+		$sql .= "LIMIT " . $from . ", " . RESULTS_PER_PAGE;
+	}
 
-	$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, ".TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id LIMIT ".$from.", ".RESULTS_PER_PAGE;
-	
 	$query = db_query($sql, "error");
 
 	$info = array();
@@ -27,11 +28,11 @@ function category_all($from = null) {
 
 function category_get($id)
 {
-	
+
 	$catego = get_item_category($id);
 	if(!$catego) $catego = array();
 	api_success_response(json_encode($catego));
-	
+
 }
 
 function category_add()
@@ -40,7 +41,7 @@ function category_add()
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	// Validate Required Fields
 	if(!isset($info['description'])){
 		api_error(412, 'Description is required');
@@ -66,15 +67,18 @@ function category_add()
 	if(!isset($info['assembly_account'])){
 		api_error(412, 'Assembly Account is required');
 	}
-	
+	if(!isset($info['inventory_account'])){
+		api_error(412, 'Inventory Account is required');
+	}
+
 	/*
-	$description, $tax_type_id, $sales_account, 
-	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
+	$description, $tax_type_id, $sales_account,
+	$cogs_account, $inventory_account, $adjustment_account, $assembly_account,
 	$units, $mb_flag, $dim1, $dim2, $no_sale
 	*/
-	add_item_category($info['description'], $info['tax_type_id'], 
+	add_item_category($info['description'], $info['tax_type_id'],
 		$info['sales_account'],
-		$info['cogs_account'], 
+		$info['cogs_account'],
 		$info['inventory_account'],
 		$info['adjustment_account'],
 		$info['assembly_account'],
@@ -84,29 +88,29 @@ function category_add()
 		0, // dimension2
 		0 // no sale
 		);
-	
+
 	$id = db_insert_id();
 	$catego = get_item_category($id);
-	
+
 	if($catego != null){
 		api_create_response(json_encode($catego));
 	}else {
 		api_error(500, 'Could Not Save to Database');
 	}
-	
+
 }
 
 function category_edit($id){
-	
+
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$catego = get_item_category($id);
 	if($catego == null){
 		api_error(400, 'Invalid Category ID');
 	}
-	
+
 	// Validate Required Fields
 	if(!isset($info['description'])){
 		api_error(412, 'Description is required');
@@ -132,15 +136,18 @@ function category_edit($id){
 	if(!isset($info['assembly_account'])){
 		api_error(412, 'Assembly Account is required');
 	}
-	
+	if(!isset($info['inventory_account'])){
+		api_error(412, 'Inventory Account is required');
+	}
+
 	/*
-	$id, $description, $tax_type_id, 
-	$sales_account, $cogs_account, $inventory_account, $adjustment_account, 
+	$id, $description, $tax_type_id,
+	$sales_account, $cogs_account, $inventory_account, $adjustment_account,
 	$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale
 	*/
-	update_item_category($id, $info['description'], $info['tax_type_id'], 
+	update_item_category($id, $info['description'], $info['tax_type_id'],
 		$info['sales_account'],
-		$info['cogs_account'], 
+		$info['cogs_account'],
 		$info['inventory_account'],
 		$info['adjustment_account'],
 		$info['assembly_account'],
@@ -150,32 +157,32 @@ function category_edit($id){
 		0, // dimension2
 		0 // no sale
 		);
-	
+
 	api_success_response("Category has been updated");
-	
+
 }
 
 function category_delete($id){
-	
+
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
 	$info = $req->post();
-	
+
 	$catego = get_item_category($id);
 	if($catego == null){
 		api_error(400, 'Invalid Category ID');
 	}
-	
+
 	delete_item_category($id);
-	
+
 	$catego = get_item_category($id);
-	
+
 	if($catego != null){
 		api_error(500, 'Could Not Delete from Database: ');
 	}else {
 		api_success_response("Category has been deleted");
 	}
-	
+
 }
 
 ?>

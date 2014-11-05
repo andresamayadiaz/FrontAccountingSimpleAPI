@@ -22,7 +22,6 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$result = json_decode($result);
 
 		$count0 = count($result);
-// 		$this->assertEquals(0, $count0);
 
 		// Add
 		$id = TestEnvironment::createId();
@@ -127,6 +126,65 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$count2 = count($result);
 		$this->assertEquals($count0, $count2);
 
+	}
+
+	public function testMovementTypes_Ok()
+	{
+		$client = TestEnvironment::client();
+
+		// List
+		$response = $client->get('/modules/api/movementtypes/', array(
+			'headers' => TestEnvironment::headers()
+		));
+		$this->assertEquals('200', $response->getStatusCode());
+		$result = $response->getBody();
+		$result = json_decode($result);
+
+		$this->assertEquals(1, count($result));
+		$this->assertEquals('Adjustment', $result[0]->name);
+
+	}
+
+	public function testLocations_Ok()
+	{
+		$client = TestEnvironment::client();
+
+		// List
+		$response = $client->get('/modules/api/locations/', array(
+			'headers' => TestEnvironment::headers()
+		));
+		$this->assertEquals('200', $response->getStatusCode());
+		$result = $response->getBody();
+		$result = json_decode($result);
+
+		$count0 = count($result);
+
+		// Add
+		$id = 'LOC';
+		$response = $client->post('/modules/api/locations/', array(
+			'headers' => TestEnvironment::headers(),
+			'body' => array(
+				'loc_code' => $id,
+				'location_name' => 'Location Name'
+			)
+		));
+		$this->assertEquals('201', $response->getStatusCode());
+		$result = $response->getBody();
+		$result = json_decode($result);
+
+		$this->assertEquals($id, $result->loc_code);
+		$this->assertEquals('Location Name', $result->location_name);
+
+		// List again
+		$response = $client->get('/modules/api/locations/', array(
+			'headers' => TestEnvironment::headers()
+		));
+		$this->assertEquals('200', $response->getStatusCode());
+		$result = $response->getBody();
+		$result = json_decode($result);
+
+		$count1 = count($result);
+		$this->assertEquals($count0 + 1, $count1);
 	}
 
 }
