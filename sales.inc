@@ -5,7 +5,7 @@ Name: Sales Quotes API
 Free software under GNU GPL
 ***********************************************/
 
-//$path_to_root = "../..";
+$path_to_root = "../..";
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -15,21 +15,21 @@ include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
-include_once($path_to_root . "/modules/timbrado/includes/db/comprobantes_db.php.inc");
-include_once($path_to_root . "/modules/timbrado/includes/db/llavero_db.php.inc");
-include_once($path_to_root . "/modules/timbrado/includes/generate/AutoFacturaCore.php.inc");
-include_once($path_to_root . "/modules/timbrado/includes/db/configuraciones_db.php.inc");
+// include_once($path_to_root . "/modules/timbrado/includes/db/comprobantes_db.php.inc");
+// include_once($path_to_root . "/modules/timbrado/includes/db/llavero_db.php.inc");
+// include_once($path_to_root . "/modules/timbrado/includes/generate/AutoFacturaCore.php.inc");
+// include_once($path_to_root . "/modules/timbrado/includes/db/configuraciones_db.php.inc");
 
 /*function salesquote_get($id){
-	
+
 	try{
 		$doc = new Cart(ST_SALESQUOTE, $id);
-	
+
 		$sub_tot = $doc->get_items_total() + $doc->freight_cost;
 		$display_sub_tot = price_format($sub_tot);
-		
+
 		$display_total = $doc->get_trans_total();
-		
+
 		$ret = array();
 		$ret['trans_type'] = $doc->trans_type;
 		$ret['trans_no'] = $id;
@@ -72,9 +72,9 @@ include_once($path_to_root . "/modules/timbrado/includes/db/configuraciones_db.p
 	} catch(Exception $e){
 		api_error(404, $e->getMessage());
 	}
-	
+
 	api_success_response(json_encode($ret));
-	
+
 }*/
 
 function sales_all($trans_type, $from = null) {
@@ -136,7 +136,7 @@ function sales_all($trans_type, $from = null) {
 
 			$sale_index++;
 		}
-	}	else if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE || $trans_type == ST_CUSTDELIVERY) {
+	} else if ($trans_type == ST_SALESORDER || $trans_type == ST_SALESQUOTE || $trans_type == ST_CUSTDELIVERY) {
 		$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders WHERE trans_type=".db_escape($trans_type)." LIMIT ".$from.", ".RESULTS_PER_PAGE;
 		$query = db_query($sql, "error");
 
@@ -249,7 +249,7 @@ function sales_add() {
 	$app	= \Slim\Slim::getInstance('SASYS');
 	$req	= $app->request();
 	$info	= $req->post();
-	
+
 	$cart									= null;
 	$cart									= new Cart($info['trans_type'], 0);
 	$cart->reference			= $info['ref'];
@@ -303,6 +303,7 @@ function sales_add() {
 	$can_process = can_process($info, $cart);
 
 	if ($can_process['passed'] == false) {
+		trigger_error(var_export($can_process, true));
 		api_error(412, $can_process['message']);
 		return;
 	}
@@ -326,17 +327,17 @@ function sales_add() {
   		break;
   	case ST_SALESINVOICE:
   		$feeback_response = sprintf(_("Invoice # %d has been entered."), key($cart->trans_no));
-  		
-  		if ($cfdi_response != "") {
-  			$feeback_response .= "\r\n".$cfdi_response;
-  		}
+
+//   		if ($cfdi_response != "") {
+//   			$feeback_response .= "\r\n".$cfdi_response;
+//   		}
 
   		api_success_response($feeback_response);
   		return;
   		break;
   	case ST_CUSTCREDIT:
   		$feeback_response = sprintf(_("Credit Note # %d has been processed."), key($cart->trans_no));
-  		
+
   		if ($cfdi_response != "") {
   			$feeback_response .= "\r\n".$cfdi_response;
   		}
@@ -357,7 +358,7 @@ function sales_edit($trans_no, $trans_type) {
 	$app	= \Slim\Slim::getInstance('SASYS');
 	$req	= $app->request();
 	$info	= $req->put();
-	
+
 	$cart									= null;
 	$cart									= new Cart($trans_type, $trans_no);
 	if (isset($info["ref"]))
@@ -476,7 +477,7 @@ function sales_cancel($branch_id, $uuid) {
 	$datos								= array('autofactura_id' => $uuid);
 	$response							= $AutoFactura->cancelar($datos);
 	error_log("\r\n2=>".json_encode($response), 3, "/var/tmp/sasys.log");
-	
+
 	try {
 		if($response['exito'] == 1){
 			error_log("\r\n3", 3, "/var/tmp/sasys.log");
@@ -491,7 +492,7 @@ function sales_cancel($branch_id, $uuid) {
 		}
 	} catch (Exception $e) {
 		error_log("\r\n6", 3, "/var/tmp/sasys.log");
-		api_error(500, _('Could not cancel invoice. ').$e->getMessage());	
+		api_error(500, _('Could not cancel invoice. ').$e->getMessage());
 		return;
 	}
 }
@@ -506,7 +507,7 @@ function can_process($info, $cart) {
 	if (!$info['branch_id']) {
 		return array("passed" => false, "message" => _("This customer has no branch defined."));
 	}
-	
+
 	if (!is_date($info['order_date'])) {
 		return array("passed" => false, "message" => _("The entered date is invalid."));
 	}
@@ -564,7 +565,7 @@ function can_process($info, $cart) {
 	if (!db_has_currency_rates($cart->customer_currency, $info['order_date'])){
 		return false;
 	}
-	
+
 	if ($cart->get_items_total() < 0) {
 		return array("passed" => false, "message" => _("Invoice total amount cannot be less than zero."));
 	}
