@@ -266,6 +266,15 @@ $rest->get('/customers/:id/branches/', function($id) use ($rest){
 
 // ------------------------------- Suppliers -------------------------------
 // Suppliers
+// All Suppliers
+$rest->get('/suppliers/', function() use ($rest){
+	global $req;
+	include_once (API_ROOT . "/suppliers.inc");
+
+	$page = $req->get("page");
+
+	supplier_all($page);
+});
 // Get Supplier General Info
 $rest->get('/suppliers/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
@@ -273,7 +282,7 @@ $rest->get('/suppliers/:id', function($id) use ($rest){
 
 });
 // Add Supplier
-$rest->post('/suppliers/', function($id) use ($rest){
+$rest->post('/suppliers/', function() use ($rest){
 	include_once (API_ROOT . "/suppliers.inc");
 	supplier_add();
 
