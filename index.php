@@ -396,7 +396,7 @@ $rest->get('/exrates/:curr_abrev', function($curr_abrev) use ($rest){
 
 // ------------------------------- Inventory Costs -------------------------------
 // Inventory Costs
-// Get Item Cots
+// Get Item Cost
 $rest->get('/itemcosts/:id', function($id) use ($rest){
 	include_once (API_ROOT . "/items.inc");
 	itemcosts_get($id);
@@ -412,33 +412,39 @@ $rest->put('/itemcosts/:id', function($id) use ($rest){
 
 // ------------------------------- Assets -------------------------------
 // Fixed Assets
-// Get Fixed Asset
-$rest->get('/assets/:id', function($id) use ($rest){
-	include_once (API_ROOT . "/assets.inc");
-	assets_get($id);
+function assets_supported() {
+	global $path_to_root;
+	return file_exists($path_to_root . '/modules/asset_register');
+}
+if (assets_supported()) {
+	// Get Fixed Asset
+	$rest->get('/assets/:id', function($id) use ($rest){
+		include_once (API_ROOT . "/assets.inc");
+		assets_get($id);
 
-});
-// Insert Fixed Asset
-$rest->post('/assets/', function() use ($rest){
-	include_once (API_ROOT . "/assets.inc");
-	assets_add();
+	});
+	// Insert Fixed Asset
+	$rest->post('/assets/', function() use ($rest){
+		include_once (API_ROOT . "/assets.inc");
+		assets_add();
 
-});
-// Get Asset Types
-$rest->get('/assettypes/', function() use ($rest){
-	global $req;
-	include_once (API_ROOT . "/assets.inc");
+	});
+	// Get Asset Types
+	$rest->get('/assettypes/', function() use ($rest){
+		global $req;
+		include_once (API_ROOT . "/assets.inc");
 
-	$page	= $req->get("page");
+		$page	= $req->get("page");
 
-	if ($page == null) {
-		assettypes_all();
-	} else {
-		// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
-		$from = --$page * RESULTS_PER_PAGE;
-		assettypes_all($from);
-	}
-});
+		if ($page == null) {
+			assettypes_all();
+		} else {
+			// If page = 1 the value will be 0, if page = 2 the value will be 1, ...
+			$from = --$page * RESULTS_PER_PAGE;
+			assettypes_all($from);
+		}
+	});
+}
 // ------------------------------- Assets -------------------------------
 
 // ------------------------------- Sales Order Entry -------------------------------

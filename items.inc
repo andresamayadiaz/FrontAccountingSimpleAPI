@@ -24,13 +24,14 @@ function itemcosts_update($id){
 	$req = $app->request();
 	$info = $req->post();
 
-	$oldcost = get_standard_cost($id);
-	
+	$old_cost = get_standard_cost($id);
+
 	$update_no = stock_cost_update($id,
-		    $info['material_cost'], $info['labour_cost'],
-		    $info['overhead_cost'],	$old_cost);
-	
-	api_success_response(json_encode( array('stock_id' => $id, 'rate' => $rate) ));
+		$info['material_cost'], $info['labour_cost'],
+		$info['overhead_cost'], $old_cost
+	);
+
+	api_success_response(json_encode( array('stock_id' => $id)));
 
 }
 
