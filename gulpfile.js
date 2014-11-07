@@ -60,11 +60,16 @@ gulp.task('env-db', function(cb) {
 
 gulp.task('env-test', ['env-db'], function() {});
 
+/* To run the tests you first need to start the php server on port 8000.
+ *   `sh build-startServer.sh`
+ * then you can run the tests
+ *   `gulp test`
+ */
 gulp.task('test', ['env-test'], function(cb) {
   var command = '';
   var withCoverage = false;
   if (withCoverage) {
-    command = '/usr/bin/env php vendor/bin/phpunit --coverage-html ./wiki/code_coverage tests/*_Test.php';
+    command = '/usr/bin/env php vendor/bin/phpunit --coverage-html ./wiki/code_coverage -c phpunit.xml';
   } else {
     command = '/usr/bin/env php vendor/bin/phpunit -c phpunit.xml';
   }
