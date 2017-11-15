@@ -28,7 +28,7 @@ class CustomerTest extends PHPUnit_Framework_TestCase
 // 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/customers/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'custname' => 'custname',
 				'cust_ref' => 'cust_ref',
 				'address' => 'address',
@@ -109,7 +109,7 @@ class CustomerTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/customers/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'custname' => 'new custname',
 				'cust_ref' => 'new cust_ref',
 				'address' => 'new address',

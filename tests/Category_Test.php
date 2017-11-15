@@ -27,7 +27,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 		// Add
 		$response = $client->post('/modules/api/category/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'description' => 'description',
 				'tax_type_id' => '1',
 				'units' => 'each',
@@ -69,7 +69,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/category/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'description' => 'other description',
 				'tax_type_id' => '1',
 				'units' => 'month',

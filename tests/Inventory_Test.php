@@ -27,7 +27,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/inventory/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id,
 				'description' => 'description',
 				'long_description' => 'long description',
@@ -71,7 +71,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/inventory/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id, // TODO This shouldn't be required for an edit CP 2014-10
 				'description' => 'changed',
 				'long_description' => 'changed long description',
@@ -163,7 +163,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = 'LOC';
 		$response = $client->post('/modules/api/locations/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'loc_code' => $id,
 				'location_name' => 'Location Name'
 			)
@@ -195,7 +195,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/inventory/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id,
 				'description' => 'description',
 				'long_description' => 'long description',
@@ -229,7 +229,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		// Write Item Cost
 		$response = $client->put('/modules/api/itemcosts/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'material_cost' => '1',
 				'labour_cost' => '2',
 				'overhead_cost' => '3'
