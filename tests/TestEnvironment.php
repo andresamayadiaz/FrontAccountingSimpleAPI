@@ -61,7 +61,7 @@ class TestEnvironment
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 

@@ -11,8 +11,8 @@ class InventoryCosts
 	// Get Specific Item by Stock Id
 	public function getById($rest, $id)
 	{
-		$cost = get_standard_cost($id);
-		api_success_response(json_encode( array('stock_id' => $id, 'standard_cost' => $cost) ));
+		$cost = get_unit_cost($id);
+		api_success_response(json_encode( array('stock_id' => $id, 'unit_cost' => $cost) ));
 	}
 	// Edit Specific Item
 	public function put($rest, $id)
@@ -20,11 +20,16 @@ class InventoryCosts
 		$req = $rest->request();
 		$info = $req->post();
 
-		$old_cost = get_standard_cost($id);
+		$old_cost = get_unit_cost($id);
 
-		$update_no = stock_cost_update($id,
-			$info['material_cost'], $info['labour_cost'],
-			$info['overhead_cost'], $old_cost
+		$update_no = stock_cost_update(
+			$id,
+			$info['material_cost'],
+			$info['labour_cost'],
+			$info['overhead_cost'],
+			$old_cost,
+			'', // Ref lines
+			''  // Memo
 		);
 
 		api_success_response(json_encode( array('stock_id' => $id)));

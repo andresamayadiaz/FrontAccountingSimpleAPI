@@ -28,7 +28,7 @@ var execute = function(command, options, callback) {
 
 var paths = {
   src: ['**/*.inc', '**/*.php', '!vendor/**'],
-  testUnit: ['tests/**/*.php']
+  testUnit: ['tests/*.php']
 };
 
 gulp.task('tasks', function(cb) {

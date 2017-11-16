@@ -38,7 +38,7 @@ class TaxGroups
 			$info[] = array(
 				'id' => $data['id'],
 				'name' => $data['name'],
-				'tax_shipping' => $data['tax_shipping']
+				'inactive' => $data['inactive']
 			);
 		}
 

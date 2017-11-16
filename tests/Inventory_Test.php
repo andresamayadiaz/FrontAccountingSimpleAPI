@@ -39,7 +39,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 		$this->assertEquals('201', $response->getStatusCode());
@@ -83,7 +83,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 
@@ -125,23 +125,6 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 		$count2 = count($result);
 		$this->assertEquals($count0, $count2);
-
-	}
-
-	public function testMovementTypes_Ok()
-	{
-		$client = TestEnvironment::client();
-
-		// List
-		$response = $client->get('/modules/api/movementtypes/', array(
-			'headers' => TestEnvironment::headers()
-		));
-		$this->assertEquals('200', $response->getStatusCode());
-		$result = $response->getBody();
-		$result = json_decode($result);
-
-		$this->assertEquals(1, count($result));
-		$this->assertEquals('Adjustment', $result[0]->name);
 
 	}
 
@@ -207,7 +190,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 		$this->assertEquals('201', $response->getStatusCode());
@@ -222,7 +205,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 		$expected = new stdClass();
 		$expected->stock_id = $id;
-		$expected->standard_cost = '0';
+		$expected->unit_cost = '0';
 
 		$this->assertEquals($expected, $result);
 
@@ -254,7 +237,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 		$expected = new stdClass();
 		$expected->stock_id = $id;
-		$expected->standard_cost = '6';
+		$expected->unit_cost = '1';
 
 		$this->assertEquals($expected, $result);
 

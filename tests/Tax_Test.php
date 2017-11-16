@@ -43,9 +43,9 @@ class TaxTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(2, count($result));
         $expected = new stdClass();
-        $expected->id = 1;
+        $expected->id = '1';
         $expected->name = 'Tax';
-        $expected->tax_shipping = 0;
+        $expected->inactive = '0';
         $this->assertEquals($expected, $result[0]);
     }
 }
