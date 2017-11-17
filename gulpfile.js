@@ -47,7 +47,7 @@ gulp.task('env-files', function() {
     .pipe(gulp.dest('_frontaccounting/'));
   gulp.src('tests/data/company/0/*.php')
   .pipe(gulp.dest('_frontaccounting/company/0/'));
-  gulp.src('_frontaccounting/modules/tests/data/lang/*')
+  gulp.src('tests/data/lang/*')
   .pipe(gulp.dest('_frontaccounting/lang/'));
 });
 
