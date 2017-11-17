@@ -9,7 +9,6 @@ before_script:
   # composer
   - phpenv config-rm xdebug.ini
   - composer install
-  - composer install -d _frontaccounting/modules/tests
   # copy our modules source into the modules folder under _frontaccounting/modules
   - rsync -a --exclude=_frontaccounting --exclude=node_modules . _frontaccounting/modules/api/
   # install npm deps and gulp
