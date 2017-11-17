@@ -1,7 +1,14 @@
-CHANGELOG:
+# CHANGELOG
 
-6-Sept-2014
+#### 17 November 2017
+
+- Updated API to support Front Accounting version 2.4.x
+- Added PHP Unit tests
+- Added Travis CI build
+
+#### 6 September 2014
 Thanks to Cambell Prince
+
 - Added composer.json and dependency on Slim
 - Improved error presentation for xdebug users.
 - Changed expected headers to uppercase.
@@ -9,11 +16,12 @@ Thanks to Cambell Prince
 - Switch to use Slim installed via composer.
 - Remove hard coded path 'api' and simplify includes.
 
-17-Sept-2014
+#### 17 September 2014
 Thanks to Salman Sarwar
+
 - Bug Fix in inventory.inc
 
-14-July-2013:
+#### 14 July 2013:
 - Added .htaccess so you can now use API URL's without index.php, examples: (Thanks to Christian Estrella)
 	OLD: GET http://mysystem.com/api/index.php/locations/
 	NEW: GET http://mysystem.com/api/locations/
@@ -31,27 +39,6 @@ Thanks to Salman Sarwar
 - Added Sales Transactions Methods for Quotes, Sales Orders, Deliveries, Invoices (GET, PUT, POST)
 	NOTE: This changes hasn't been tested deeply, might have some bugs
 
-14-June-2013:
+#### 14 June 2013:
 - Added POST /locations/ To Add A Location Thanks to Richard Vinke
 
-
-README:
-
-# This is a very Simple Front Accounting API
-
-I needed some basic integration functions to another software and decided to create this REST API and contribute with Front Accounting team.
-Hope you find it usefull !!
-
-== API Quick Start ==
-
-1. Just copy the files into the modules directory under a folder called "api" or anything you want.
-2. Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X-COMPANY, X-USER and X-PASSWORD headers in the request and the API will use those credentials, if they're wrong you will get a nice message telling "Bad Login"
-3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON with all you're items categories, if not check the util.php file.
-
-== Methods ==
-
-So far i have implemented Items, Inventory Movements, Locations, Items Categories, Tax Groups, Tax Types, Bank Accounts, GL Accounts, Customers, Suppliers and GL Account Types. Some of them have not been tested yet so be carefull.
-
-== Contact ==
-
-Any question about this you can always contact me: andres.amaya.diaz@gmail.com
