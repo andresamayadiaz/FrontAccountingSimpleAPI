@@ -23,7 +23,7 @@ include_once($path_to_root . "/includes/errors.inc");
 // colect all error msgs
 set_error_handler('error_handler' /*, errtypes */);
 
-include_once($path_to_root . "/includes/session_utils.inc");
+include_once("session_utils.inc");
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");

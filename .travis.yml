@@ -5,7 +5,7 @@ services:
   - mysql
 before_script:
   # get the latest frontaccounting code
-  - git clone -b unstable-cp https://github.com/cambell-prince/frontaccounting.git _frontaccounting
+  - git clone -b master https://github.com/FrontAccountingERP/FA.git _frontaccounting
   # composer
   - phpenv config-rm xdebug.ini
   - composer install
