@@ -14,3 +14,6 @@ upload-exclude-zip.txt
 *.zip
 *.tgz
 tests
+phpunit.xml
+build*
+.travis.yml
