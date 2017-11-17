@@ -89,33 +89,45 @@ gulp.task('test-watch', function() {
   gulp.watch([paths.testUnit, paths.src], ['test']);
 });
 
-gulp.task('package-zip', function(cb) {
+gulp.task('package-zip', ['package-vendor'], function(cb) {
   var options = {
     dryRun: false,
     silent: false,
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.0"
+    release: "-api.module.1.1"
   };
   execute(
-    'rm -f *.zip && cd <%= src %> && zip -r -x@./upload-exclude-zip.txt -y -q ./<%= name %>-<%= version %><%= release %>.zip *',
+    'rm -f *.zip && cd <%= src %> && zip -r -x@./upload-exclude-zip.txt -y -q ./<%= name %>-<%= version %><%= release %>.zip .',
     options,
     cb
   );
 });
 
-gulp.task('package-tar', function(cb) {
+gulp.task('package-tar', ['package-vendor'], function(cb) {
   var options = {
     dryRun: false,
     silent: false,
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.0"
+    release: "-api.module.1.1"
   };
   execute(
-    'rm -f *.tgz && cd <%= src %> && tar -cvzf ./<%= name %>-<%= version %><%= release %>.tgz -X upload-exclude.txt *',
+    'rm -f *.tgz && cd <%= src %> && tar -cvzf ./<%= name %>-<%= version %><%= release %>.tgz -X upload-exclude.txt * .htaccess',
+    options,
+    cb
+  );
+});
+
+gulp.task('package-vendor', function(cb) {
+  var options = {
+    dryRun: false,
+    silent: false
+  };
+  execute(
+    'rm -rf vendor && composer install --no-dev',
     options,
     cb
   );
