@@ -5,7 +5,6 @@ $path_to_root = "../..";
 
 include_once ($path_to_root . "/inventory/includes/inventory_db.inc");
 include_once ($path_to_root . "/inventory/includes/db/items_codes_db.inc");
-include_once ($path_to_root . "/inventory/includes/db/movement_types_db.inc");
 include_once ($path_to_root . "/inventory/includes/db/items_locations_db.inc");
 include_once ($path_to_root . "/gl/includes/gl_db.inc");
 include_once ($path_to_root . "/includes/ui/items_cart.inc");
@@ -74,14 +73,16 @@ class Inventory
 				'sales_account' => $data['sales_account'],
 				'cogs_account' => $data['cogs_account'],
 				'inventory_account' => $data['inventory_account'],
-				'sales_account' => $data['sales_account'],
 				'adjustment_account' => $data['adjustment_account'],
-				'actual_cost' => $data['actual_cost'],
+				'wip_account' => $data['wip_account'],
+				'purchase_cost' => $data['purchase_cost'],
+				'last_cost' => $data['last_cost'],
 				'material_cost' => $data['material_cost'],
 				'labour_cost' => $data['labour_cost'],
 				'overhead_cost' => $data['overhead_cost'],
 				'inactive' => $data['inactive'],
-				'no_sale' => $data['no_sale']
+				'no_sale' => $data['no_sale'],
+				'no_purchase' => $data['no_purchase']
 			);
 		}
 
@@ -133,7 +134,7 @@ class Inventory
 		if (! isset($info['adjustment_account'])) {
 			api_error(412, 'Adjustment Account is required');
 		}
-		if (! isset($info['assembly_account'])) {
+		if (! isset($info['wip_account'])) {
 			api_error(412, 'Assembly Account is required');
 		}
 
@@ -141,14 +142,28 @@ class Inventory
 
 		/*
 		 * $stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,	$sales_account,
-		 * $inventory_account, $cogs_account, $adjustment_account,	$assembly_account, $dimension_id, $dimension2_id,
+		 * $inventory_account, $cogs_account, $adjustment_account,	$wip_account, $dimension_id, $dimension2_id,
 		 * $no_sale, $editable
 		 */
-		add_item($info['stock_id'], $info['description'], $info['long_description'], $info['category_id'], $info['tax_type_id'], $info['units'], $info['mb_flag'], $info['sales_account'], $info['inventory_account'], $info['cogs_account'], $info['adjustment_account'], $info['assembly_account'], 0, 		// dimension 1
-		0, 		// dimension2
-		0, 		// no sale
-		1)		// editable
-		;
+		add_item(
+			$info['stock_id'],
+			$info['description'],
+			$info['long_description'],
+			$info['category_id'],
+			$info['tax_type_id'],
+			$info['units'],
+			$info['mb_flag'],
+			$info['sales_account'],
+			$info['inventory_account'],
+			$info['cogs_account'],
+			$info['adjustment_account'],
+			$info['wip_account'],
+			0, // dimension 1
+			0, // dimension2
+			0, // no sale
+			1, // editable
+			0  // no purchase
+		);
 
 		$itm = get_item($info['stock_id']);
 
@@ -198,20 +213,34 @@ class Inventory
 		if (! isset($info['adjustment_account'])) {
 			api_error(412, 'Adjustment Account is required');
 		}
-		if (! isset($info['assembly_account'])) {
-			api_error(412, 'Assembly Account is required');
+		if (! isset($info['wip_account'])) {
+			api_error(412, 'WIP Account is required');
 		}
 
 		/*
 		 * $stock_id, $description, $long_description, $category_id, $tax_type_id, $units='', $mb_flag='',
-		 * $sales_account, $inventory_account, $cogs_account, 	$adjustment_account, $assembly_account, $dimension_id,
+		 * $sales_account, $inventory_account, $cogs_account, 	$adjustment_account, $wip_account, $dimension_id,
 		 * $dimension2_id, $no_sale, $editable
 		 */
-		update_item($info['stock_id'], $info['description'], $info['long_description'], $info['category_id'], $info['tax_type_id'], $info['units'], $info['mb_flag'], $info['sales_account'], $info['inventory_account'], $info['cogs_account'], $info['adjustment_account'], $info['assembly_account'], 0, 		// dimension 1
-		0, 		// dimension2
-		0, 		// no sale
-		1)		// editable
-		;
+		update_item(
+			$info['stock_id'],
+			$info['description'],
+			$info['long_description'],
+			$info['category_id'],
+			$info['tax_type_id'],
+			$info['units'],
+			$info['mb_flag'],
+			$info['sales_account'],
+			$info['inventory_account'],
+			$info['cogs_account'],
+			$info['adjustment_account'],
+			$info['wip_account'],
+			0, // dimension 1
+			0, // dimension2
+			0, // no sale
+			1, // editable
+			0  // no purchase
+		);
 
 		api_success_response("Item has been updated");
 	}

@@ -12,7 +12,7 @@ class TestEnvironment
 	public static function client()
 	{
 		return new Client(array(
-			'base_url' => 'http://localhost:8000'
+			'base_uri' => 'http://localhost:8000'
 		), array(
 			'request.options' => array(
 				'exceptions' => false
@@ -24,7 +24,7 @@ class TestEnvironment
 	{
 		$response = $client->post('/modules/api/customers/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'custname' => $name,
 				'cust_ref' => $ref,
 				'address' => 'address',
@@ -49,7 +49,7 @@ class TestEnvironment
 	{
 		$response = $client->post('/modules/api/inventory/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id,
 				'description' => $description,
 				'long_description' => $description,
@@ -61,7 +61,7 @@ class TestEnvironment
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 
