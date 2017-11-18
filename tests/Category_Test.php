@@ -27,7 +27,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 		// Add
 		$response = $client->post('/modules/api/category/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'description' => 'description',
 				'tax_type_id' => '1',
 				'units' => 'each',
@@ -35,7 +35,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 				'sales_account' => '4010',
 				'cogs_account' => '5010',
 				'adjustment_account' => '5040',
-				'assembly_account' => '1530',
+				'wip_account' => '1530',
 				'inventory_account' => '1510',
 			)
 		));
@@ -69,7 +69,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/category/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'description' => 'other description',
 				'tax_type_id' => '1',
 				'units' => 'month',
@@ -77,7 +77,7 @@ class CategoryTest extends PHPUnit_Framework_TestCase
 				'sales_account' => '4010',
 				'cogs_account' => '5010',
 				'adjustment_account' => '5040',
-				'assembly_account' => '1530',
+				'wip_account' => '1530',
 				'inventory_account' => '1510',
 			)
 		));

@@ -58,8 +58,8 @@ class Category
 		if(!isset($info['adjustment_account'])){
 			api_error(412, 'Adjustment Account is required');
 		}
-		if(!isset($info['assembly_account'])){
-			api_error(412, 'Assembly Account is required');
+		if(!isset($info['wip_account'])){
+			api_error(412, 'WIP Account is required');
 		}
 		if(!isset($info['inventory_account'])){
 			api_error(412, 'Inventory Account is required');
@@ -67,7 +67,7 @@ class Category
 
 		/*
 		$description, $tax_type_id, $sales_account,
-		$cogs_account, $inventory_account, $adjustment_account, $assembly_account,
+		$cogs_account, $inventory_account, $adjustment_account, $wip_account,
 		$units, $mb_flag, $dim1, $dim2, $no_sale
 		*/
 		add_item_category($info['description'], $info['tax_type_id'],
@@ -75,13 +75,14 @@ class Category
 			$info['cogs_account'],
 			$info['inventory_account'],
 			$info['adjustment_account'],
-			$info['assembly_account'],
+			$info['wip_account'],
 			$info['units'],
 			$info['mb_flag'],
 			0, // dimension 1
 			0, // dimension2
-			0 // no sale
-			);
+			0, // no sale
+			0  // no purchase
+		);
 
 		$id = db_insert_id();
 		$catego = get_item_category($id);
@@ -125,7 +126,7 @@ class Category
 		if(!isset($info['adjustment_account'])){
 			api_error(412, 'Adjustment Account is required');
 		}
-		if(!isset($info['assembly_account'])){
+		if(!isset($info['wip_account'])){
 			api_error(412, 'Assembly Account is required');
 		}
 		if(!isset($info['inventory_account'])){
@@ -135,20 +136,21 @@ class Category
 		/*
 		$id, $description, $tax_type_id,
 		$sales_account, $cogs_account, $inventory_account, $adjustment_account,
-		$assembly_account, $units, $mb_flag, $dim1, $dim2, $no_sale
+		$wip_account, $units, $mb_flag, $dim1, $dim2, $no_sale
 		*/
 		update_item_category($id, $info['description'], $info['tax_type_id'],
 			$info['sales_account'],
 			$info['cogs_account'],
 			$info['inventory_account'],
 			$info['adjustment_account'],
-			$info['assembly_account'],
+			$info['wip_account'],
 			$info['units'],
 			$info['mb_flag'],
 			0, // dimension 1
 			0, // dimension2
-			0 // no sale
-			);
+			0, // no sale
+			0  // no purchase
+		);
 
 		api_success_response("Category has been updated");
 	}
@@ -198,7 +200,7 @@ class Category
 				'dflt_cogs_act' => $data['dflt_cogs_act'],
 				'dflt_inventory_act' => $data['dflt_inventory_act'],
 				'dflt_adjustment_act' => $data['dflt_adjustment_act'],
-				'dflt_assembly_act' => $data['dflt_assembly_act'],
+				'dflt_wip_act' => $data['dflt_wip_act'],
 				'dflt_no_sale' => $data['dflt_no_sale']
 			);
 		}

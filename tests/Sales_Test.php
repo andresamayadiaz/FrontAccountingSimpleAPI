@@ -35,7 +35,7 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		//?XDEBUG_SESSION_START=cambell
 		$response = $client->post('/modules/api/sales/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'trans_type' => ST_SALESINVOICE,
 				'ref' => $ref, // TODO Ideally the api would default this and return.
 				'comments' => 'comments',
@@ -129,7 +129,7 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/sales/' . $id . '/' . ST_SALESINVOICE, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'trans_type' => ST_SALESINVOICE,
 				'ref' => $ref, // TODO Ideally the api would default this and return.
 				'comments' => 'new comments',

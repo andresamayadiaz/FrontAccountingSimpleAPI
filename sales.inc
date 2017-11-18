@@ -558,8 +558,8 @@ function can_process($info, $cart) {
 		}
 	}
 
-	if (!$Refs->is_valid($info['ref'])) {
-		return array("passed" => false, "message" => _("You must enter a reference."));
+	if (!$Refs->is_valid($info['ref'], $cart->trans_type)) {
+		return array("passed" => false, "message" => _("You must enter a valid reference."));
 	}
 
 	if (!db_has_currency_rates($cart->customer_currency, $info['order_date'])){

@@ -28,7 +28,7 @@ class SupplierTest extends PHPUnit_Framework_TestCase
 // 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/suppliers/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'supp_name' => 'supp_name',
 				'supp_ref' => 'supp_ref',
 				'address' => 'address',
@@ -128,7 +128,7 @@ class SupplierTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/suppliers/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'supp_name' => 'new supp_name',
 				'supp_ref' => 'new supp_ref',
 				'address' => 'new address',

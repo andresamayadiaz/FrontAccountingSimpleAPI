@@ -27,7 +27,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/inventory/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id,
 				'description' => 'description',
 				'long_description' => 'long description',
@@ -39,7 +39,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 		$this->assertEquals('201', $response->getStatusCode());
@@ -71,7 +71,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		// Write back
 		$response = $client->put('/modules/api/inventory/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id, // TODO This shouldn't be required for an edit CP 2014-10
 				'description' => 'changed',
 				'long_description' => 'changed long description',
@@ -83,7 +83,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 
@@ -128,23 +128,6 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 	}
 
-	public function testMovementTypes_Ok()
-	{
-		$client = TestEnvironment::client();
-
-		// List
-		$response = $client->get('/modules/api/movementtypes/', array(
-			'headers' => TestEnvironment::headers()
-		));
-		$this->assertEquals('200', $response->getStatusCode());
-		$result = $response->getBody();
-		$result = json_decode($result);
-
-		$this->assertEquals(1, count($result));
-		$this->assertEquals('Adjustment', $result[0]->name);
-
-	}
-
 	public function testLocations_Ok()
 	{
 		$client = TestEnvironment::client();
@@ -163,7 +146,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = 'LOC';
 		$response = $client->post('/modules/api/locations/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'loc_code' => $id,
 				'location_name' => 'Location Name'
 			)
@@ -195,7 +178,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 		$id = TestEnvironment::createId();
 		$response = $client->post('/modules/api/inventory/', array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'stock_id' => $id,
 				'description' => 'description',
 				'long_description' => 'long description',
@@ -207,7 +190,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 				'inventory_account' => '1',
 				'cogs_account' => '1',
 				'adjustment_account' => '1',
-				'assembly_account' => '1'
+				'wip_account' => '1'
 			)
 		));
 		$this->assertEquals('201', $response->getStatusCode());
@@ -222,14 +205,14 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 		$expected = new stdClass();
 		$expected->stock_id = $id;
-		$expected->standard_cost = '0';
+		$expected->unit_cost = '0';
 
 		$this->assertEquals($expected, $result);
 
 		// Write Item Cost
 		$response = $client->put('/modules/api/itemcosts/' . $id, array(
 			'headers' => TestEnvironment::headers(),
-			'body' => array(
+			'form_params' => array(
 				'material_cost' => '1',
 				'labour_cost' => '2',
 				'overhead_cost' => '3'
@@ -254,7 +237,7 @@ class InventoryTest extends PHPUnit_Framework_TestCase
 
 		$expected = new stdClass();
 		$expected->stock_id = $id;
-		$expected->standard_cost = '6';
+		$expected->unit_cost = '1';
 
 		$this->assertEquals($expected, $result);
 

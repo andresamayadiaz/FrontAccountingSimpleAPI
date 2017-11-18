@@ -67,6 +67,7 @@ class BankAccountsTest extends PHPUnit_Framework_TestCase
 		$expected->bank_curr_code = 'USD';
 		$expected->bank_address = '';
 		$expected->dflt_curr_act = '1';
+		$expected->bank_charge_act = '5690';
 		$expected->last_reconciled_date = '0000-00-00 00:00:00';
 		$expected->ending_reconcile_balance = '0';
 		$expected->inactive = '0';
@@ -80,9 +81,10 @@ class BankAccountsTest extends PHPUnit_Framework_TestCase
 		$expected->{ '6' } = 'USD';
 		$expected->{ '7' } = '1';
 		$expected->{ '8' } = '1';
-		$expected->{ '9' } = '0000-00-00 00:00:00';
-		$expected->{ '10' } = '0';
+		$expected->{ '9' } = '5690';
+		$expected->{ '10' } = '0000-00-00 00:00:00';
 		$expected->{ '11' } = '0';
+		$expected->{ '12' } = '0';
 
 		$this->assertEquals($expected, $result);
 	}

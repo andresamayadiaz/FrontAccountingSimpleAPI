@@ -99,15 +99,6 @@ $rest->group('/inventory', function () use($rest)
 });
 // ------------------------------- Items -------------------------------
 
-// ------------------------------- Inventory Movements -------------------------------
-// Get Inventory Movement Types
-$rest->get('/movementtypes/', function () use($rest)
-{
-	include_once (API_ROOT . "/inventory.inc");
-	inventory_movementstype_all();
-});
-// ------------------------------- Inventory Movements -------------------------------
-
 // ------------------------------- Inventory Locations -------------------------------
 $rest->container->singleton('inventoryLocations', function() {
 	return new InventoryLocations();

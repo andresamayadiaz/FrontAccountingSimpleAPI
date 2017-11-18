@@ -1,0 +1,24 @@
+language: php
+php:
+  - "5.6"
+services:
+  - mysql
+before_script:
+  # get the latest frontaccounting code
+  - git clone -b master https://github.com/FrontAccountingERP/FA.git _frontaccounting
+  # composer
+  - phpenv config-rm xdebug.ini
+  - composer install
+  # copy our modules source into the modules folder under _frontaccounting/modules
+  - rsync -a --exclude=_frontaccounting --exclude=node_modules . _frontaccounting/modules/api/
+  # install npm deps and gulp
+  - npm install -g gulp
+  - npm install
+  - php -S localhost:8000 -t _frontaccounting &
+  - sleep 1
+  # db setup
+  - mysql -e 'create database fa_test;'
+  # Should be good to do gulp from here on
+  - sleep 3
+script:
+  - gulp test-travis
