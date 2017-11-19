@@ -27,6 +27,30 @@ Free software under GNU GPL
 --> 6-Sept-2014
 - Several bug fixes and additions Thanks to Cambell Prince
 ***********************************************/
+
+/**
+ * @SWG\Swagger(
+ *     host="frontaccounting.demo.saygoweb.com",
+ *     basePath="/modules/api",
+ *     @SWG\Info(
+ *         version="2.4-1.2",
+ *         title="Front Accounting Simple API",
+ *         description="This is a simple REST API as a Front Accounting module [https://github.com/cambell-prince/FrontAccountingSimpleAPI](https://github.com/cambell-prince/FrontAccountingSimpleAPI).",
+ *         @SWG\Contact(
+ *             email="cambell.prince@gmail.com"
+ *         ),
+ *         @SWG\License(
+ *             name="GPL V2.0",
+ *             url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
+ *         )
+ *     ),
+ *     @SWG\ExternalDocumentation(
+ *         description="Find out more about Front Accounting Simple API",
+ *         url="http://swagger.io"
+ *     )
+ * )
+ */
+
 ini_set('html_errors', false);
 ini_set('xdebug.show_exception_trace', 0);
 // ini_set('xdebug.auto_trace', 2);

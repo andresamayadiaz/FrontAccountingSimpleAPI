@@ -27,7 +27,7 @@ var execute = function(command, options, callback) {
 };
 
 var paths = {
-  src: ['**/*.inc', '**/*.php', '!vendor/**'],
+  src: ['**/*.inc', '**/*.php', '*.php', '*.inc', 'index.php', '!vendor/**'],
   testUnit: ['tests/*.php']
 };
 
@@ -87,6 +87,26 @@ gulp.task('test-travis', gulpSequence('env-test-travis', 'test-only'));
 
 gulp.task('test-watch', function() {
   gulp.watch([paths.testUnit, paths.src], ['test']);
+});
+
+gulp.task('doc-swagger-json', function(cb) {
+  var options = {
+    dryRun: false,
+    silent: false
+  };
+  execute(
+    '/usr/bin/env php vendor/zircote/swagger-php/bin/swagger src/ index.php',
+    options,
+    cb
+  );
+});
+
+gulp.task('doc-watch', function() {
+  gulp.watch(['src/*.php', '*.php'], ['doc-swagger-json']);
+  // gulp.watch('index.php', function() {
+  //   console.log('boo');
+  //   gulp.start('doc-swagger-json');
+  // });
 });
 
 gulp.task('package-zip', ['package-vendor'], function(cb) {
