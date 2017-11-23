@@ -65,6 +65,24 @@ $req = $rest->request();
 
 define("RESULTS_PER_PAGE", 2);
 
+class JsonToFormData extends \Slim\Middleware
+{
+	function call() {
+		$env = $this->app->environment();
+		if (is_array($env['slim.input'])) {
+			$env['slim.request.form_hash'] = $env['slim.input'];
+		}
+		$this->next->call();
+	}
+}
+
+/*
+The order of these 'add' calls is important, the JsonToFormData must be the
+second Middleware called, which means it needs to be added first.
+*/
+$rest->add(new JsonToFormData());
+$rest->add(new \Slim\Middleware\ContentTypes());
+
 // API Routes
 // ------------------------------- Items -------------------------------
 $rest->container->singleton('inventory', function() {
