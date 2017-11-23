@@ -1,5 +1,10 @@
 # CHANGELOG
 
+#### 23 November 2017
+
+- Added support for requests sent using Content-Type: application/json
+  The body is presumed to be in JSON format and converted appropriately.
+
 #### 17 November 2017
 
 - Updated API to support Front Accounting version 2.4.x
