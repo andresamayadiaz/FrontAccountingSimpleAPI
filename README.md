@@ -1,9 +1,15 @@
 # Simple API for Front Accounting
 
-[![Build Status](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI.svg?branch=feature%2F2.4.x)](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI)
+[![Build Status](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI.svg?branch=master-upstream)](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI)
 
 I needed some basic integration functions to another software and decided to create this REST API and contribute with Front Accounting team.
 Hope you find it usefull !!
+
+## Installation
+
+*DO NOT* use git to clone this repo into your FrontAccounting modules folder unless you are a developer.
+
+*DO* download the [latest release](https://github.com/cambell-prince/FrontAccountingSimpleAPI/releases/latest) in either zip or tgz and unpack into a folder such as .../modules/api.
 
 ## API Quick Start
 
