@@ -55,12 +55,6 @@ class GLTest extends PHPUnit_Framework_TestCase
 		$expected->account_type = '1';
 		$expected->inactive = '0';
 
-		$expected->{ '0' } = '1060';
-		$expected->{ '1' } = '';
-		$expected->{ '2' } = 'Checking Account';
-		$expected->{ '3' } = '1';
-		$expected->{ '4' } = '0';
-
 		$this->assertEquals($expected, $result);
 	}
 
@@ -74,6 +68,15 @@ class GLTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('200', $response->getStatusCode());
 		$result = $response->getBody();
 		$result = json_decode($result);
+
+		$count = count($result);
+		$this->assertTrue($count > 0, 'Count > 0');
+		$expected = new stdClass();
+		$expected->id = '1';
+		$expected->name = 'Current Assets';
+		$expected->class_id = '1';
+		$expected->parent = '';
+		$this->assertEquals($expected, $result[0]);
 	}
 
 }
