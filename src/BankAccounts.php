@@ -27,9 +27,7 @@ class BankAccounts
 	public function getById($rest, $id)
 	{
 		$bank = get_bank_account($id);
-		if (! $bank)
-			$bank = array();
-		api_success_response(json_encode($bank));
+		api_success_response(json_encode(\api_ensureAssociativeArray($bank)));
 	}
 
 	private function bankaccounts_all($from = null)
