@@ -92,9 +92,7 @@ class Inventory
 	function inventory_get($id)
 	{
 		$item = get_item($id);
-		if (! $item)
-			$item = array();
-		api_success_response(json_encode($item));
+		api_success_response(json_encode(api_ensureAssociativeArray($item)));
 	}
 
 	function inventory_add()

@@ -5,10 +5,75 @@ use GuzzleHttp\Client;
 require_once(__DIR__ . '/TestConfig.php');
 
 require_once(TEST_PATH . '/TestEnvironment.php');
+require_once(TEST_PATH . '/Crud_Base.php');
 
-class SupplierTest extends PHPUnit_Framework_TestCase
+const SUPPLIER_POST_DATA = array(
+	'supp_name' => 'supp_name',
+	'supp_ref' => 'supp_ref',
+	'address' => 'address',
+	'supp_address' => 'supp_address',
+	'gst_no' => 'gst_no',
+	'website' => 'website',
+	'supp_account_no' => 'supp_account_no',
+	'bank_account' => 'bank_account',
+	'credit_limit' => '1000',
+	'curr_code' => 'USD',
+	'payment_terms' => '1',
+	'payable_account' => '1010',
+	'purchase_account' => '1020',
+	'payment_discount_account' => '1030',
+	'notes' => 'notes',
+	'tax_group_id' => '1',
+	'tax_included' => '1',
+	'contact' => '',        // Not yet implemented
+	'dimension_id' => '0',  // Not yet implemented
+	'dimension2_id' => '0', // Not yet implemented
+	'inactive' => '0',      // Not yet implemented
+);
+
+const SUPPLIER_PUT_DATA = array(
+	'supp_name' => 'new supp_name',
+	'supp_ref' => 'new supp_ref',
+	'address' => 'new address',
+	'supp_address' => 'new supp_address',
+	'gst_no' => 'new gst_no',
+	'website' => 'new website',
+	'supp_account_no' => 'new supp_account_no',
+	'bank_account' => 'new bank_account',
+	'credit_limit' => '2000',
+	'curr_code' => 'NZD',
+	'payment_terms' => '2',
+	'payable_account' => '2010',
+	'purchase_account' => '2020',
+	'payment_discount_account' => '2030',
+	'notes' => 'new notes',
+	'tax_group_id' => '2',
+	'tax_included' => '2',
+	'contact' => '',        // Not yet implemented
+	'dimension_id' => '0',  // Not yet implemented
+	'dimension2_id' => '0', // Not yet implemented
+	'inactive' => '0',      // Not yet implemented
+);
+
+class SupplierTest extends Crud_Base
 {
 
+	private $postData = SUPPLIER_POST_DATA;
+	
+	private $putData = SUPPLIER_PUT_DATA;
+	
+	public function __construct()
+	{
+		parent::__construct(
+			'/modules/api/suppliers/',
+			'supplier_id',
+			$this->postData,
+			$this->putData
+		);
+	}
+
+	// 	public function testCRUD_Ok();
+/*	
 	public function testCRUD_Ok()
 	{
 		$client = TestEnvironment::client();
@@ -242,5 +307,5 @@ class SupplierTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($count0, $count2);
 
 	}
-
+*/
 }

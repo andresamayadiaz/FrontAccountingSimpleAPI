@@ -28,9 +28,7 @@ class GLAccounts
 	public function getById($rest, $id)
 	{
 		$acct = get_gl_account($id);
-		if (! $acct)
-			$acct = array();
-		api_success_response(json_encode($acct));
+		api_success_response(json_encode(\api_ensureAssociativeArray($acct)));
 	}
 
 	public function getTypes($rest)

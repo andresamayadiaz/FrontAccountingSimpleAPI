@@ -72,20 +72,6 @@ class BankAccountsTest extends PHPUnit_Framework_TestCase
 		$expected->ending_reconcile_balance = '0';
 		$expected->inactive = '0';
 
-		$expected->{ '0' } = '1060';
-		$expected->{ '1' } = '0';
-		$expected->{ '2' } = 'Current account';
-		$expected->{ '3' } = 'N/A';
-		$expected->{ '4' } = 'N/A';
-		$expected->{ '5' } = '';
-		$expected->{ '6' } = 'USD';
-		$expected->{ '7' } = '1';
-		$expected->{ '8' } = '1';
-		$expected->{ '9' } = '5690';
-		$expected->{ '10' } = '0000-00-00 00:00:00';
-		$expected->{ '11' } = '0';
-		$expected->{ '12' } = '0';
-
 		$this->assertEquals($expected, $result);
 	}
 }

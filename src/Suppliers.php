@@ -21,10 +21,9 @@ class Suppliers
 	public function getById($rest, $id)
 	{
 		$sup = get_supplier($id);
-		if (! $sup)
-			$sup = array();
-		api_success_response(json_encode($sup));
+		api_success_response(json_encode(api_ensureAssociativeArray($sup)));
 	}
+
 	// Add Item
 	public function post($rest)
 	{

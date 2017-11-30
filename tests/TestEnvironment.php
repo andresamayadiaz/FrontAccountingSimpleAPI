@@ -25,8 +25,8 @@ class TestEnvironment
 		$response = $client->post('/modules/api/customers/', array(
 			'headers' => TestEnvironment::headers(),
 			'form_params' => array(
-				'custname' => $name,
-				'cust_ref' => $ref,
+				'name' => $name,
+				'debtor_ref' => $ref,
 				'address' => 'address',
 				'tax_id' => 'tax_id',
 				'curr_code' => 'USD',
