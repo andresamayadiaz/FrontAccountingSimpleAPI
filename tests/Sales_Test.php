@@ -30,6 +30,8 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		$count0 = count($result);
 		$this->assertEquals(0, $count0);
 
+		var_dump($result);
+
 		// Add
 		$ref = TestEnvironment::createId();
 		//?XDEBUG_SESSION_START=cambell
@@ -77,6 +79,10 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('200', $response->getStatusCode());
 		$result = $response->getBody();
 		$result = json_decode($result);
+
+		// Regression test for https://github.com/andresamayadiaz/FrontAccountingSimpleAPI/issues/32
+		$this->assertEquals('0', $result[0]->ov_discount);
+		$this->assertEquals('2', $result[0]->Total);
 
 		$count1 = count($result);
 		$this->assertEquals($count0 + 1, $count1);

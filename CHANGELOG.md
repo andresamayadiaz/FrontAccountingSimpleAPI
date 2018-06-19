@@ -2,6 +2,7 @@
 
 #### 19 June 2018
 
+- Sales: Fix #32 Sales transactions Total not returned.
 - Stock Adjust: Added unit test.
 - Stock Adjust: Return now encoded as json msg.
 - Stock Adjust: Missing argument $info fixed (Apmuthu 23 Apr 2018)
