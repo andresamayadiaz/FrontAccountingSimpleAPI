@@ -77,7 +77,7 @@ if ($SysPrefs->error_logfile != '') {
 	to avoid unexpeced session timeouts.
 	Make sure this directory exists and is writable!
 */
-// ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
+// ini_set('session.save_path', VARLIB_PATH.'/');
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
@@ -88,8 +88,8 @@ header("Cache-control: private");
 
 get_text_init();
 
-if ($SysPrefs->login_delay > 0)
-	@include_once($path_to_root . "/tmp/faillog.php");
+if ($SysPrefs->login_delay > 0 && file_exists(VARLIB_PATH."/faillog.php"))
+	@include_once(VARLIB_PATH."/faillog.php");
 
 // Page Initialisation
 if (!isset($_SESSION['wa_current_user']) || !$_SESSION['wa_current_user']->logged_in()

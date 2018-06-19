@@ -9,6 +9,8 @@
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+define('VARLIB_PATH', $path_to_root.'/tmp');
+define('VARLOG_PATH', $path_to_root.'/tmp');
 
 class SessionManager
 {
@@ -227,9 +229,9 @@ function write_login_filelog($login, $result)
 	$msg .= "*/\n";
 	$msg .= "\$login_faillog = " .var_export($login_faillog, true). ";\n";
 
-	$filename = $path_to_root."/tmp/faillog.php";
+	$filename = VARLIB_PATH."faillog.php";
 
-	if ((!file_exists($filename) && is_writable($path_to_root.'/tmp')) || is_writable($filename))
+	if ((!file_exists($filename) && is_writable(VARLIB_PATH)) || is_writable($filename))
 	{
 		file_put_contents($filename, $msg);
 		cache_invalidate($filename);

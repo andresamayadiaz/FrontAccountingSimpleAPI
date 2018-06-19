@@ -1,6 +1,7 @@
 .DS_Store
 vendor/
 node_modules/
+.vscode/
 _frontaccounting
 *.zip
 *.tgz

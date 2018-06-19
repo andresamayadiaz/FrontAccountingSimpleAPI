@@ -4,6 +4,7 @@
 .hg/*
 .hgtags
 .hgignore
+.vscode/*
 node_modules/*
 _frontaccounting
 gulpfile.js

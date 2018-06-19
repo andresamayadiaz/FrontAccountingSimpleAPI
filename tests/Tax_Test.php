@@ -27,6 +27,24 @@ class TaxTest extends PHPUnit_Framework_TestCase
         $expected->name = 'Regular';
         $expected->exempt = 0;
         $this->assertEquals($expected, $result[0]);
+
+        // Get by ID
+        $response = $client->get('/modules/api/taxtypes/' . $expected->id, array(
+            'headers' => TestEnvironment::headers()
+        ));
+        $result = $response->getBody();
+        $result = json_decode($result);
+        $expected = new stdClass();
+        $expected->id = 1;
+        $expected->name = 'Tax';
+        // $expected->exempt = 0; //?
+        $expected->rate = '5';
+        $expected->sales_gl_code = '2150';
+        $expected->purchasing_gl_code = '2150';
+        $expected->inactive = '0';
+        $expected->SalesAccountName = 'Sales Tax';
+        $expected->PurchasingAccountName = 'Sales Tax';
+        $this->assertEquals($expected, $result);
     }
 
     public function testTaxGroups_Ok()

@@ -78,6 +78,10 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		$result = $response->getBody();
 		$result = json_decode($result);
 
+		// Regression test for https://github.com/andresamayadiaz/FrontAccountingSimpleAPI/issues/32
+		$this->assertEquals('0', $result[0]->ov_discount);
+		$this->assertEquals('2', $result[0]->Total);
+
 		$count1 = count($result);
 		$this->assertEquals($count0 + 1, $count1);
 

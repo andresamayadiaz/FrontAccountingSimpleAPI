@@ -1,5 +1,16 @@
 # CHANGELOG
 
+#### 19 June 2018
+
+- Core VARLIB_PATH and VARLOG_PATH inclusions added [see this commit](https://github.com/FrontAccountingERP/FA/commit/4a37a28c49bf900dcc370fd3f21186cedcd632c9).
+- TaxType: Added getById (Apmuthu 24 Nov 2017).
+- Sales: Fix #32 Sales transactions Total not returned.
+- Stock Adjust: Added unit test.
+- Stock Adjust: Return now encoded as json msg.
+- Stock Adjust: Missing argument $info fixed (Apmuthu 23 Apr 2018).
+- Stock Adjust: add_stock_adjustment parameters fixed for FA 2.4 changes in API (Apmuthu, justapeddler 19 Apr 2018).
+- Translated Spanish comments to English (Apmuthu 18 Nov 2017).
+
 #### 27 November 2017
 
 - Refactor tests to ensure consistency in POST and PUT api.
