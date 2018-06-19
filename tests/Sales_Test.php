@@ -30,8 +30,6 @@ class SalesTest extends PHPUnit_Framework_TestCase
 		$count0 = count($result);
 		$this->assertEquals(0, $count0);
 
-		var_dump($result);
-
 		// Add
 		$ref = TestEnvironment::createId();
 		//?XDEBUG_SESSION_START=cambell
