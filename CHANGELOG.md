@@ -1,5 +1,9 @@
 # CHANGELOG
 
+#### 19 June 2018
+
+- Translated Spanish comments to English (Apmuthu 18 Nov 2017)
+
 #### 27 November 2017
 
 - Refactor tests to ensure consistency in POST and PUT api.

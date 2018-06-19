@@ -20,7 +20,7 @@ function stock_adjustment_add($info)
 
 	// Example
 	// $ex = array('stock_id' => 'PLUMA', 'location' => 'DEF', 'date' => today(), 'type' => 1, 'reference' =>
-	// '123qwe', 'quantity' => 555, 'standard_cost' => 10, 'increase' => 0, 'memo' => 'PRUEBA DESDE API 2');
+	// '123qwe', 'quantity' => 555, 'standard_cost' => 10, 'increase' => 0, 'memo' => 'Proof of API 2');
 	// echo base64_encode(json_encode($ex));
 	// print_r($info);
 
@@ -70,10 +70,10 @@ function stock_adjustment_add($info)
 	else {
 		$_SESSION['adj_items']->add_to_cart(count($_SESSION['adj_items']->line_items), $info['stock_id'], $info['quantity'], $info['standard_cost']);
 		// $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null
-		// TODO Obtener cuentas contra las cuales hacer asientos
-		// Cta de Inventario del Producto
+		// TODO Obtain accounts against which to make seats
+		// Product Inventory
 		$_SESSION['gl_items']->add_gl_item('1510', 0, 0, ($info['quantity'] * $info['standard_cost'] * - 1), $info['memo']);
-		// Cta Configurada para Obsolteos, Propios, etc ...
+		// Configured for Absolute, Own
 		$_SESSION['gl_items']->add_gl_item('4010', 0, 0, ($info['quantity'] * $info['standard_cost']), $info['memo']);
 		$_SESSION['gl_items']->order_id = 0;
 		$_SESSION['gl_items']->reference = 666;
