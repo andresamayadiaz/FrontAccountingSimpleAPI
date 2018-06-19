@@ -2,7 +2,10 @@
 
 #### 19 June 2018
 
-- add_stock_adjustment parameters fixed for FA 2.4 changes in API (Apmuthu 19 Apr 2018)
+- Stock Adjust: Added unit test.
+- Stock Adjust: Return now encoded as json msg.
+- Stock Adjust: Missing argument $info fixed (Apmuthu 23 Apr 2018)
+- Stock Adjust: add_stock_adjustment parameters fixed for FA 2.4 changes in API (Apmuthu, justapeddler 19 Apr 2018)
 - Translated Spanish comments to English (Apmuthu 18 Nov 2017)
 
 #### 27 November 2017

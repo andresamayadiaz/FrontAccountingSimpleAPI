@@ -12,7 +12,7 @@ include_once ($path_to_root . "/inventory/includes/db/items_locations_db.inc");
 include_once ($path_to_root . "/gl/includes/gl_db.inc");
 include_once ($path_to_root . "/includes/ui/items_cart.inc");
 
-function stock_adjustment_add($info)
+function stock_adjustment_add()
 {
 	$app = \Slim\Slim::getInstance('SASYS');
 	$req = $app->request();
@@ -90,6 +90,6 @@ function stock_adjustment_add($info)
 	$_SESSION['gl_items']->clear_items();
 	unset($_SESSION['gl_items']);
 
-	api_create_response("Stock Adjustment has been added");
+	api_create_response(json_encode(array("msg" => "Stock Adjustment has been added")));
 }
 ?>
