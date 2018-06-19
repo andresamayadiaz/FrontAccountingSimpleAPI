@@ -2,6 +2,7 @@
 
 #### 19 June 2018
 
+- Core VARLIB_PATH and VARLOG_PATH inclusions added [see this commit](https://github.com/FrontAccountingERP/FA/commit/4a37a28c49bf900dcc370fd3f21186cedcd632c9).
 - TaxType: Added getById (Apmuthu 24 Nov 2017).
 - Sales: Fix #32 Sales transactions Total not returned.
 - Stock Adjust: Added unit test.
