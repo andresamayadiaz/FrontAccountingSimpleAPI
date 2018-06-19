@@ -185,11 +185,18 @@ $rest->group('/category', function () use($rest)
 $rest->container->singleton('taxTypes', function() {
 	return new TaxTypes();
 });
-
-// Get All Item Tax Types
-$rest->get('/taxtypes/', function () use($rest)
+$rest->group('/taxtypes', function () use($rest)
 {
-	$rest->taxTypes->get($rest);
+	// Get All Item Tax Types
+	$rest->get('/', function () use($rest)
+	{
+		$rest->taxTypes->get($rest);
+	});
+	// Get Specific Tax Type
+	$rest->get('/:id', function ($id) use($rest)
+	{
+		$rest->taxTypes->getById($rest, $id);
+	});
 });
 // ------------------------------- Tax Types -------------------------------
 
