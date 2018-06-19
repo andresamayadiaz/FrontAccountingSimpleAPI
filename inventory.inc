@@ -34,9 +34,6 @@ function stock_adjustment_add($info)
 	if (! isset($info['date'])) {
 		api_error(412, 'Date is required');
 	}
-	if (! isset($info['type'])) {
-		api_error(412, 'Movement Type is required');
-	}
 	if (! isset($info['reference'])) {
 		api_error(412, 'Reference is required');
 	}
@@ -45,9 +42,6 @@ function stock_adjustment_add($info)
 	}
 	if (! isset($info['standard_cost'])) {
 		$info['standard_cost'] = 0;
-	}
-	if (! isset($info['increase'])) {
-		api_error(412, 'Increase is required. (1 = true, 0 = false)');
 	}
 	if (! isset($info['memo'])) {
 		api_error(412, 'Memo is required');
@@ -85,7 +79,7 @@ function stock_adjustment_add($info)
 	 * $_SESSION['gl_items']->gl_items_total_credit();
 	 */
 	// Process Order
-	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items, $info['location'], $info['date'], $info['type'], $info['increase'], $info['reference'], $info['memo']);
+	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items, $info['location'], $info['date'], $info['reference'], $info['memo']);
 
 	$gl_trans_no = write_journal_entries($_SESSION['gl_items'], false);
 

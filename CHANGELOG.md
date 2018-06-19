@@ -2,6 +2,7 @@
 
 #### 19 June 2018
 
+- add_stock_adjustment parameters fixed for FA 2.4 changes in API (Apmuthu 19 Apr 2018)
 - Translated Spanish comments to English (Apmuthu 18 Nov 2017)
 
 #### 27 November 2017
