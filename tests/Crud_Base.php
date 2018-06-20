@@ -144,8 +144,6 @@ abstract class Crud_Base extends PHPUnit_Framework_TestCase
 		$result = $this->getAll();
 		$count1 = count($result);
 		$this->assertEquals($count0 + 1, $count1);
-		// The id should be the same
-		$this->assertEquals($id, $result[$count1 - 1]->{$this->keyProperty});
 
 		// Get by id
 		$response = $client->get($this->url . $id, array(

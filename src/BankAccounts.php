@@ -91,7 +91,6 @@ include_once ($path_to_root . "/gl/includes/db/gl_db_bank_accounts.inc");
  */
 class BankAccounts
 {
-    // Get Items
     /**
      * @SWG\Get(
      *     path="/bankaccounts",

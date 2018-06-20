@@ -352,6 +352,21 @@ $rest->group('/glaccounts', function () use($rest)
 	{
 		$rest->glAccounts->getById($rest, $id);
 	});
+	// Insert GL Accounts
+	$rest->post('/', function () use($rest)
+	{
+		$rest->glAccounts->post($rest);
+	});
+	// Update GL Accounts
+	$rest->put('/:id', function ($id) use($rest)
+	{
+		$rest->glAccounts->put($rest, $id);
+	});
+	// Delete GL Accounts
+	$rest->delete('/:id', function ($id) use($rest)
+	{
+		$rest->glAccounts->delete($rest, $id);
+	});
 });
 // Get GL Account Types
 $rest->get('/glaccounttypes/', function () use($rest)

@@ -6,57 +6,56 @@ require_once(__DIR__ . '/TestConfig.php');
 
 require_once(TEST_PATH . '/TestEnvironment.php');
 
-class GLTest extends PHPUnit_Framework_TestCase
+require_once(TEST_PATH . '/Crud_Base.php');
+
+const GL_POST_DATA = array(
+	'account_code' => '123456',
+	'account_code2' => '',
+	'account_name' => 'GL Test Account',
+	'account_type' => '1',
+	'inactive' => '0'
+);
+
+/**
+ * @group wip
+ */
+class GLTest extends Crud_Base
 {
-
-	public function testAccountList_Ok()
+	private $postData = GL_POST_DATA;
+	
+	private $putData;
+	
+	public function __construct()
 	{
-		$client = TestEnvironment::client();
-		$response = $client->get('/modules/api/glaccounts/', array(
-			'headers' => TestEnvironment::headers()
-		));
+		$this->putData = $this->postData;
+		$this->putData['account_name'] = 'GL Test Account Edited';
 
-		$this->assertEquals('200', $response->getStatusCode());
-		$result = $response->getBody();
-		$result = json_decode($result);
-
-		$this->assertEquals(2, count($result));
-
-		$expected = array();
-		$expected[] = new stdClass();
-		$expected[0]->account_code = '1060';
-		$expected[0]->account_name = 'Checking Account';
-		$expected[0]->account_type = '1';
-		$expected[0]->account_code2 = '';
-		$expected[] = new stdClass();
-		$expected[1]->account_code = '1065';
-		$expected[1]->account_name = 'Petty Cash';
-		$expected[1]->account_type = '1';
-		$expected[1]->account_code2 = '';
-
-		$this->assertEquals($expected, $result);
+		parent::__construct(
+			'/modules/api/glaccounts/',
+			'account_code',
+			$this->postData,
+			$this->putData
+		);
 	}
 
-	public function testAccountGetById_Ok()
+	protected function checkGetAfterPost($result)
 	{
-		$client = TestEnvironment::client();
-		$response = $client->get('/modules/api/glaccounts/1060', array(
-			'headers' => TestEnvironment::headers()
-		));
-
-		$this->assertEquals('200', $response->getStatusCode());
-		$result = $response->getBody();
-		$result = json_decode($result);
-
-		$expected = new stdClass();
-		$expected->account_code = '1060';
-		$expected->account_code2 = '';
-		$expected->account_name = 'Checking Account';
-		$expected->account_type = '1';
-		$expected->inactive = '0';
-
-		$this->assertEquals($expected, $result);
+		$expected = $this->fixExpectedType($this->postData, $result);
+		$this->assertEquals($expected, $result, 'Failed GET after POST');
 	}
+
+	protected function checkGetAfterPut($result)
+	{
+		$expected = $this->fixExpectedType($this->putData, $result);
+		$this->assertEquals($expected, $result, 'Failed GET after PUT');
+	}
+
+	// 	public function testCRUD_Ok();
+
+}
+
+class GLOtherTest extends PHPUnit_Framework_TestCase
+{
 
 	public function testAccountTypes_Ok()
 	{

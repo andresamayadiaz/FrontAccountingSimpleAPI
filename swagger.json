@@ -221,6 +221,163 @@
                 "deprecated": false
             }
         },
+        "/glaccounts": {
+            "get": {
+                "tags": [
+                    "glaccounts"
+                ],
+                "summary": "List all GL Accounts",
+                "operationId": "listGLAccounts",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/GLAccount"
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "glaccounts"
+                ],
+                "summary": "Add GL Account",
+                "operationId": "addGLAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "GL Account to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/GLAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/glaccounts/{id}": {
+            "get": {
+                "tags": [
+                    "glaccounts"
+                ],
+                "summary": "Get GL Account by id",
+                "operationId": "getGLAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "glAccountId",
+                        "in": "path",
+                        "description": "ID of GL Account to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/GLAccount"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "glaccounts"
+                ],
+                "summary": "Update GL Account",
+                "operationId": "updateGLAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "dimensionId",
+                        "in": "path",
+                        "description": "ID of GL Account to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "GL Account to be updated",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/GLAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "glaccounts"
+                ],
+                "summary": "Delete GL Account",
+                "operationId": "deleteGLAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "glAccountId",
+                        "in": "path",
+                        "description": "ID of GL Account to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "deprecated": false
+            }
+        },
         "/sales": {
             "get": {
                 "tags": [
@@ -400,6 +557,38 @@
                     "description": "A longer memo",
                     "type": "string",
                     "example": "Some memo"
+                }
+            },
+            "type": "object",
+            "format": ""
+        },
+        "GLAccount": {
+            "description": "A GLAccount",
+            "properties": {
+                "account_code": {
+                    "description": "Unique short human readable id used to reference a GLAccount",
+                    "type": "string",
+                    "example": "1060"
+                },
+                "account_code2": {
+                    "description": "Secondary account code, may be blank",
+                    "type": "string",
+                    "example": ""
+                },
+                "account_name": {
+                    "description": "A longer name for the account",
+                    "type": "string",
+                    "example": "My Bank Savings Account"
+                },
+                "account_type": {
+                    "description": "Type of the account",
+                    "type": "string",
+                    "example": ""
+                },
+                "inactive": {
+                    "description": "Zero if account is active",
+                    "type": "int",
+                    "example": "0"
                 }
             },
             "type": "object",
