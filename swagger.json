@@ -1,0 +1,238 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Front Accounting Simple API",
+        "description": "This is a simple REST API as a Front Accounting module [https://github.com/cambell-prince/FrontAccountingSimpleAPI](https://github.com/cambell-prince/FrontAccountingSimpleAPI).",
+        "contact": {
+            "email": "cambell.prince@gmail.com"
+        },
+        "license": {
+            "name": "GPL V2.0",
+            "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
+        },
+        "version": "2.4-1.2"
+    },
+    "host": "frontaccounting.demo.saygoweb.com",
+    "basePath": "/modules/api",
+    "paths": {
+        "/bankaccounts": {
+            "get": {
+                "tags": [
+                    "bank account"
+                ],
+                "summary": "List Bank Accounts",
+                "operationId": "listBankAccounts",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/BankAccount"
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/bankaccounts/id": {
+            "get": {
+                "tags": [
+                    "bank account"
+                ],
+                "summary": "Fetch Bank Account by id",
+                "operationId": "getBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/sales": {
+            "get": {
+                "tags": [
+                    "sales"
+                ],
+                "summary": "List Sales",
+                "operationId": "getSales",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Sale"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "sales"
+                ],
+                "summary": "Update Sale",
+                "operationId": "addSale",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Sale"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "sales"
+                ],
+                "summary": "Add Sale",
+                "operationId": "addSale",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Sale"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/sales/id": {
+            "get": {
+                "tags": [
+                    "sales"
+                ],
+                "summary": "Fetch Sale by id",
+                "operationId": "getSale",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Sale"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        }
+    },
+    "definitions": {
+        "BankAccount": {
+            "description": "A Bank Account",
+            "properties": {
+                "id": {
+                    "description": "Unique id used to reference a Bank Account",
+                    "type": "integer",
+                    "example": "1"
+                },
+                "account_code": {
+                    "description": "Account GL code",
+                    "type": "string",
+                    "example": "1060"
+                },
+                "account_type": {
+                    "description": "Type of the account",
+                    "type": "integer",
+                    "example": "0"
+                },
+                "bank_name": {
+                    "description": "Name of the bank at which this account is held",
+                    "type": "string",
+                    "example": "Some Bank"
+                },
+                "bank_address": {
+                    "description": "Address of the Bank",
+                    "type": "string"
+                },
+                "bank_account_name": {
+                    "description": "Name of the account",
+                    "type": "string",
+                    "example": "Anne X Ample"
+                },
+                "bank_account_number": {
+                    "description": "Account number used by the Bank",
+                    "type": "string",
+                    "example": "12-3456-7890-1"
+                },
+                "bank_curr_code": {
+                    "description": "Currency of the account",
+                    "type": "string",
+                    "example": "USD"
+                },
+                "dflt_curr_act": {
+                    "description": "True (1) if this account is the default account",
+                    "type": "boolean",
+                    "example": "0"
+                },
+                "bank_charge_act": {
+                    "description": "GL account to which bank charges are assigned",
+                    "type": "string",
+                    "example": "5690"
+                },
+                "last_reconciled_date": {
+                    "description": "Date up to which this account was reconciled",
+                    "type": "date",
+                    "example": "2017-12-01"
+                },
+                "ending_reconcile_balance": {
+                    "description": "Account balance at last reconcile",
+                    "type": "number",
+                    "example": "12.34"
+                },
+                "inactive": {
+                    "description": "True if this account is not active",
+                    "type": "boolean",
+                    "example": "0"
+                }
+            },
+            "type": "object",
+            "format": ""
+        },
+        "Sale": {
+            "description": "A Sale",
+            "properties": {
+                "id": {
+                    "description": "Unique id used to reference a Sale",
+                    "type": "integer",
+                    "example": "1"
+                }
+            },
+            "type": "object",
+            "format": ""
+        }
+    },
+    "externalDocs": {
+        "description": "Find out more about Front Accounting Simple API",
+        "url": "http://swagger.io"
+    }
+}

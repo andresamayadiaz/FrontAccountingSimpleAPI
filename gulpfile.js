@@ -101,6 +101,23 @@ gulp.task('doc-swagger-json', function(cb) {
   );
 });
 
+// This task builds static documentation in the public folder from the swagger.json file using spectacle
+// spectacle is assumed to be globally installed on the system, e.g. sudo npm install -g spectacle-docs
+// more information on the Spectacle static docs generator: https://github.com/sourcey/spectacle
+gulp.task('doc-spectacle', function(cb) {
+  var options = {
+    dryRun: false,
+    silent: false
+  };
+  execute(
+    'spectacle -q swagger.json',
+    options,
+    cb
+  );
+});
+
+gulp.task('doc', gulpSequence('doc-swagger-json', 'doc-spectacle'));
+
 gulp.task('doc-watch', function() {
   gulp.watch(['src/*.php', '*.php'], ['doc-swagger-json']);
   // gulp.watch('index.php', function() {

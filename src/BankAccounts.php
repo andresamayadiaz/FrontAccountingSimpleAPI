@@ -125,7 +125,6 @@ class BankAccounts
         }
     }
 
-    // Get Specific Item by Stock Id
     /**
      * @SWG\Get(
      *     path="/bankaccounts/id",
@@ -148,7 +147,6 @@ class BankAccounts
     {
         $bank = get_bank_account($id);
         api_success_response(json_encode(\api_ensureAssociativeArray($bank)));
-        }
     }
 
     private function bankaccounts_all($from = null)

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+#### 20 June 2018
+
+- Add static api generator and sample documentation.
+
 #### 19 June 2018
 
 - Core VARLIB_PATH and VARLOG_PATH inclusions added [see this commit](https://github.com/FrontAccountingERP/FA/commit/4a37a28c49bf900dcc370fd3f21186cedcd632c9).
