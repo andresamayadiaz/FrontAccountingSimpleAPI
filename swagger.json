@@ -61,6 +61,166 @@
                 "deprecated": false
             }
         },
+        "/dimensions": {
+            "get": {
+                "tags": [
+                    "dimensions"
+                ],
+                "summary": "List all Dimensions",
+                "operationId": "listDimensions",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Dimension"
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "dimensions"
+                ],
+                "summary": "Add Dimension",
+                "operationId": "addDimension",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Dimension to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Dimension"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/dimensions/{id}": {
+            "get": {
+                "tags": [
+                    "dimensions"
+                ],
+                "summary": "Get Dimension by id",
+                "operationId": "getDimension",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "dimensionId",
+                        "in": "path",
+                        "description": "ID of Dimension to return",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/Dimension"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "dimensions"
+                ],
+                "summary": "Update Dimension",
+                "operationId": "updateDimension",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "dimensionId",
+                        "in": "path",
+                        "description": "ID of Dimension to update",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Dimension to be updated",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Dimension"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "dimensions"
+                ],
+                "summary": "Delete Dimension",
+                "operationId": "deleteDimension",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "dimensionId",
+                        "in": "path",
+                        "description": "ID of Dimension to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "deprecated": false
+            }
+        },
         "/sales": {
             "get": {
                 "tags": [
@@ -213,6 +373,33 @@
                     "description": "True if this account is not active",
                     "type": "boolean",
                     "example": "0"
+                }
+            },
+            "type": "object",
+            "format": ""
+        },
+        "Dimension": {
+            "description": "A Dimension",
+            "properties": {
+                "id": {
+                    "description": "Unique id used to reference a Dimension",
+                    "type": "integer",
+                    "example": "1"
+                },
+                "reference": {
+                    "description": "Unique short human readable reference",
+                    "type": "string",
+                    "example": "PROJECT1"
+                },
+                "name": {
+                    "description": "A longer human readable name",
+                    "type": "string",
+                    "example": "Project 1: Building buildings"
+                },
+                "memo": {
+                    "description": "A longer memo",
+                    "type": "string",
+                    "example": "Some memo"
                 }
             },
             "type": "object",

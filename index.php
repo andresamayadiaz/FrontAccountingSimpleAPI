@@ -11,6 +11,8 @@ use FAAPI\GLAccounts;
 use FAAPI\Currencies;
 use FAAPI\InventoryCosts;
 use FAAPI\Sales;
+use FAAPI\Dimensions;
+
 /**********************************************
 Author: Andres Amaya
 Name: SASYS REST API
@@ -473,6 +475,39 @@ $rest->group('/sales', function () use($rest)
 	});
 });
 // ------------------------------- Sales --------------------------------
+// ---------------------------- Dimensions ------------------------------
+$rest->container->singleton('dimensions', function() {
+	return new Dimensions();
+});
+$rest->group('/dimensions', function () use($rest)
+{
+	// Get Dimension
+	$rest->get('/:ref', function ($ref) use($rest)
+	{
+		$rest->dimensions->getById($rest, $ref);
+	});
+	// Insert Dimension
+	$rest->post('/', function () use($rest)
+	{
+		$rest->dimensions->post($rest);
+	});
+	// Edit Dimension
+	$rest->put('/:ref', function ($ref) use($rest)
+	{
+		$rest->dimensions->put($rest, $ref);
+	});
+	// Delete Dimension
+	$rest->delete('/:ref', function ($ref) use($rest)
+	{
+		$rest->dimensions->delete($rest, $ref);
+	});
+	// All Dimensions
+	$rest->get('/', function () use($rest)
+	{
+		$rest->dimensions->get($rest);
+	});
+});
+// ---------------------------- Dimensions ------------------------------
 
 // Init API
 $rest->run();

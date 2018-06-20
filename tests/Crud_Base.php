@@ -12,8 +12,6 @@ abstract class Crud_Base extends PHPUnit_Framework_TestCase
 
 	private $putData;
 
-	private $getData;
-
 	private $url;
 
 	private $keyProperty;
@@ -24,21 +22,19 @@ abstract class Crud_Base extends PHPUnit_Framework_TestCase
 	const FORM_DATA = 'form_params';
 
 	/**
-	 * Constructor. The $putData and $getData will be set to $postData if not set
+	 * Constructor. The $putData will be set to $postData if not set
 	 * @param string $url url of the endpoint 
 	 * @param string $keyProperty the property containing the key id
 	 * @param array $postData example data to use in post (create)
 	 * @param array $putData example data to use in put (update)
-	 * @param array $getData example data to compare with in get (read)
 	 */
-	public function __construct($url, $keyProperty, $postData, $putData = null, $getData = null)
+	public function __construct($url, $keyProperty, $postData, $putData = null)
 	{
 		$this->url = $url;
 		$this->keyProperty = $keyProperty;
 
 		$this->postData = $postData;
 		$this->putData = $putData ? $putData : $postData;
-		$this->getData = $getData ? $getData : $postData;
 
 		$this->method = Crud_Base::FORM_DATA;
 	}

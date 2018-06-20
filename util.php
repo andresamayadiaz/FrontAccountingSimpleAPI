@@ -31,22 +31,23 @@ function api_response($code, $body)
 {
 	$app = \Slim\Slim::getInstance('SASYS');
 	$app->response()->status($code);
+	if (is_array($body)) {
+		$body= json_encode($body);
+	}
 	$app->response()->body($body);
 }
 
 function api_success_response($body)
 {
 	$app = \Slim\Slim::getInstance('SASYS');
-	$app->response()->status(200);
-	$app->response()->body($body);
+	api_response(200, $body);
 	//$app->response()->['Content-Type'] = $content_type;
 }
 
 function api_create_response($body)
 {
 	$app = \Slim\Slim::getInstance('SASYS');
-	$app->response()->status(201);
-	$app->response()->body($body);
+	api_response(201, $body);
 	//$app->response()->['Content-Type'] = $content_type;
 }
 
@@ -70,4 +71,40 @@ function api_ensureAssociativeArray($a)
 		}
 	}
 	return $a;
+}
+
+function api_validate_required($property, $model) {
+	if (!isset($model[$property])) {
+		return false;
+	}
+	return true;
+}
+
+function api_validate_message($test, $property) {
+	$messages = array(
+		"api_validate_required" => "Missing a required proprty '$property'"
+	);
+	if (isset($messages[$test])) {
+		return $messages[$test];
+	}
+	return '';
+}
+
+function api_validate($property, $model, $code = 412, $test = 'api_validate_required', $msg = null) {
+	if ($test($property, $model)) {
+		return;
+	}
+	if (!$msg) {
+		$msg = \api_validate_message($test, $property);
+		if (!$msg) {
+			$msg = "Unknown error in '$property'";
+		}
+	}
+	\api_error($code, $msg);
+}
+
+function api_check($property, &$model, $default = '') {
+	if (!isset($model[$property])) {
+		$model[$property] = $default;
+	}
 }
