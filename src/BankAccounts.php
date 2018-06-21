@@ -71,7 +71,7 @@ class BankAccounts
      * @SWG\Get(
      *   path="/bankaccounts",
      *   summary="List Bank Accounts",
-     *   tags={"bank account"},
+     *   tags={"bankaccounts"},
      *   operationId="listBankAccounts",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -104,7 +104,7 @@ class BankAccounts
      * @SWG\Get(
      *   path="/bankaccounts/{id}",
      *   summary="Get Bank Account by id",
-     *   tags={"bank account"},
+     *   tags={"bankaccounts"},
      *   operationId="getBankAccount",
      *   produces={"application/json"},
      *   @SWG\Parameter(
