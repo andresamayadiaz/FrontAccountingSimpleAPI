@@ -27,7 +27,7 @@ var execute = function(command, options, callback) {
 };
 
 var paths = {
-  src: ['**/*.inc', '**/*.php', '!vendor/**'],
+  src: ['**/*.inc', '**/*.php', '*.php', '*.inc', 'index.php', '!vendor/**'],
   testUnit: ['tests/*.php']
 };
 
@@ -89,6 +89,43 @@ gulp.task('test-watch', function() {
   gulp.watch([paths.testUnit, paths.src], ['test']);
 });
 
+gulp.task('doc-swagger-json', function(cb) {
+  var options = {
+    dryRun: false,
+    silent: false
+  };
+  execute(
+    '/usr/bin/env php vendor/zircote/swagger-php/bin/swagger src/ index.php',
+    options,
+    cb
+  );
+});
+
+// This task builds static documentation in the public folder from the swagger.json file using spectacle
+// spectacle is assumed to be globally installed on the system, e.g. sudo npm install -g spectacle-docs
+// more information on the Spectacle static docs generator: https://github.com/sourcey/spectacle
+gulp.task('doc-spectacle', function(cb) {
+  var options = {
+    dryRun: false,
+    silent: false
+  };
+  execute(
+    'spectacle -q swagger.json',
+    options,
+    cb
+  );
+});
+
+gulp.task('doc', gulpSequence('doc-swagger-json', 'doc-spectacle'));
+
+gulp.task('doc-watch', function() {
+  gulp.watch(['src/*.php', '*.php'], ['doc-swagger-json']);
+  // gulp.watch('index.php', function() {
+  //   console.log('boo');
+  //   gulp.start('doc-swagger-json');
+  // });
+});
+
 gulp.task('package-zip', ['package-vendor'], function(cb) {
   var options = {
     dryRun: false,
@@ -96,7 +133,7 @@ gulp.task('package-zip', ['package-vendor'], function(cb) {
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.4"
+    release: "-api.module.1.5"
   };
   execute(
     'rm -f *.zip && cd <%= src %> && zip -r -x@./upload-exclude-zip.txt -y -q ./<%= name %>-<%= version %><%= release %>.zip .',
@@ -112,7 +149,7 @@ gulp.task('package-tar', ['package-vendor'], function(cb) {
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.4"
+    release: "-api.module.1.5"
   };
   execute(
     'rm -f *.tgz && cd <%= src %> && tar -cvzf ./<%= name %>-<%= version %><%= release %>.tgz -X upload-exclude.txt * .htaccess',
