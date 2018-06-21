@@ -40,7 +40,8 @@ Some of them have not been tested yet so be carefull.
 
 Report issues you find in our GitHub Issue Tracker. Please report with as much detail as you can. Simply saying "It doesn't work" will gain you sympathy, but not a lot else.
 
-Want to contribute code? Go right ahead, fork the project on GitHub, pull requests are welcome.
+Want to contribute code? Go right ahead, fork the project on GitHub, pull requests are welcome. Note that we're trying to follow the [PSR-2 Coding Style Guide](https://www.php-fig.org/psr/psr-2/).
+
 ## Contact
 
 Any question about this you can always contact me: andres.amaya.diaz@gmail.com
