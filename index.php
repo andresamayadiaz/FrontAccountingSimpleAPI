@@ -281,15 +281,15 @@ $rest->group('/bankaccounts', function () use ($rest) {
     $rest->get('/:id', function ($id) use ($rest) {
         $rest->bankAccounts->getById($rest, $id);
     });
-    // Insert GL Accounts
+    // Insert Bank Account
     $rest->post('/', function () use ($rest) {
         $rest->bankAccounts->post($rest);
     });
-    // Update GL Accounts
+    // Update Bank Account
     $rest->put('/:id', function ($id) use ($rest) {
         $rest->bankAccounts->put($rest, $id);
     });
-    // Delete GL Accounts
+    // Delete Bank Account
     $rest->delete('/:id', function ($id) use ($rest) {
         $rest->bankAccounts->delete($rest, $id);
     });
@@ -309,15 +309,15 @@ $rest->group('/glaccounts', function () use ($rest) {
     $rest->get('/:id', function ($id) use ($rest) {
         $rest->glAccounts->getById($rest, $id);
     });
-    // Insert GL Accounts
+    // Insert GL Account
     $rest->post('/', function () use ($rest) {
         $rest->glAccounts->post($rest);
     });
-    // Update GL Accounts
+    // Update GL Account
     $rest->put('/:id', function ($id) use ($rest) {
         $rest->glAccounts->put($rest, $id);
     });
-    // Delete GL Accounts
+    // Delete GL Account
     $rest->delete('/:id', function ($id) use ($rest) {
         $rest->glAccounts->delete($rest, $id);
     });
