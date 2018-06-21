@@ -281,6 +281,18 @@ $rest->group('/bankaccounts', function () use ($rest) {
     $rest->get('/:id', function ($id) use ($rest) {
         $rest->bankAccounts->getById($rest, $id);
     });
+    // Insert GL Accounts
+    $rest->post('/', function () use ($rest) {
+        $rest->bankAccounts->post($rest);
+    });
+    // Update GL Accounts
+    $rest->put('/:id', function ($id) use ($rest) {
+        $rest->bankAccounts->put($rest, $id);
+    });
+    // Delete GL Accounts
+    $rest->delete('/:id', function ($id) use ($rest) {
+        $rest->bankAccounts->delete($rest, $id);
+    });
 });
 // ------------------------------- Bank Accounts -------------------------------
 
@@ -289,7 +301,7 @@ $rest->container->singleton('glAccounts', function () {
     return new GLAccounts();
 });
 $rest->group('/glaccounts', function () use ($rest) {
-    // Get GL Accounts
+    // Get All GL Accounts
     $rest->get('/', function () use ($rest) {
         $rest->glAccounts->get($rest);
     });

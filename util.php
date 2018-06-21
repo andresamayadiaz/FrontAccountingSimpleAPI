@@ -104,8 +104,19 @@ function api_validate($property, $model, $code = 412, $test = 'api_validate_requ
     \api_error($code, $msg);
 }
 
-function api_check($property, &$model, $default = '') {
+/**
+ * @param string $property
+ * @param array $model
+ * @param string|array $default
+ */
+function api_check($property, &$model, $default = '')
+{
     if (!isset($model[$property])) {
+        if (is_array($default)) {
+            if (array_key_exists($property, $default)) {
+                $default = $default[$property];
+            }
+        }
         $model[$property] = $default;
     }
 }
