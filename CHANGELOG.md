@@ -1,7 +1,14 @@
 # CHANGELOG
 
+#### 21 June 2018
+
+- Add full CRUD for Bank Accounts under bankaccounts endpoint.
+- Fix formatting of code under src/ and test/ to conform to [PSR-2](https://www.php-fig.org/psr/psr-2/)
+
 #### 20 June 2018
 
+- Add full CRUD for GLAccounts under glaccounts endpoint.
+- Add CRUD for Dimensions under dimensions endpoint.
 - Add static api generator and sample documentation.
 
 #### 19 June 2018
