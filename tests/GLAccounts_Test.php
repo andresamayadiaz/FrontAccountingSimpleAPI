@@ -19,7 +19,7 @@ const GL_POST_DATA = array(
 /**
  * @group wip
  */
-class GLTest extends Crud_Base
+class GLAccountsTest extends Crud_Base
 {
 	private $postData = GL_POST_DATA;
 	
