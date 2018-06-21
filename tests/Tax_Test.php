@@ -8,7 +8,6 @@ require_once(TEST_PATH . '/TestEnvironment.php');
 
 class TaxTest extends PHPUnit_Framework_TestCase
 {
-
     public function testTaxTypes_Ok()
     {
         $client = TestEnvironment::client();
