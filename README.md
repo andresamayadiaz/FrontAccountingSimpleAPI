@@ -8,7 +8,7 @@ I needed some basic integration functions to another software and decided to cre
 
 *DO NOT* use git to clone this repo into your FrontAccounting modules folder unless you are a developer.
 
-*DO* download the [latest release](https://github.com/cambell-prince/FrontAccountingSimpleAPI/releases/latest) in either zip or tgz and unpack into a folder such as .../modules/api.
+*DO* download the [latest release](https://github.com/andresamayadiaz/FrontAccountingSimpleAPI/releases/latest) in either zip or tgz and unpack into a folder such as .../modules/api.
 
 ## API Quick Start
 
