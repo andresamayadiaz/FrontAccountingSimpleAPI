@@ -81,6 +81,26 @@
             </ul>
           </section>
           <section>
+            <a href="#tag-journal">journal</a>
+            <ul>
+              <li>
+                <a href="#operation--journal-get"> List Journal Entries </a>
+              </li>
+              <li>
+                <a href="#operation--journal-post"> Add Journal Entry </a>
+              </li>
+              <li>
+                <a href="#operation--journal--type---id--get"> Get Journal Entry by type and id </a>
+              </li>
+              <li>
+                <a href="#operation--journal--type---id--delete"> Void Journal Entry </a>
+              </li>
+              <li>
+                <a href="#operation--journal--id--put"> Update Journal Entry </a>
+              </li>
+            </ul>
+          </section>
+          <section>
             <a href="#tag-sales">sales</a>
             <ul>
               <li>
@@ -101,6 +121,7 @@
           <a href="#definition-BankAccount"> BankAccount </a>
           <a href="#definition-Dimension"> Dimension </a>
           <a href="#definition-GLAccount"> GLAccount </a>
+          <a href="#definition-JournalEntry"> JournalEntry </a>
           <a href="#definition-Sale"> Sale </a>
         </nav>
       </div>
@@ -1464,6 +1485,521 @@
               </div>
             </div>
           </div>
+          <h1 id="tag-journal" class="swagger-summary-tag" data-traverse-target="tag-journal">journal</h1>
+          <div id="operation--journal-get" class="operation panel" data-traverse-target="operation--journal-get">
+            <!-- <section class="operation-tags row"> -->
+            <!-- <div class="doc-copy"> -->
+            <div class="operation-tags">
+              <a class="label" href="#tag-journal">journal</a>
+              <!---->
+            </div>
+            <!-- </div> -->
+            <!-- </section> -->
+            <h2 class="operation-title">
+              <span class="operation-summary">List Journal Entries</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">GET</span>
+                  <span class="operation-path">/journal</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">from</div>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>filter start date</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">to</div>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>filter end date</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">ref</div>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>reference to filter by</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-array">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <h5>Response Content-Types:
+                  <span>application/json</span>
+                </h5>
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">[
+  {
+    <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>,
+    <span class="hljs-attr">&quot;journal_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+    <span class="hljs-attr">&quot;document_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+    <span class="hljs-attr">&quot;event_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+    <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>,
+    <span class="hljs-attr">&quot;document_ref&quot;</span>: <span class="hljs-string">&quot;INV123456&quot;</span>,
+    <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;18 001&quot;</span>
+  }
+]
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--journal-post" class="operation panel" data-traverse-target="operation--journal-post">
+            <!-- <section class="operation-tags row"> -->
+            <!-- <div class="doc-copy"> -->
+            <div class="operation-tags">
+              <a class="label" href="#tag-journal">journal</a>
+              <!---->
+            </div>
+            <!-- </div> -->
+            <!-- </section> -->
+            <h2 class="operation-title">
+              <span class="operation-summary">Add Journal Entry</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">POST</span>
+                  <span class="operation-path">/journal</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-body">
+                  <div class="prop-row">
+                    <div class="prop-name">
+                      <div class="swagger-request-model">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="prop-value columns small-6">
+                      <!-- <div class="swagger-request-description"> -->
+                      <p>Journal Entry to be added</p>
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Request Example</h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>,
+  <span class="hljs-attr">&quot;journal_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;document_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;event_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>,
+  <span class="hljs-attr">&quot;document_ref&quot;</span>: <span class="hljs-string">&quot;INV123456&quot;</span>,
+  <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;18 001&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">201 Created</div>
+                      <div class="prop-ref"></div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">object</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <h5>Response Content-Types:
+                  <span>application/json</span>
+                </h5>
+                <section>
+                  <h5>Response Example
+                    <span>(201 Created)</span>
+                  </h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;account_code&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--journal--type---id--get" class="operation panel" data-traverse-target="operation--journal--type---id--get">
+            <!-- <section class="operation-tags row"> -->
+            <!-- <div class="doc-copy"> -->
+            <div class="operation-tags">
+              <a class="label" href="#tag-journal">journal</a>
+              <!---->
+            </div>
+            <!-- </div> -->
+            <!-- </section> -->
+            <h2 class="operation-title">
+              <span class="operation-summary">Get Journal Entry by type and id</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">GET</span>
+                  <span class="operation-path">/journal/{type}/{id}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">journalType</div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Type of Journal Entry to return</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">journalId</div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of Journal Entry to return</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref">
+                        <span class="json-schema-ref-object">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">
+                        <span class="json-schema-ref-object">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <h5>Response Content-Types:
+                  <span>application/json</span>
+                </h5>
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>,
+  <span class="hljs-attr">&quot;journal_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;document_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;event_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>,
+  <span class="hljs-attr">&quot;document_ref&quot;</span>: <span class="hljs-string">&quot;INV123456&quot;</span>,
+  <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;18 001&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="operation--journal--type---id--delete" class="operation panel" data-traverse-target="operation--journal--type---id--delete">
+            <!-- <section class="operation-tags row"> -->
+            <!-- <div class="doc-copy"> -->
+            <div class="operation-tags">
+              <a class="label" href="#tag-journal">journal</a>
+              <!---->
+            </div>
+            <!-- </div> -->
+            <!-- </section> -->
+            <h2 class="operation-title">
+              <span class="operation-summary">Void Journal Entry</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">DELETE</span>
+                  <span class="operation-path">/journal/{type}/{id}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">journalType</div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>Type of Journal Entry to void</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">journalId</div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of Journal Entry to void</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples"></div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                    </div>
+                    <div class="prop-value">
+                      <p>successful operation</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <h5>Response Content-Types:
+                  <span>application/json</span>
+                </h5>
+              </div>
+            </div>
+          </div>
+          <div id="operation--journal--id--put" class="operation panel" data-traverse-target="operation--journal--id--put">
+            <!-- <section class="operation-tags row"> -->
+            <!-- <div class="doc-copy"> -->
+            <div class="operation-tags">
+              <a class="label" href="#tag-journal">journal</a>
+              <!---->
+            </div>
+            <!-- </div> -->
+            <!-- </section> -->
+            <h2 class="operation-title">
+              <span class="operation-summary">Update Journal Entry</span>
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-operation-path">
+                  <span class="operation-method">PUT</span>
+                  <span class="operation-path">/journal/{id}</span>
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-request-body">
+                  <div class="prop-row">
+                    <div class="prop-name">
+                      <div class="swagger-request-model">
+                        <span class="">
+                          <a class="json-schema-ref" href="#/definitions/JournalEntry">JournalEntry</a>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="prop-value columns small-6">
+                      <!-- <div class="swagger-request-description"> -->
+                      <p>Journal Entry to be updated</p>
+                      <!-- </div> -->
+                    </div>
+                  </div>
+                </section>
+                <section class="swagger-request-params">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">journalId</div>
+                      <span class="json-property-required"></span>
+                      <div class="prop-subtitle"> in path </div>
+                      <div class="prop-subtitle">
+                        <span class="json-property-type">string</span>
+                        <span class="json-property-range" title="Value limits"></span>
+                      </div>
+                    </div>
+                    <div class="prop-value">
+                      <p>ID of Journal Entry to update</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Request Example</h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>,
+  <span class="hljs-attr">&quot;journal_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;document_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;event_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>,
+  <span class="hljs-attr">&quot;document_ref&quot;</span>: <span class="hljs-string">&quot;INV123456&quot;</span>,
+  <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;18 001&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="swagger-responses">
+                  <div class="prop-row prop-group">
+                    <div class="prop-name">
+                      <div class="prop-title">200 OK</div>
+                      <div class="prop-ref"></div>
+                      <!-- <span class="swagger-global"></span> <span class="json-schema-reference"><a href=""></a></span> -->
+                    </div>
+                    <div class="prop-value">
+                      <p>successful operation</p>
+                    </div>
+                  </div>
+                  <div class="prop-row prop-inner">
+                    <div class="prop-name">type</div>
+                    <div class="prop-value">
+                      <span class="json-property-type">object</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <h5>Response Content-Types:
+                  <span>application/json</span>
+                </h5>
+                <section>
+                  <h5>Response Example
+                    <span>(200 OK)</span>
+                  </h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;account_code&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
           <h1 id="tag-sales" class="swagger-summary-tag" data-traverse-target="tag-sales">sales</h1>
           <div id="operation--sales-get" class="operation panel" data-traverse-target="operation--sales-get">
             <!-- <section class="operation-tags row"> -->
@@ -2031,6 +2567,108 @@
   <span class="hljs-attr">&quot;account_name&quot;</span>: <span class="hljs-string">&quot;My Bank Savings Account&quot;</span>,
   <span class="hljs-attr">&quot;account_type&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,
   <span class="hljs-attr">&quot;inactive&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>
+}
+</code></pre>
+                  <!-- </div> -->
+                </section>
+              </div>
+            </div>
+          </div>
+          <div id="definition-JournalEntry" class="definition panel" data-traverse-target="definition-JournalEntry">
+            <h2 class="panel-title">
+              <a name="/definitions/JournalEntry"></a>JournalEntry: object
+              <!-- <span class="json-property-type"><span class="json-property-type">object</span>
+              <span class="json-property-range" title="Value limits"></span>
+              
+              
+              </span> -->
+            </h2>
+            <div class="doc-row">
+              <div class="doc-copy">
+                <section class="json-schema-description">
+                  <p>A single Journal Entry</p>
+                </section>
+                <section class="json-schema-properties">
+                  <dl>
+                    <dt data-property-name="id" class="has-description">
+                      <span class="json-property-name">id:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Unique id used to reference a Journal Entry</p>
+                    </dd>
+                    <dt data-property-name="type" class="has-description">
+                      <span class="json-property-name">type:</span>
+                      <span class="json-property-type">integer</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Transaction type is the type of document this Journal Entry represents, e.g. Invoice, Delivery, GRN etc.</p>
+                    </dd>
+                    <dt data-property-name="journal_date" class="has-description">
+                      <span class="json-property-name">journal_date:</span>
+                      <span class="json-property-type">date</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Date of Journal Entry</p>
+                    </dd>
+                    <dt data-property-name="document_date" class="has-description">
+                      <span class="json-property-name">document_date:</span>
+                      <span class="json-property-type">date</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Date of related document</p>
+                    </dd>
+                    <dt data-property-name="event_date" class="has-description">
+                      <span class="json-property-name">event_date:</span>
+                      <span class="json-property-type">date</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Date of related event</p>
+                    </dd>
+                    <dt data-property-name="currency" class="has-description">
+                      <span class="json-property-name">currency:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Currency </p>
+                    </dd>
+                    <dt data-property-name="document_ref" class="has-description">
+                      <span class="json-property-name">document_ref:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Reference of the related document</p>
+                    </dd>
+                    <dt data-property-name="reference" class="has-description">
+                      <span class="json-property-name">reference:</span>
+                      <span class="json-property-type">string</span>
+                      <span class="json-property-range" title="Value limits"></span>
+                    </dt>
+                    <dd>
+                      <p>Reference for this Journal Entry</p>
+                    </dd>
+                  </dl>
+                </section>
+              </div>
+              <div class="doc-examples">
+                <section>
+                  <h5>Example</h5>
+                  <!-- <div class="hljs"> --><pre><code class="hljs lang-json">{
+  <span class="hljs-attr">&quot;id&quot;</span>: <span class="hljs-string">&quot;1&quot;</span>,
+  <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>,
+  <span class="hljs-attr">&quot;journal_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;document_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;event_date&quot;</span>: <span class="hljs-string">&quot;2018-06-21&quot;</span>,
+  <span class="hljs-attr">&quot;currency&quot;</span>: <span class="hljs-string">&quot;USD&quot;</span>,
+  <span class="hljs-attr">&quot;document_ref&quot;</span>: <span class="hljs-string">&quot;INV123456&quot;</span>,
+  <span class="hljs-attr">&quot;reference&quot;</span>: <span class="hljs-string">&quot;18 001&quot;</span>
 }
 </code></pre>
                   <!-- </div> -->
