@@ -12,6 +12,7 @@ use FAAPI\Currencies;
 use FAAPI\InventoryCosts;
 use FAAPI\Sales;
 use FAAPI\Dimensions;
+use FAAPI\Journal;
 
 /**********************************************
 Author: Andres Amaya
@@ -455,6 +456,34 @@ $rest->group('/dimensions', function () use ($rest) {
     });
 });
 // ----------------------------- Dimensions -----------------------------
+
+// ------------------------------ Journal -------------------------------
+$rest->container->singleton('journal', function () {
+    return new Journal();
+});
+$rest->group('/journal', function () use ($rest) {
+    // Get All Journal Entries
+    $rest->get('/', function () use ($rest) {
+        $rest->journal->get($rest);
+    });
+    // Get Specific Journal Entry
+    $rest->get('/:type/:id', function ($type, $id) use ($rest) {
+        $rest->journal->getById($rest, $type, $id);
+    });
+    // Insert Journal Entry
+    $rest->post('/', function () use ($rest) {
+        $rest->journal->post($rest);
+    });
+    // Update Journal Entry
+    $rest->put('/:id', function ($id) use ($rest) {
+        $rest->journal->put($rest, $id);
+    });
+    // Delete Journal Entry
+    $rest->delete('/:type/:id', function ($type, $id) use ($rest) {
+        $rest->journal->delete($rest, $type, $id);
+    });
+});
+// ------------------------------ Journal -------------------------------
 
 // Init API
 $rest->run();

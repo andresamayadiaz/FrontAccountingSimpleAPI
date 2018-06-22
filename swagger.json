@@ -12,13 +12,13 @@
         },
         "version": "2.4-1.2"
     },
-    "host": "frontaccounting.demo.saygoweb.com",
-    "basePath": "/modules/api",
+    "host": "demo.saygoweb.com",
+    "basePath": "/frontaccounting/modules/api",
     "paths": {
         "/bankaccounts": {
             "get": {
                 "tags": [
-                    "bank account"
+                    "bankaccounts"
                 ],
                 "summary": "List Bank Accounts",
                 "operationId": "listBankAccounts",
@@ -37,17 +37,61 @@
                     }
                 },
                 "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "bankaccounts"
+                ],
+                "summary": "Add Bank Account",
+                "operationId": "addBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Bank Account to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
             }
         },
-        "/bankaccounts/id": {
+        "/bankaccounts/{id}": {
             "get": {
                 "tags": [
-                    "bank account"
+                    "bankaccounts"
                 ],
-                "summary": "Fetch Bank Account by id",
+                "summary": "Get Bank Account by id",
                 "operationId": "getBankAccount",
                 "produces": [
                     "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bankAccountId",
+                        "in": "path",
+                        "description": "ID of Bank Account to return",
+                        "required": true,
+                        "type": "string"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -56,6 +100,73 @@
                             "type": "object",
                             "$ref": "#/definitions/BankAccount"
                         }
+                    }
+                },
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "bankaccounts"
+                ],
+                "summary": "Update Bank Account",
+                "operationId": "updateBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bankAccountId",
+                        "in": "path",
+                        "description": "ID of Bank Account to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Bank Account to be updated",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "bankaccounts"
+                ],
+                "summary": "Delete Bank Account",
+                "operationId": "deleteBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bankAccountId",
+                        "in": "path",
+                        "description": "ID of Bank Account to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
                     }
                 },
                 "deprecated": false
@@ -321,7 +432,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "dimensionId",
+                        "name": "glAccountId",
                         "in": "path",
                         "description": "ID of GL Account to update",
                         "required": true,
@@ -373,6 +484,202 @@
                 "responses": {
                     "200": {
                         "description": "successful operation"
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/journal": {
+            "get": {
+                "tags": [
+                    "journal"
+                ],
+                "summary": "List Journal Entries",
+                "operationId": "listJournalEntries",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "path",
+                        "description": "filter start date",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "to",
+                        "in": "path",
+                        "description": "filter end date",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ref",
+                        "in": "path",
+                        "description": "reference to filter by",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/JournalEntry"
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Add Journal Entry",
+                "operationId": "addJournalEntry",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Journal Entry to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/JournalEntry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/journal/{type}/{id}": {
+            "get": {
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get Journal Entry by type and id",
+                "operationId": "getJournalEntry",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "journalType",
+                        "in": "path",
+                        "description": "Type of Journal Entry to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "journalId",
+                        "in": "path",
+                        "description": "ID of Journal Entry to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/JournalEntry"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Void Journal Entry",
+                "operationId": "voidJournalEntry",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "journalType",
+                        "in": "path",
+                        "description": "Type of Journal Entry to void",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "journalId",
+                        "in": "path",
+                        "description": "ID of Journal Entry to void",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/journal/{id}": {
+            "put": {
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Update Journal Entry",
+                "operationId": "updateJournalEntry",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "journalId",
+                        "in": "path",
+                        "description": "ID of Journal Entry to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Journal Entry to be updated",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/JournalEntry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "account_code": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "deprecated": false
@@ -499,7 +806,7 @@
                 "bank_account_number": {
                     "description": "Account number used by the Bank",
                     "type": "string",
-                    "example": "12-3456-7890-1"
+                    "example": "12-3456-789123-00"
                 },
                 "bank_curr_code": {
                     "description": "Currency of the account",
@@ -594,6 +901,54 @@
             "type": "object",
             "format": ""
         },
+        "JournalEntry": {
+            "description": "A single Journal Entry",
+            "properties": {
+                "id": {
+                    "description": "Unique id used to reference a Journal Entry",
+                    "type": "integer",
+                    "example": "1"
+                },
+                "type": {
+                    "description": "Transaction type is the type of document this Journal Entry represents, e.g. Invoice, Delivery, GRN etc.",
+                    "type": "integer",
+                    "example": "10"
+                },
+                "journal_date": {
+                    "description": "Date of Journal Entry",
+                    "type": "date",
+                    "example": "2018-06-21"
+                },
+                "document_date": {
+                    "description": "Date of related document",
+                    "type": "date",
+                    "example": "2018-06-21"
+                },
+                "event_date": {
+                    "description": "Date of related event",
+                    "type": "date",
+                    "example": "2018-06-21"
+                },
+                "currency": {
+                    "description": "Currency ",
+                    "type": "string",
+                    "example": "USD"
+                },
+                "document_ref": {
+                    "description": "Reference of the related document",
+                    "type": "string",
+                    "example": "INV123456"
+                },
+                "reference": {
+                    "description": "Reference for this Journal Entry",
+                    "required": "false",
+                    "type": "string",
+                    "example": "18 001"
+                }
+            },
+            "type": "object",
+            "format": ""
+        },
         "Sale": {
             "description": "A Sale",
             "properties": {
@@ -609,6 +964,6 @@
     },
     "externalDocs": {
         "description": "Find out more about Front Accounting Simple API",
-        "url": "http://swagger.io"
+        "url": "https://github.com/cambell-prince/FrontAccountingSimpleAPI"
     }
 }
