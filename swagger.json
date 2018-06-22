@@ -10,7 +10,7 @@
             "name": "GPL V2.0",
             "url": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
         },
-        "version": "2.4-1.2"
+        "version": "2.4-1.6"
     },
     "host": "demo.saygoweb.com",
     "basePath": "/frontaccounting/modules/api",

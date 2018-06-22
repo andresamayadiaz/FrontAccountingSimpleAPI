@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI.svg?branch=master-upstream)](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI)
 
-I needed some basic integration functions to another software and decided to create this REST API and contribute with Front Accounting team.
-Hope you find it usefull !!
+I needed some basic integration functions to another software and decided to create this REST API and contribute to the Front Accounting community. I hope you find it usefull!
 
 ## Installation
 
@@ -13,11 +12,15 @@ Hope you find it usefull !!
 
 ## API Quick Start
 
-1. Just copy the files into the modules directory under a folder called "api" or anything you want.
-2. Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X-COMPANY, X-USER and X-PASSWORD headers in the request and the API will use those credentials, if they're wrong you will get a nice message telling "Bad Login"
-3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON with all you're items categories, if not check the util.php file.
+1. Just copy the files into the modules directory under a folder called "api".
+2. OPTIONAL: To test your installation Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X-COMPANY, X-USER and X-PASSWORD headers in the request and the API will use those credentials, if they're wrong you will get a nice message saying "Bad Login"
+3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON response with all you're items categories, if not check your credentials in the util.php file, or the X headers if set in the client.
 
-## Methods
+## Documentation
+
+See the [API Documentation](http://cambell-prince.github.io/FrontAccountingSimpleAPI/) for descriptions of each endpoint.
+
+### Methods
 
 The following API endpoints have been implemented:
 
@@ -33,6 +36,7 @@ The following API endpoints have been implemented:
 - Bank Accounts
 - GL Accounts
 - GL Account Types.
+- Journal
 
 Some of them have not been tested yet so be carefull.
 

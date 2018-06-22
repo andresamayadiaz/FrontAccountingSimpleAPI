@@ -1,5 +1,9 @@
 # CHANGELOG
 
+#### 22 June 2018
+
+- Add full CRUD for Journal entry, update, and delete (void).
+
 #### 21 June 2018
 
 - Add full CRUD for Bank Accounts under bankaccounts endpoint.
