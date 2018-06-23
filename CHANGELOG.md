@@ -1,5 +1,9 @@
 # CHANGELOG
 
+#### 23 June 2018
+
+- Change README.md API documentation to point to http://andresamayadiaz.github.io/FrontAccountingSimpleAPI/
+
 #### 22 June 2018
 
 - Add full CRUD for Journal entry, update, and delete (void).

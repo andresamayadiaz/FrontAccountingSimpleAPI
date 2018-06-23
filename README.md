@@ -18,7 +18,7 @@ I needed some basic integration functions to another software and decided to cre
 
 ## Documentation
 
-See the [API Documentation](http://cambell-prince.github.io/FrontAccountingSimpleAPI/) for descriptions of each endpoint.
+See the [API Documentation](http://andresamayadiaz.github.io/FrontAccountingSimpleAPI/) for descriptions of each endpoint.
 
 ### Methods
 
