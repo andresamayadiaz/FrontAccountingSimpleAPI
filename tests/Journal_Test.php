@@ -29,9 +29,6 @@ const JOURNAL_POST_DATA = array(
     )
 );
 
-/**
- * @group wip
- */
 class JournalTest extends Crud_Base
 {
     private $postData = JOURNAL_POST_DATA;
