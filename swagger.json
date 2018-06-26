@@ -332,6 +332,234 @@
                 "deprecated": false
             }
         },
+        "/exchangerates/{currency}": {
+            "get": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "List all ExchangeRates for a given currency",
+                "operationId": "listExchangeRates",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ExchangeRate"
+                            }
+                        }
+                    },
+                    "412": {
+                        "description": "failed precondition",
+                        "schema": {
+                            "type": "object",
+                            "items": {
+                                "$ref": "#/definitions/Error"
+                            }
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "Add ExchangeRate",
+                "operationId": "addExchangeRate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency of ExchangeRate to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "ExchangeRate to be added",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExchangeRate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/exchangerates/{currency}/current": {
+            "get": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "Get current exchange rate for the given currency",
+                "operationId": "getCurrentExchangeRate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency of ExchangeRate to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/ExchangeRate"
+                        }
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/exchangerates/{currency}/{id}": {
+            "get": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "Get ExchangeRate by id",
+                "operationId": "getExchangeRate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency of ExchangeRate to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "exchangeRateId",
+                        "in": "path",
+                        "description": "ID of ExchangeRate to return",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/ExchangeRate"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "Update ExchangeRate",
+                "operationId": "updateExchangeRate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency of ExchangeRate to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "exchangeRateId",
+                        "in": "path",
+                        "description": "ID of ExchangeRate to update",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "ExchangeRate to be updated",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ExchangeRate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "exchangerates"
+                ],
+                "summary": "Delete ExchangeRate",
+                "operationId": "deleteExchangeRate",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "description": "Currency of ExchangeRate to delete",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "exchangeRateId",
+                        "in": "path",
+                        "description": "ID of ExchangeRate to delete",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                },
+                "deprecated": false
+            }
+        },
         "/glaccounts": {
             "get": {
                 "tags": [
@@ -864,6 +1092,38 @@
                     "description": "A longer memo",
                     "type": "string",
                     "example": "Some memo"
+                }
+            },
+            "type": "object",
+            "format": ""
+        },
+        "ExchangeRate": {
+            "description": "An ExchangeRate",
+            "properties": {
+                "id": {
+                    "description": "Unique id used to reference an ExchangeRate",
+                    "type": "integer",
+                    "example": "1"
+                },
+                "currency": {
+                    "description": "Standard currency code",
+                    "type": "string",
+                    "example": "USD"
+                },
+                "rateBuy": {
+                    "description": "The 'buy' exchange rate",
+                    "type": "float",
+                    "example": "1.12"
+                },
+                "rateSell": {
+                    "description": "The 'sell' exchange rate, if not set the 'rateBuy' is used",
+                    "type": "float",
+                    "example": "1.12"
+                },
+                "date": {
+                    "description": "The effective date from which to use this exchange rate",
+                    "type": "date",
+                    "example": "2018-06-26"
                 }
             },
             "type": "object",

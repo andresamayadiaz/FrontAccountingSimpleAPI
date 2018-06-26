@@ -13,6 +13,7 @@ use FAAPI\InventoryCosts;
 use FAAPI\Sales;
 use FAAPI\Dimensions;
 use FAAPI\Journal;
+use FAAPI\ExchangeRates;
 
 /**********************************************
 Author: Andres Amaya
@@ -95,7 +96,7 @@ $rest->add(new JsonToFormData());
 $rest->add(new \Slim\Middleware\ContentTypes());
 
 // API Routes
-// ------------------------------- Items -------------------------------
+// ---------------------------------- Items -----------------------------------
 $rest->container->singleton('inventory', function () {
     return new Inventory();
 });
@@ -121,9 +122,9 @@ $rest->group('/inventory', function () use ($rest) {
         $rest->inventory->delete($rest, $id);
     });
 });
-// ------------------------------- Items -------------------------------
+// ---------------------------------- Items -----------------------------------
 
-// ------------------------------- Inventory Locations -------------------------------
+// ---------------------------- Inventory Locations ---------------------------
 $rest->container->singleton('inventoryLocations', function () {
     return new InventoryLocations();
 });
@@ -138,17 +139,17 @@ $rest->group('/locations', function () use ($rest) {
         $rest->inventoryLocations->post($rest);
     });
 });
-// ------------------------------- Inventory Locations -------------------------------
+// ---------------------------- Inventory Locations ---------------------------
 
-// ------------------------------- Stock Adjustments -------------------------------
+// ----------------------------- Stock Adjustments ----------------------------
 // Add Stock Adjustment
 $rest->post('/stock/', function () use ($rest) {
     include_once(API_ROOT . "/inventory.inc");
     stock_adjustment_add();
 });
-// ------------------------------- Stock Adjustments -------------------------------
+// ----------------------------- Stock Adjustments ----------------------------
 
-// ------------------------------- Item Categories -------------------------------
+// ------------------------------ Item Categories -----------------------------
 $rest->container->singleton('category', function () {
     return new Category();
 });
@@ -174,9 +175,9 @@ $rest->group('/category', function () use ($rest) {
         $rest->category->delete($rest, $id);
     });
 });
-// ------------------------------- Item Categories -------------------------------
+// ------------------------------ Item Categories -----------------------------
 
-// ------------------------------- Tax Types -------------------------------
+// --------------------------------- Tax Types --------------------------------
 // Tax Types
 $rest->container->singleton('taxTypes', function () {
     return new TaxTypes();
@@ -191,9 +192,9 @@ $rest->group('/taxtypes', function () use ($rest) {
         $rest->taxTypes->getById($rest, $id);
     });
 });
-// ------------------------------- Tax Types -------------------------------
+// --------------------------------- Tax Types --------------------------------
 
-// ------------------------------- Tax Groups -------------------------------
+// --------------------------------- Tax Groups -------------------------------
 // Tax Groups
 $rest->container->singleton('taxGroups', function () {
     return new TaxGroups();
@@ -203,9 +204,9 @@ $rest->container->singleton('taxGroups', function () {
 $rest->get('/taxgroups/', function () use ($rest) {
     $rest->taxGroups->get($rest);
 });
-// ------------------------------- Tax Groups -------------------------------
+// --------------------------------- Tax Groups -------------------------------
 
-// ------------------------------- Customers -------------------------------
+// --------------------------------- Customers --------------------------------
 $rest->container->singleton('customers', function () {
     return new Customers();
 });
@@ -235,9 +236,9 @@ $rest->group('/customers', function () use ($rest) {
         $rest->customers->getBranches($rest, $id);
     });
 });
-// ------------------------------- Customers -------------------------------
+// --------------------------------- Customers --------------------------------
 
-// ------------------------------- Suppliers -------------------------------
+// --------------------------------- Suppliers --------------------------------
 $rest->container->singleton('suppliers', function () {
     return new Suppliers();
 });
@@ -267,9 +268,9 @@ $rest->group('/suppliers', function () use ($rest) {
         $rest->suppliers->getContacts($rest, $id);
     });
 });
-// ------------------------------- Suppliers -------------------------------
+// --------------------------------- Suppliers --------------------------------
 
-// ------------------------------- Bank Accounts -------------------------------
+// ------------------------------- Bank Accounts ------------------------------
 $rest->container->singleton('bankAccounts', function () {
     return new BankAccounts();
 });
@@ -295,9 +296,9 @@ $rest->group('/bankaccounts', function () use ($rest) {
         $rest->bankAccounts->delete($rest, $id);
     });
 });
-// ------------------------------- Bank Accounts -------------------------------
+// ------------------------------- Bank Accounts ------------------------------
 
-// ------------------------------- GL Accounts -------------------------------
+// -------------------------------- GL Accounts -------------------------------
 $rest->container->singleton('glAccounts', function () {
     return new GLAccounts();
 });
@@ -327,9 +328,9 @@ $rest->group('/glaccounts', function () use ($rest) {
 $rest->get('/glaccounttypes/', function () use ($rest) {
     $rest->glAccounts->getTypes($rest);
 });
-// ------------------------------- GL Accounts -------------------------------
+// -------------------------------- GL Accounts -------------------------------
 
-// ------------------------------- Currencies -------------------------------
+// -------------------------------- Currencies --------------------------------
 $rest->container->singleton('currencies', function () {
     return new Currencies();
 });
@@ -343,13 +344,44 @@ $rest->group('/currencies', function () use ($rest) {
         $rest->currencies->getById($rest, $id);
     });
 });
-// Get Last Exchange Rate
+// -------------------------------- Currencies --------------------------------
+// ------------------------------ Exchange Rates ------------------------------
+$rest->container->singleton('exchangerates', function () {
+    return new ExchangeRates();
+});
+$rest->group('/exchangerates', function () use ($rest) {
+    // Get Current ExchangeRate
+    $rest->get('/:currency/current', function ($currency) use ($rest) {
+        $rest->exchangerates->getCurrent($rest, $currency);
+    });
+    // Get ExchangeRate
+    $rest->get('/:currency/:id', function ($currency, $id) use ($rest) {
+        $rest->exchangerates->getById($rest, $currency, $id);
+    });
+    // Insert ExchangeRate
+    $rest->post('/:currency/', function ($currency) use ($rest) {
+        $rest->exchangerates->post($rest, $currency);
+    });
+    // Edit ExchangeRate
+    $rest->put('/:currency/:id', function ($currency, $id) use ($rest) {
+        $rest->exchangerates->put($rest, $currency, $id);
+    });
+    // Delete ExchangeRate
+    $rest->delete('/:currency/:id', function ($currency, $id) use ($rest) {
+        $rest->exchangerates->delete($rest, $currency, $id);
+    });
+    // All exchangerates for the given currency
+    $rest->get('/:currency/', function ($currency) use ($rest) {
+        $rest->exchangerates->getAllByCurrency($rest, $currency);
+    });
+});
+// Get Last Exchange Rate (Legacy route)
 $rest->get('/exrates/:curr_abrev', function ($curr_abrev) use ($rest) {
     $rest->currencies->getLastExchangeRate($rest, $curr_abrev);
 });
-// ------------------------------- Currencies -------------------------------
+// ------------------------------ Exchange Rates ------------------------------
 
-// ------------------------------- Inventory Costs -------------------------------
+// ----- ------------------------ Inventory Costs -----------------------------
 $rest->container->singleton('inventoryCosts', function () {
     return new InventoryCosts();
 });
@@ -363,7 +395,7 @@ $rest->group('/itemcosts', function () use ($rest) {
         $rest->inventoryCosts->put($rest, $id);
     });
 });
-// ------------------------------- Inventory Costs -------------------------------
+// ----- ------------------------ Inventory Costs -----------------------------
 
 // ------------------------------- Assets -------------------------------
 // Fixed Assets
