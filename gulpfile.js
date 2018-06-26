@@ -133,7 +133,7 @@ gulp.task('package-zip', ['package-vendor'], function(cb) {
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.6"
+    release: "-api.module.1.7"
   };
   execute(
     'rm -f *.zip && cd <%= src %> && zip -r -x@./upload-exclude-zip.txt -y -q ./<%= name %>-<%= version %><%= release %>.zip .',
@@ -149,7 +149,7 @@ gulp.task('package-tar', ['package-vendor'], function(cb) {
     src: "./",
     name: "frontaccounting",
     version: "2.4",
-    release: "-api.module.1.6"
+    release: "-api.module.1.7"
   };
   execute(
     'rm -f *.tgz && cd <%= src %> && tar -cvzf ./<%= name %>-<%= version %><%= release %>.tgz -X upload-exclude.txt * .htaccess',

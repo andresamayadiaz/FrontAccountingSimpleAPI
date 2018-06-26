@@ -1,6 +1,6 @@
 # Simple API for Front Accounting
 
-[![Build Status](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI.svg?branch=master-upstream)](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI)
+[![Build Status](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI.svg?branch=master)](https://travis-ci.org/cambell-prince/FrontAccountingSimpleAPI)
 
 I needed some basic integration functions to another software and decided to create this REST API and contribute to the Front Accounting community. I hope you find it usefull!
 

@@ -26,12 +26,9 @@ Free software under GNU GPL
  *   host="demo.saygoweb.com",
  *   basePath="/frontaccounting/modules/api",
  *   @SWG\Info(
- *     version="2.4-1.6",
+ *     version="2.4-1.7",
  *     title="Front Accounting Simple API",
- *     description="This is a simple REST API as a Front Accounting module [https://github.com/cambell-prince/FrontAccountingSimpleAPI](https://github.com/cambell-prince/FrontAccountingSimpleAPI).",
- *     @SWG\Contact(
- *       email="cambell.prince@gmail.com"
- *     ),
+ *     description="This is a simple REST API as a Front Accounting module [https://github.com/andresamayadiaz/FrontAccountingSimpleAPI](https://github.com/andresamayadiaz/FrontAccountingSimpleAPI).",
  *     @SWG\License(
  *       name="GPL V2.0",
  *       url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
@@ -39,7 +36,7 @@ Free software under GNU GPL
  *   ),
  *   @SWG\ExternalDocumentation(
  *     description="Find out more about Front Accounting Simple API",
- *     url="https://github.com/cambell-prince/FrontAccountingSimpleAPI"
+ *     url="https://github.com/andresamayadiaz/FrontAccountingSimpleAPI"
  *   )
  * )
  */
