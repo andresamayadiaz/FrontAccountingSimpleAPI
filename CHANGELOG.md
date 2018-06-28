@@ -1,29 +1,24 @@
 # CHANGELOG
 
-#### 26 June 2018
+#### June 2018
 
-- Add full CRUD for exchange rates under a new /exchangerates endpoint.
+- 28 Jun: Fix #41 Exchange rate get (all) doesn't return an ISO8601 date.
 
-#### 23 June 2018
+#### 26 June 2018 V2.4-1.7
 
-- Change README.md API documentation to point to http://andresamayadiaz.github.io/FrontAccountingSimpleAPI/
+- 26 Jun: Add full CRUD for exchange rates under a new /exchangerates endpoint.
 
-#### 22 June 2018
+#### 22 June 2018 v2.4-1.6
 
-- Add full CRUD for Journal entry, update, and delete (void).
+- 23 Jun: Change README.md API documentation to point to http://andresamayadiaz.github.io/FrontAccountingSimpleAPI/
+- 22 Jun: Add full CRUD for Journal entry, update, and delete (void).
+- 21 Jun: Add full CRUD for Bank Accounts under bankaccounts endpoint.
+- 21 Jun: Fix formatting of code under src/ and test/ to conform to [PSR-2](https://www.php-fig.org/psr/psr-2/)
+- 20 Jun: Add full CRUD for GLAccounts under glaccounts endpoint.
+- 20 Jun: Add CRUD for Dimensions under dimensions endpoint.
+- 20 Jun: Add swagger and spectacle to produce api documentation from annotated code.
 
-#### 21 June 2018
-
-- Add full CRUD for Bank Accounts under bankaccounts endpoint.
-- Fix formatting of code under src/ and test/ to conform to [PSR-2](https://www.php-fig.org/psr/psr-2/)
-
-#### 20 June 2018
-
-- Add full CRUD for GLAccounts under glaccounts endpoint.
-- Add CRUD for Dimensions under dimensions endpoint.
-- Add static api generator and sample documentation.
-
-#### 19 June 2018
+#### 19 June 2018 v2.4-1.5
 
 - Core VARLIB_PATH and VARLOG_PATH inclusions added [see this commit](https://github.com/FrontAccountingERP/FA/commit/4a37a28c49bf900dcc370fd3f21186cedcd632c9).
 - TaxType: Added getById (Apmuthu 24 Nov 2017).

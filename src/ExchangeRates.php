@@ -115,7 +115,7 @@ class ExchangeRates
                 'id' => $row['id'],
                 'currency' => $currency,
                 'rateBuy' => $row['rate_buy'],
-                'date' => sql2date($row['date_'])
+                'date' => $row['date_']
             );
             $data[] = $rate;
         }
@@ -276,7 +276,7 @@ class ExchangeRates
         ));
         \api_validate('rateBuy', $model);
         \api_check('rateSell', $model, $model['rateBuy']);
-        \api_check('date', $model, Today());
+        \api_check('date', $model, Today()); // REVIEW: This default needs to be ISO8601 CP 2018-06
 
         $curr_code = $currency;
         // error_log(var_export($model, true), 4);
