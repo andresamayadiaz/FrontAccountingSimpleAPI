@@ -14,7 +14,7 @@ I needed some basic integration functions to another software and decided to cre
 
 1. Just copy the files into the modules directory under a folder called "api".
 2. OPTIONAL: To test your installation Edit the file util.php and change the $company, $username and $password variables so you can test. Use it at your own risk, to provide login from another software you need to send X-COMPANY, X-USER and X-PASSWORD headers in the request and the API will use those credentials, if they're wrong you will get a nice message saying "Bad Login"
-3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON response with all you're items categories, if not check your credentials in the util.php file, or the X headers if set in the client.
+3. Try to access the API, for example, try the Items Category List, type this on your explorer: http://YOUR_FA_URL/modules/api/category/ You will see a JSON response with all your items categories, if not check your credentials in the util.php file, or the X headers if set in the client.
 
 ## Documentation
 
