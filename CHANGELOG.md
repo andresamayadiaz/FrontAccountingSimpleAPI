@@ -2,6 +2,8 @@
 
 #### June 2018
 
+- 29 Jun: In Journal add support for get, post, put of memo.
+- 29 Jun: Use ISO8601 for Journal dates.
 - 28 Jun: Fix #41 Exchange rate get (all) doesn't return an ISO8601 date.
 
 #### 26 June 2018 V2.4-1.7
