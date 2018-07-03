@@ -56,14 +56,12 @@ class ExchangeRates
      */
     public static function validateCurrencyExists($property, $model)
     {
-        $currency = $property ? $model[$property] : $model;
-        return false !== get_currency($currency);
+        return false !== get_currency($model[$property]);
     }
 
     public static function validateNotCompanyCurrency($property, $model)
     {
-        $currency = $property ? $model[$property] : $model;
-        return false === is_company_currency($currency);
+        return false === is_company_currency($model[$property]);
     }
 
     /**
@@ -98,11 +96,11 @@ class ExchangeRates
         $currency = \strtoupper($currency);
 
         // Validation
-        \api_validate(null, $currency, 412, array(self::class, 'validateCurrencyExists'), sprintf(
+        \api_validate('currency', $currency, 412, array(self::class, 'validateCurrencyExists'), sprintf(
             'Currency %s does not found',
             $currency
         ));
-        \api_validate(null, $currency, 412, array(self::class, 'validateNotCompanyCurrency'), sprintf(
+        \api_validate('currency', $currency, 412, array(self::class, 'validateNotCompanyCurrency'), sprintf(
             'Currency %s is the company currency and has no exchange rates',
             $currency
         ));

@@ -86,6 +86,21 @@ class TestEnvironment
         if ($result != 201) {
             throw new \Exception('Create journal failed', $result);
         }
+        $body = $response->getBody();
+        $body = json_decode($body);
+        return $body->id;
+    }
+
+    public static function deleteJournal($client, $id)
+    {
+        $response = $client->delete('/modules/api/journal/0/' . $id, array(
+            'headers' => TestEnvironment::headers()
+        ));
+
+        $result = $response->getStatusCode();
+        if ($result != 200) {
+            throw new \Exception('Create journal failed', $result);
+        }
     }
 
     public static function createId()
