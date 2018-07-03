@@ -72,6 +72,22 @@ class TestEnvironment
         }
     }
 
+    public static function createJournal($client, $date, $items)
+    {
+        $response = $client->post('/modules/api/journal/', array(
+            'headers' => TestEnvironment::headers(),
+            'form_params' => array(
+                'trans_date' => $date,
+                'items' => $items
+            )
+        ));
+
+        $result = $response->getStatusCode();
+        if ($result != 201) {
+            throw new \Exception('Create journal failed', $result);
+        }
+    }
+
     public static function createId()
     {
         return date('YmdHis');

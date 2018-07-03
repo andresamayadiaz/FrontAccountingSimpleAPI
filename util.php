@@ -79,10 +79,29 @@ function api_validate_required($property, $model)
     return true;
 }
 
+function api_validate_date($property, $model) {
+    if (!isset($model[$property])) {
+        return false;
+    }
+    $value = $model[$property];
+    $format = 'Y-m-d';
+    $dt = \DateTime::createFromFormat($format, $value);
+    if ($dt) {
+        $expected = $dt->format($format);
+        // if ($expected !== $value) {
+        //     error_log(sprintf('Given %s expected %s', $value, $expected), 4);
+        // }
+        return $expected == $value;
+    }
+    // error_log(sprintf('DateTime::createFromFormat failed with %s for format %s', $value, $format), 4);
+    return false;
+}
+
 function api_validate_message($test, $property)
 {
     $messages = array(
-        "api_validate_required" => "Missing a required proprty '$property'"
+        "api_validate_required" => "Missing a required proprty '$property'",
+        "api_validate_date" => "Invalid ISO8601 date in '$property' (e.g. 2016-12-31)"
     );
     if (isset($messages[$test])) {
         return $messages[$test];
@@ -92,6 +111,9 @@ function api_validate_message($test, $property)
 
 function api_validate($property, $model, $code = 412, $test = 'api_validate_required', $msg = null)
 {
+    if (!is_array($model)) {
+        $model = array($property => $model);
+    }
     if ($test($property, $model)) {
         return;
     }
