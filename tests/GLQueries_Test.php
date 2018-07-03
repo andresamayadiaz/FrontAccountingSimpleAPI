@@ -15,7 +15,7 @@ class GLTrialBalanceTest extends PHPUnit_Framework_TestCase
     {
         $client = TestEnvironment::client();
         // Post a test journal so that we can see some output in the trial balance.
-        TestEnvironment::createJournal($client, '2013-02-03', array(
+        $testId = TestEnvironment::createJournal($client, '2013-02-03', array(
             array(
                 'account_code' => '1060',
                 'amount' => '11.00'
@@ -57,5 +57,7 @@ class GLTrialBalanceTest extends PHPUnit_Framework_TestCase
         $expected->end_debit = 0;
         $expected->end_credit = 11;
         $this->assertEquals($expected, $result->accounts->{'4010'});
+
+        TestEnvironment::deleteJournal($client, $testId);
     }
 }
