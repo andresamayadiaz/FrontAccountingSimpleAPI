@@ -1,5 +1,9 @@
 # CHANGELOG
 
+#### July 2018
+
+- 03 Jul: Complete #43, add journal support for non-company currencies and exchange rate.
+
 #### June 2018
 
 - 29 Jun: In Journal add support for get, post, put of memo.
