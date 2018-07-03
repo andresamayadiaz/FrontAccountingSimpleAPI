@@ -14,6 +14,7 @@ use FAAPI\Sales;
 use FAAPI\Dimensions;
 use FAAPI\Journal;
 use FAAPI\ExchangeRates;
+use FAAPI\GLQueries;
 
 /**********************************************
 Author: Andres Amaya
@@ -324,6 +325,15 @@ $rest->group('/glaccounts', function () use ($rest) {
 // Get GL Account Types
 $rest->get('/glaccounttypes/', function () use ($rest) {
     $rest->glAccounts->getTypes($rest);
+});
+$rest->container->singleton('glQueries', function () {
+    return new GLQueries();
+});
+$rest->group('/glquery', function () use ($rest) {
+    // Get Trial Balance
+    $rest->get('/trialbalance/:start/:end/', function ($start, $end) use ($rest) {
+        $rest->glQueries->trialBalance($rest, $start, $end);
+    });
 });
 // -------------------------------- GL Accounts -------------------------------
 
