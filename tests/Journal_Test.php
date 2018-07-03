@@ -8,13 +8,13 @@ require_once(TEST_PATH . '/TestEnvironment.php');
 require_once(TEST_PATH . '/Crud_Base.php');
 
 const JOURNAL_POST_DATA = array(
-    'trans_date' => '01/10/2013',
-    'document_date' => '01/11/2013',
-    'event_date' => '01/12/2013',
+    'trans_date' => '2013-01-10',
+    'document_date' => '2013-01-11',
+    'event_date' => '2013-01-12',
     'currency' => 'USD',
     'document_ref' => 'INV_123456',
     'reference' => '',
-    // 'memo' => 'Test memo',
+    'memo' => 'Test memo',
     'items' => array(
         array(
             'account_code' => '1060',
@@ -55,10 +55,10 @@ class JournalTest extends Crud_Base
     {
         $this->putData = $this->postData;
         $this->putData['document_ref'] = 'INV_NEW_123456';
-        $this->putData['document_date'] = '02/13/2013';
-        $this->putData['trans_date'] = '02/14/2013';
-        $this->putData['event_date'] = '02/15/2013';
-        // $this->putData['memo'] = 'Test memo edited';
+        $this->putData['document_date'] = '2013-02-13';
+        $this->putData['trans_date'] = '2013-02-14';
+        $this->putData['event_date'] = '2013-02-15';
+        $this->putData['memo'] = 'Test memo edited';
         unset($this->putData['items']);
         unset($this->putData['currency']);
         unset($this->putData['reference']);

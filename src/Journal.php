@@ -115,7 +115,7 @@ class Journal
         $result = db_query($sql, "error");
         $info = array();
         while ($result && $data = db_fetch_assoc($result, "error")) {
-            $info[] = $data;
+            $info[] = $data; // REVIEW: Might need to fix up the dates perhaps? CP 2018-06
         }
 
         api_success_response($info);
@@ -158,14 +158,15 @@ class Journal
         $info = array();
         if ($type == ST_JOURNAL) {
             $journal = get_journal($type, $id);
-            $info['document_date'] = sql2date($journal['doc_date']);
-            $info['event_date'] = sql2date($journal['event_date']);
+            $info['document_date'] = $journal['doc_date'];
+            $info['event_date'] = $journal['event_date'];
             $info['document_ref'] = $journal['source_ref'];
             $info['currency'] = $journal['currency'];
-            $info['trans_date'] = sql2date($journal['tran_date']);
+            $info['trans_date'] = $journal['tran_date'];
         } else {
             $info['counterparty'] = get_counterparty_name($type, $id);
         }
+        $info['memo'] = get_comments_string($type, $id);
         // journal number ??? CP 2018-06
         $items = array();
         $result = get_gl_trans($type, $id);
@@ -173,7 +174,7 @@ class Journal
         while ($row = db_fetch_assoc($result)) {
             if ($i == 0) {
                 if (!$info['trans_date']) {
-                    $info['trans_date'] = sql2date($row['tran_date']);
+                    $info['trans_date'] = $row['tran_date'];
                 }
                 $info['reference'] = $row['reference'];
             }
@@ -225,15 +226,18 @@ class Journal
         $req = $rest->request();
         $model = $req->post();
 
-        $today = new_doc_date();
+        $today = date2sql(new_doc_date());
 
         \api_validate('items', $model, 412, function($property, $model) {
-            return is_array($model[$property]);
-        }, 'items must be an array');
-        \api_check('currency', $model);
+            return array_key_exists($property, $model) && is_array($model[$property]);
+        }, 'items must exist and be an array');
         \api_check('trans_date', $model, $today);
         \api_check('document_date', $model, $today);
         \api_check('event_date', $model, $today);
+        $companyCurrency = get_company_currency();
+        \api_check('currency', $model, $companyCurrency);
+        $rates = get_last_exchange_rate($model['currency'], sql2date($model['trans_date']));
+        \api_check('rate', $model, $rates['rate_buy']);
         \api_check('document_ref', $model);
         \api_check('reference', $model);
         \api_check('memo', $model);
@@ -242,18 +246,20 @@ class Journal
             \api_validate('amount', $item);
             \api_check('memo', $item);
         }
+
+
         $cart = new \items_cart(ST_JOURNAL);
-        $cart->tran_date = $model['trans_date'];
-        $cart->doc_date = $model['document_date'];
-        $cart->event_date = $model['event_date'];
+        $cart->tran_date = sql2date($model['trans_date']);
+        $cart->doc_date = sql2date($model['document_date']);
+        $cart->event_date = sql2date($model['event_date']);
         $cart->source_ref = $model['document_ref'];
-        if (!$model['currency']) {
-            $cart->currency = $model['currency'];
+        $cart->memo_ = $model['memo'];
+        $cart->currency = $model['currency'];
+        if ($cart->currency != $companyCurrency) {
+            $cart->rate = $model['rate'];
         }
+        $cart->reference = $model['reference'] ? $model['reference'] : $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
         // TODO check fiscal year
-        if (!$model['reference']) {
-            $cart->reference = $Refs->get_next(ST_JOURNAL, null, $cart->tran_date);
-        }
         foreach ($model['items'] as $item) {
             $cart->add_gl_item($item['account_code'], '', '', $item['amount'], $item['memo']);
         }
@@ -305,7 +311,7 @@ class Journal
 
         $existing = $this->getById($rest, ST_JOURNAL, $id);
 
-        $today = new_doc_date();
+        $today = date2sql(new_doc_date());
 
         \api_validate('items', $model, 412, function($property, $model) {
             return !\array_key_exists($property, $model);
@@ -322,15 +328,21 @@ class Journal
         \api_check('document_ref', $model, $existing);
         \api_check('memo', $model, $existing);
 
+        // Update Journal
         // !!! We need to ensure that $amount does not change
         $sql = "UPDATE ".TB_PREF."journal SET "
         ."`source_ref`=".db_escape($model['document_ref']).","
-        ."`tran_date`="."'".date2sql($model['trans_date'])."',"
-        ."`event_date`="."'".date2sql($model['event_date'])."',"
-        ."`doc_date`="."'".date2sql($model['document_date'])."'"
+        ."`tran_date`="."'".$model['trans_date']."',"
+        ."`event_date`="."'".$model['event_date']."',"
+        ."`doc_date`="."'".$model['document_date']."'"
         ." WHERE `type`=".db_escape(ST_JOURNAL)." AND " ."`trans_no`=".db_escape($id);
-  
         db_query($sql, 'cannot update journal entry');
+
+        // Update memo if necessary
+        if ($model['memo'] != $existing['memo']) {
+            delete_comments(ST_JOURNAL, $id);
+            add_comments(ST_JOURNAL, $id, sql2date($model['trans_date']), $model['memo']);
+        }
 
         \api_success_response(array('id' => $id));
     }
