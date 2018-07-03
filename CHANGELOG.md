@@ -2,6 +2,7 @@
 
 #### July 2018
 
+- 03 Jul: Fixed #47 Journal post without having a memo set on an item causes 500 server error
 - 03 Jul: Complete #43, add journal support for non-company currencies and exchange rate.
 
 #### June 2018

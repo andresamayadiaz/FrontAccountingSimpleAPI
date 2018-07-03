@@ -241,11 +241,12 @@ class Journal
         \api_check('document_ref', $model);
         \api_check('reference', $model);
         \api_check('memo', $model);
-        foreach ($model['items'] as $item) {
+        foreach ($model['items'] as &$item) {
             \api_validate('account_code', $item);
             \api_validate('amount', $item);
             \api_check('memo', $item);
         }
+        unset($item);
 
 
         $cart = new \items_cart(ST_JOURNAL);
