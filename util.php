@@ -31,6 +31,7 @@ function api_login()
 function api_response($code, $body)
 {
     $app = \Slim\Slim::getInstance('SASYS');
+    $app->response->headers->set('Content-Type', 'application/json');
     $app->response()->status($code);
     if (is_array($body)) {
         $body= json_encode($body);
