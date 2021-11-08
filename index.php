@@ -461,6 +461,12 @@ $rest->group('/sales', function () use ($rest) {
     $rest->delete('/:branch_id/:uuid', function ($branch_id, $uuid) use ($rest) {
         $rest->sales->delete($rest, $branch_id, $uuid);
     });
+
+    //added by Danish
+    $rest->post('/delete/:branch_id/:uuid', function ($branch_id, $uuid) use ($rest) {
+        $rest->sales->delete($rest, $branch_id, $uuid);
+    });
+
     // All Sales
     $rest->get('/:trans_type/', function ($trans_type) use ($rest) {
         $rest->sales->get($rest, $trans_type);
@@ -523,6 +529,41 @@ $rest->group('/journal', function () use ($rest) {
     });
 });
 // ------------------------------ Journal -------------------------------
+
+
+
+// ------------------------------- Purchase ( Added by danish start ) --------------------------------
+$rest->container->singleton('purchase', function () {
+    return new \FAAPI\Purchase();
+});
+$rest->group('/purchase', function () use ($rest) {
+    $rest->post('/', function () use ($rest) {
+        $rest->purchase->post($rest);
+    });
+    $rest->delete('/:branch_id/:uuid', function ($branch_id, $uuid) use ($rest) {
+        $rest->purchase->delete($rest, $branch_id, $uuid);
+    });
+    //added by Danish
+    $rest->post('/delete/:branch_id/:uuid', function ($branch_id, $uuid) use ($rest) {
+        $rest->purchase->delete($rest, $branch_id, $uuid);
+    });
+});
+// ------------------------------- Purchase ( Added by danish end ) --------------------------------
+
+
+// ------------------------------- Customer Payments ( Added by danish start ) --------------------------------
+$rest->container->singleton('customerPayments', function () {
+    return new \FAAPI\customerPayments();
+});
+$rest->group('/customerPayments', function () use ($rest) {
+    $rest->post('/', function () use ($rest) {
+        $rest->customerPayments->post($rest);
+    });
+    $rest->post('/delete', function () use ($rest) {
+        $rest->customerPayments->delete($rest);
+    });
+});
+// ------------------------------- Customer Payments ( Added by danish end ) --------------------------------
 
 // Init API
 $rest->run();

@@ -129,6 +129,7 @@ class Customers
         }
         $cust = get_customer($selected_id);
         if ($cust != null) {
+            $cust['selected_branch']=$selected_branch;
             api_create_response(json_encode($cust));
         } else {
             api_error(500, 'Could Not Save to Database');

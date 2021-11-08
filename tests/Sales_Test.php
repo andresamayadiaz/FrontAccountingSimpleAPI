@@ -232,5 +232,13 @@ class SalesTest extends PHPUnit_Framework_TestCase
         $count2 = count($result);
         $this->assertEquals($count0, $count2);
         */
+
+        // Deleting / Voiding Purchase Invoice - POST Request
+        $info=array (
+            'trans_no' => 3,
+            'date_' => '10/10/2021',
+            'memo_' => substr('Comment should be limited to 255 characters only. As this is setup in the database field size',0,255),
+        );
+
     }
 }

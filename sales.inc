@@ -15,6 +15,7 @@ include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/admin/db/attachments_db.inc");
+include_once($path_to_root . "/includes/types.inc");
 // include_once($path_to_root . "/modules/timbrado/includes/db/comprobantes_db.php.inc");
 // include_once($path_to_root . "/modules/timbrado/includes/db/llavero_db.php.inc");
 // include_once($path_to_root . "/modules/timbrado/includes/generate/AutoFacturaCore.php.inc");
@@ -468,7 +469,7 @@ function sales_edit($trans_no, $trans_type) {
   api_success_response(_("Ok"));
 }
 
-function sales_cancel($branch_id, $uuid) {
+function sales_cancel__($branch_id, $uuid) {
 	error_log("\r\n1", 3, "/var/tmp/sasys.log");
 	$AutoFactura					= new AutoFacturaCore();
 	$AutoFactura->userkey	= get_cofig("Llave de Usuario", "");
@@ -495,6 +496,87 @@ function sales_cancel($branch_id, $uuid) {
 		api_error(500, _('Could not cancel invoice. ').$e->getMessage());
 		return;
 	}
+}
+
+
+
+/**
+ * Author : Danish Naseem
+ * <dani.115115@gmail.com>
+ */
+
+function sales_cancel($branch_id, $uuid) {
+    $resp=['status'=>true,'msg'=>''];
+    try {
+        $_POST['filterType']=ST_SALESINVOICE;
+        $check=check_valid_entries();
+
+        if ($check['status'])
+        {
+            $void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
+            if ($void_entry != null)
+            {
+                $resp['status']=false;
+                $resp['error_code']=500;
+                $resp['msg']="The selected transaction has already been voided.";
+            } else {
+                $msg = void_transaction($_POST['filterType'], $_POST['trans_no'], $_POST['date_'], $_POST['memo_']);
+                if (!$msg) {
+                    $resp['status'] = true;
+                } else {
+                    $resp['status'] = false;
+                    $resp['error_code'] = 500;
+                    $resp['msg'] = $msg;
+                }
+            }
+        }else{
+            $resp['status'] = false;
+            $resp['error_code'] = 500;
+            $resp['msg'] = $check['msg'];
+        }
+    } catch (Exception $e) {
+        error_log($e->getMessage(), 3, "/var/tmp/sales_cancel.log");
+        $resp['msg']='Could not cancel invoice. ';
+        return;
+    }
+    if($resp['status']){
+        api_success_response($resp);
+    }else{
+        api_error($resp['error_code'], $resp['msg']);
+    }
+}
+
+/**
+ * Author : Danish Naseem
+ * <dani.115115@gmail.com>
+ */
+function check_valid_entries()
+{
+    $check=array('status'=>true,'msg');
+
+    if (is_closed_trans($_POST['filterType'],$_POST['trans_no']))
+    {
+        $check['msg'] = "The selected transaction was closed for edition and cannot be voided.";
+        $check['status'] = false;
+    }
+    if (!is_date($_POST['date_']))
+    {
+        $check['msg'] = "The entered date is invalid.";
+        $check['status'] = false;
+    }
+    if (!is_date_in_fiscalyear($_POST['date_']))
+    {
+        $check['msg'] ="The entered date is out of fiscal year or is closed for further data entry.";
+        $check['status'] = false;
+    }
+
+    if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0)
+    {
+        $check['msg'] ="The transaction number is expected to be numeric and greater than zero.";
+        $check['status'] = false;
+    }
+
+    return $check;
 }
 
 function can_process($info, $cart) {
